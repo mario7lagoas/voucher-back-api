@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                 });
 
         http.addFilterBefore(new LoginFiltro("/login", authenticationConfiguration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new AutenticacaoFiltro(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AutenticacaoFiltro(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
