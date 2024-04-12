@@ -189,7 +189,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
             parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
             parametros.put("logo", this.getClass().getResourceAsStream("/static/img/usuarioRelatorio.jpg"));
             InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/relatorio-de-usuarios.jasper");
-
+/*
             List<UsuarioPrintResponse> responseList = new ArrayList<>();
             responseList.clear();
 
@@ -212,8 +212,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
                 responseList.add(response);
 
             });
+
+ */
             JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
-                    new JRBeanCollectionDataSource(responseList));
+                    new JRBeanCollectionDataSource(prints));
 
             byte[] relatorio = JasperExportManager.exportReportToPdf(jasperPrint);
 

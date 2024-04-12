@@ -164,7 +164,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
             parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
             parametros.put("logo", this.getClass().getResourceAsStream("/static/img/promocaoRelatorio.jpg"));
             InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/relatorio-de-promocoes.jasper");
-
+/*
             List<PromocaoPrintResponse> responseList = new ArrayList<>();
             responseList.clear();
 
@@ -179,22 +179,18 @@ public class PromocaoServiceImpl implements IPromocaoService {
                         .valorMinimoParaDisparo(print.getValorMinimoParaDisparo())
                         .discontoValor(print.getDiscontoValor())
                         .tipoDesconto(print.getTipoDesconto())
+                        .lojas(print.getLojas())
                         .build();
-
-                if (print.getLojas() != null){
-                       response.setLojaNome( print.getLojas()
-                               .stream()
-                               .map(LojaResponse::getNome)
-                               .toList());
-                }
 
                 responseList.add(response);
 
             } );
 
+ */
+
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
-                    new JRBeanCollectionDataSource(responseList));
+                    new JRBeanCollectionDataSource(prints));
 
             byte[] relatorio = JasperExportManager.exportReportToPdf(jasperPrint);
 

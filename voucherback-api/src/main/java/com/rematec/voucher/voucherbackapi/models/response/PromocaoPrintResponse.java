@@ -19,6 +19,6 @@ public class PromocaoPrintResponse {
     private Integer diasValidadeVoucher;
     private Double discontoValor;
     private Integer discontoPercentual;
-    private List<String> lojaNome;
+    private List<LojaResponse> lojas;
 
 }
