@@ -20,7 +20,9 @@ import lombok.experimental.SuperBuilder;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @SuperBuilder
 @Entity(name= "usuario")
@@ -46,6 +48,18 @@ public class UsuarioEntity extends BaseEntity implements Serializable {
     @Column(length = 150)
     private String password;
 
+    private Boolean status;
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "usuario_perfil",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "perfil_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "perfil_id"})
+    )
+    private Set<PerfilEntity> perfis = new HashSet<>();
+
+    /*
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuarios_roles",
             joinColumns = @JoinColumn(name = "usuario_id"),
@@ -53,5 +67,7 @@ public class UsuarioEntity extends BaseEntity implements Serializable {
             uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "role_id"})
     )
     private List<RoleEntity> roles;
+
+     */
 
 }

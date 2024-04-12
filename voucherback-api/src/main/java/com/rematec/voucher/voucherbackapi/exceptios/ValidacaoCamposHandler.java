@@ -28,7 +28,7 @@ public class ValidacaoCamposHandler {
                     Map<String, String> erros = new HashMap<>();
 
                     erros.put("campo", obterNomePropriedade(erro));
-                    erros.put("descricao", erro.getDefaultMessage());
+                    erros.put("mensagem", erro.getDefaultMessage());
 
                     return erros;
 

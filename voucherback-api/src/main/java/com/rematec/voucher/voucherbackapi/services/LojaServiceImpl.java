@@ -1,14 +1,21 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.voucherbackapi.exceptios.LojaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirLojaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaReposity;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.services.ILojaService;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
+import com.rematec.voucher.voucherbackapi.models.response.LojasPaginadaResponse;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,33 +23,43 @@ import java.util.UUID;
 
 
 @Service
-public class LojaService {
+@Transactional
+@Slf4j
+public class LojaServiceImpl implements ILojaService {
 
     @Autowired
-    private ILojaReposity iLojaReposity;
+    private ILojaRepository iLojaReposity;
 
     @Autowired
     private VouckBackMapper mapper;
 
+    @Override
     public LojaResponse addLoja(LojaRequest lojaRequest) {
+        if (iLojaReposity.findByCnpj(lojaRequest.getCnpj()).isPresent()) {
+            throw new LojaCadastradaException("CNPJ Já cadastrado.");
+        }
+
         LojaEntity lojaEntity = LojaEntity.builder()
                 .guid(UUID.randomUUID().toString())
                 .nome(lojaRequest.getNome())
-                .cnpj(lojaRequest.getCnpj())
+                .status(lojaRequest.getStatus())
+                .cnpj(lojaRequest.getCnpj().replaceAll("[^0-9]", ""))
                 .identificacao(lojaRequest.getIdentificacao())
                 .build();
 
         return mapper.lojaEntityToLojaResponse(iLojaReposity.save(lojaEntity));
+
     }
 
-    public List<LojaResponse> gelAll() {
+    @Override
+    public List<LojaResponse> getAll() {
         return mapper.listLojaEntityToListLojaResponse(iLojaReposity.findAll());
     }
 
+    @Override
     public LojaResponse updateLoja(String guid, LojaRequest lojaRequest) {
         LojaEntity lojaEntity = iLojaReposity.findByGuid(guid)
                 .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
-
 
         if (!lojaRequest.getCnpj().isEmpty())
             lojaEntity.setCnpj(lojaRequest.getCnpj());
@@ -52,9 +69,13 @@ public class LojaService {
         if (!lojaRequest.getNome().isEmpty())
             lojaEntity.setNome(lojaRequest.getNome());
 
+        if (lojaRequest.getStatus() != null)
+            lojaEntity.setStatus(lojaRequest.getStatus());
+
         return mapper.lojaEntityToLojaResponse(iLojaReposity.save(lojaEntity));
     }
 
+    @Override
     public void apagarLoja(String guid) {
         LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
                 .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
@@ -65,10 +86,38 @@ public class LojaService {
         this.iLojaReposity.delete(lojaEntity);
     }
 
+    @Override
     public LojaResponse buscarLojaByGuid(String guid) {
         LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
                 .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
 
         return mapper.lojaEntityToLojaResponse(lojaEntity);
     }
+
+    @Override
+    public LojaResponse updateStatus(String guid, UpdateStatusResquest statusResquest) {
+
+        LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+
+        lojaEntity.setStatus(statusResquest.getStatus());
+        log.info("Atualizando status da loja [{}]", lojaEntity.getNome());
+
+        return mapper.lojaEntityToLojaResponse(iLojaReposity.save(lojaEntity));
+
+    }
+    @Override
+    public List<LojaResponse> getLojasAtivas() {
+        return mapper.listLojaEntityToListLojaResponse(iLojaReposity.findByStatusTrue());
+    }
+    @Override
+    public LojasPaginadaResponse obterLojasPaginadas(String cnpj, int page, int size) {
+
+        return mapper.pageLojasEntityToLojasPaginadaResponse(
+                this.iLojaReposity.findByCnpjContaining(cnpj.replaceAll("[^0-9]", ""),
+                        PageRequest.of(page, size) )
+        );
+    }
+
+
 }

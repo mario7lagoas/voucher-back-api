@@ -30,6 +30,19 @@ public class ExceptionsHandlers {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 
     }
+    @ExceptionHandler(UsuarioInativoException.class)
+    public ResponseEntity<ErrorResponse> lusuarioInativoExceptionHandler(UsuarioInativoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.USUARIO_INATIVADO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
 
     @ExceptionHandler(PromocaoNaoEncontradaException.class)
     public ResponseEntity<ErrorResponse> promocaoNaoEncontradaExceptionHandler(PromocaoNaoEncontradaException exception){
@@ -73,6 +86,61 @@ public class ExceptionsHandlers {
 
     }
 
+    @ExceptionHandler(NaoPermitidoExcluirPerfilException.class)
+    public ResponseEntity<ErrorResponse> lojaPermitidoExcluirPerfilExceptionHandler(NaoPermitidoExcluirPerfilException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
+
+    @ExceptionHandler(LojaCadastradaException.class)
+    public ResponseEntity<ErrorResponse> lojaCadastradaExceptionHandler(LojaCadastradaException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.CNPJ_JA_CADASTRADO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
+
+    @ExceptionHandler(PerfilCadastradoException.class)
+    public ResponseEntity<ErrorResponse> perfilExceptionHandler(PerfilCadastradoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.PERFIL_JA_CADASTRADO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
+
+    @ExceptionHandler(UsuarioCadastradoException.class)
+    public ResponseEntity<ErrorResponse> UsuarioCadastradoExceptionHandler(UsuarioCadastradoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.USUARIO_JA_CADASTRADO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> oResourceFoundHandle(NoResourceFoundException ex) {
 

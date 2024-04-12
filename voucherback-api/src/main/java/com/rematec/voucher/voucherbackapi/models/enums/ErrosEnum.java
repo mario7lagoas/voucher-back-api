@@ -9,6 +9,10 @@ public enum ErrosEnum {
     NAO_ENCONTRADA("Não encontrado."),
     NAO_PERMITIDO_ALTERAR_STATUS("Não permitido alterar Status."),
     USUARIO_NAO_ENCONTRADO("Usuario não encontrado."),
+    USUARIO_INATIVADO("Usuario Inativado."),
+    CNPJ_JA_CADASTRADO("CNPJ já Cadastrado."),
+    USUARIO_JA_CADASTRADO("Usuario já Cadastrado."),
+    PERFIL_JA_CADASTRADO("Perfil já cadastrado."),
     ENDPOINT_NAO_ENCONTRADO("Endpoint não encontrado.");
 
     private String nome;

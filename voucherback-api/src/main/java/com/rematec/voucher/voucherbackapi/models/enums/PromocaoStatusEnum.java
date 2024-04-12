@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum PromocaoStatusEnum {
-    CRIADA("Criada"), PROGRESSO("Em progresso"), BLOQUEADA("Bloqueada"), FINALIZADA("Finalizada");
+    ATIVA("Ativa"), PROGRESSO("Em progresso"), BLOQUEADA("Bloqueada"), FINALIZADA("Finalizada");
 
     private String nome;
 

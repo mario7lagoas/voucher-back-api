@@ -40,8 +40,10 @@ public class RoleEntity implements Serializable {
     @Column
     @Enumerated(EnumType.STRING )
     private PermissaoEnum nome;
-
+/*
     @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<UsuarioEntity> usuarios ;
+
+ */
 }

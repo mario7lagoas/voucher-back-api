@@ -24,4 +24,7 @@ public class LojaRequest {
     @NotNull(message = "Identificacao da loja Obrigatorio")
     @NotBlank(message = "Identificação Obrigatorio")
     private String identificacao;
+
+    @NotNull(message = "Status da loja é Obrigatorio")
+    private Boolean status;
 }

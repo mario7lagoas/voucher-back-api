@@ -19,8 +19,8 @@ public class LojaResponse {
     private String nome;
     private String cnpj;
     private String identificacao;
+    private Boolean status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataCadastro;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dataAtualizacao;
+
 }

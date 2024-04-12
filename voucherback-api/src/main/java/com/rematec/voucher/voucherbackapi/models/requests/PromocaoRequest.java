@@ -31,6 +31,12 @@ public class PromocaoRequest {
     private LocalDateTime fim;
     @NotBlank(message = "Tipo de desconto da promoção não pode ser nulo ou vazio.")
     private String tipoDesconto;
+    @NotNull(message = "Valor minimo para disparo nao pode ser nulo.")
+    private Double valorMinimoParaDisparo;
+    @NotNull(message = "Validade no Voucher não pode ser nulo")
+    private Integer diasValidadeVoucher;
+    private Double discontoValor;
+    private Integer discontoPercentual;
     private List<Guid> lojas;
 
 }

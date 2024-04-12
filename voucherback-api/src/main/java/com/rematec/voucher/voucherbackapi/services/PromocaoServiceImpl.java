@@ -1,0 +1,227 @@
+package com.rematec.voucher.voucherbackapi.services;
+
+import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
+import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.services.IPromocaoService;
+import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
+import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
+import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
+import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
+import com.rematec.voucher.voucherbackapi.models.requests.Guid;
+import com.rematec.voucher.voucherbackapi.models.requests.PromocaoPrintRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
+import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
+import com.rematec.voucher.voucherbackapi.models.response.PromocaoPrintResponse;
+import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
+import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+
+@Service
+public class PromocaoServiceImpl implements IPromocaoService {
+
+    @Autowired
+    private IPromocaoRepository iPromocaoRepository;
+
+    @Autowired
+    private ILojaRepository iLojaReposity;
+
+    @Autowired
+    private VouckBackMapper mapper;
+
+    @Override
+    public List<PromocaoResponse> getAllPromocoes() {
+        return mapper.listPromocaoEntitytoListPromocaoResponse(iPromocaoRepository.findAll());
+    }
+
+    @Override
+    public PromocaoResponse addPromocao(PromocaoRequest promocaoRequest) {
+        PromocaoEntity promocaoEntity = PromocaoEntity.builder()
+                .guid(UUID.randomUUID().toString())
+                .descricao(promocaoRequest.getDescricao())
+                .promocaoStatus(PromocaoStatusEnum.PROGRESSO)
+                .inicio(promocaoRequest.getInicio())
+                .fim(promocaoRequest.getFim())
+                .valorMinimoParaDisparo(promocaoRequest.getValorMinimoParaDisparo())
+                .discontoPercentual(promocaoRequest.getDiscontoPercentual() != null ?
+                        promocaoRequest.getDiscontoPercentual() : Integer.valueOf(0))
+                .discontoValor(promocaoRequest.getDiscontoValor() != null ?
+                        promocaoRequest.getDiscontoValor() : Double.valueOf(0))
+                .diasValidadeVoucher(promocaoRequest.getDiasValidadeVoucher())
+                .tipoDesconto(TipoDescontoEnum.valueOf(promocaoRequest.getTipoDesconto()))
+                .lojas(getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
+                .build();
+
+        return mapper.promocaoEntitytopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
+    }
+
+    @Override
+    public PromocaoResponse alterarPromocao(String guid, PromocaoUpdateRequest promocaoUpdateRequest) {
+        PromocaoEntity promocaoEntity = iPromocaoRepository.findByGuid(guid)
+                .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+
+        if (promocaoUpdateRequest.getDescricao() != null && !promocaoUpdateRequest.getDescricao().isEmpty())
+            promocaoEntity.setDescricao(promocaoUpdateRequest.getDescricao());
+
+        if (promocaoUpdateRequest.getPromocaoStatus() != null && !promocaoUpdateRequest.getPromocaoStatus().isEmpty())
+            promocaoEntity.setPromocaoStatus(PromocaoStatusEnum.valueOf(promocaoUpdateRequest.getPromocaoStatus()));
+
+        if (promocaoUpdateRequest.getTipoDesconto() != null && !promocaoUpdateRequest.getTipoDesconto().isEmpty())
+            promocaoEntity.setTipoDesconto(TipoDescontoEnum.valueOf(promocaoUpdateRequest.getTipoDesconto()));
+
+        if (promocaoUpdateRequest.getInicio() != null)
+            promocaoEntity.setInicio(promocaoUpdateRequest.getInicio());
+
+        if (promocaoUpdateRequest.getValorMinimoParaDisparo() != null)
+            promocaoEntity.setValorMinimoParaDisparo(promocaoUpdateRequest.getValorMinimoParaDisparo());
+
+        if (promocaoUpdateRequest.getDiasValidadeVoucher() != null)
+            promocaoEntity.setDiasValidadeVoucher(promocaoUpdateRequest.getDiasValidadeVoucher());
+
+        if (promocaoUpdateRequest.getDiscontoValor() != null && promocaoUpdateRequest.getDiscontoValor() > 0) {
+            promocaoEntity.setDiscontoValor(promocaoUpdateRequest.getDiscontoValor());
+            promocaoEntity.setDiscontoPercentual(0);
+        }
+
+        if (promocaoUpdateRequest.getDiscontoPercentual() != null && promocaoUpdateRequest.getDiscontoPercentual() > 0) {
+            promocaoEntity.setDiscontoValor(Double.valueOf(0));
+            promocaoEntity.setDiscontoPercentual(promocaoUpdateRequest.getDiscontoPercentual());
+        }
+
+        if (promocaoUpdateRequest.getFim() != null)
+            promocaoEntity.setFim(promocaoUpdateRequest.getFim());
+        if (promocaoUpdateRequest.getLojas() != null) {
+            promocaoEntity.getLojas().clear();
+            promocaoEntity.getLojas().addAll(getListGuidLojasToListLojasEntity(promocaoUpdateRequest.getLojas()));
+        } else {
+            promocaoEntity.setLojas(null);
+        }
+
+        return mapper.promocaoEntitytopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
+    }
+
+    @Override
+    public void apagarPromocao(String guid) {
+        PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
+                .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+
+        iPromocaoRepository.delete(promocaoEntity);
+    }
+
+    @Override
+    public PromocaoResponse buscarPromocaoByGuid(String guid) {
+        PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
+                .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+
+        return mapper.promocaoEntitytopromocaoResponse(promocaoEntity);
+    }
+
+    @Override
+    public PromocoesPaginadaResponse obterPromocoesPaginadas(String descricao, int page, int size) {
+
+        return mapper.pagePromocoesEntityToPromocoesPaginadaResponse(
+                this.iPromocaoRepository.findByDescricaoContaining(descricao, PageRequest.of(page, size)));
+
+    }
+
+    @Override
+    public PromocoesPaginadaResponse promocaoFiltro(String descricao, String promocaoStatus, LocalDate inicio, LocalDate fim, int page, int size) {
+
+        PromocaoFiltro filtro = PromocaoFiltro.builder()
+                .descricao(descricao)
+                .promocaoStatus(promocaoStatus)
+                .inicio(inicio)
+                .fim(fim)
+                .build();
+
+        return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));
+    }
+
+    @Override
+    public String printPromocoes(List<PromocaoPrintRequest> prints) {
+        try {
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+            parametros.put("logo", this.getClass().getResourceAsStream("/static/img/promocaoRelatorio.jpg"));
+            InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/relatorio-de-promocoes.jasper");
+
+            List<PromocaoPrintResponse> responseList = new ArrayList<>();
+            responseList.clear();
+
+            prints.forEach( print-> {
+                PromocaoPrintResponse response = PromocaoPrintResponse.builder()
+                        .fim(print.getFim())
+                        .inicio(print.getInicio())
+                        .promocaoStatus(print.getPromocaoStatus())
+                        .descricao(print.getDescricao())
+                        .diasValidadeVoucher(print.getDiasValidadeVoucher())
+                        .discontoPercentual(print.getDiscontoPercentual())
+                        .valorMinimoParaDisparo(print.getValorMinimoParaDisparo())
+                        .discontoValor(print.getDiscontoValor())
+                        .tipoDesconto(print.getTipoDesconto())
+                        .build();
+
+                if (print.getLojas() != null){
+                       response.setLojaNome( print.getLojas()
+                               .stream()
+                               .map(LojaResponse::getNome)
+                               .toList());
+                }
+
+                responseList.add(response);
+
+            } );
+
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
+                    new JRBeanCollectionDataSource(responseList));
+
+            byte[] relatorio = JasperExportManager.exportReportToPdf(jasperPrint);
+
+            String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(relatorio);
+
+            return base64Pdf;
+        } catch (JRException e) {
+            throw new RuntimeException("Erro em gerar o PDF " + e);
+        }
+
+    }
+
+    @Override
+    public void ativarPromocao(String guid) {
+
+        PromocaoEntity promocaoEntity = iPromocaoRepository.findByGuid(guid)
+                .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+        promocaoEntity.setPromocaoStatus(PromocaoStatusEnum.ATIVA);
+        this.iPromocaoRepository.save(promocaoEntity);
+    }
+
+    private List<LojaEntity> getListGuidLojasToListLojasEntity(List<Guid> lojas) {
+
+        return lojas != null ? lojas.stream()
+                .map(loja -> iLojaReposity.findByGuid(loja.getGuid()).get())
+                .toList() : null;
+    }
+
+
+}

@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.filter;
+package com.rematec.voucher.voucherbackapi.models.filter;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +25,12 @@ public class LoginFiltro extends AbstractAuthenticationProcessingFilter {
     @Autowired
     private AutenticacaoService autenticacaoService;
 
-    public LoginFiltro(String url, AuthenticationManager manager){
+    public LoginFiltro(String url, AuthenticationManager manager) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(manager);
+
     }
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
@@ -36,20 +38,21 @@ public class LoginFiltro extends AbstractAuthenticationProcessingFilter {
         UsuarioAutenticado usuarioAutenticado = new ObjectMapper().readValue(collect, UsuarioAutenticado.class);
 
         return getAuthenticationManager()
-                .authenticate(new UsernamePasswordAuthenticationToken(
-                        usuarioAutenticado.getEmail(),
-                        usuarioAutenticado.getPassword(),
-                        Collections.emptyList()
-                ));
+                .authenticate(
+                        new UsernamePasswordAuthenticationToken(usuarioAutenticado.getEmail(),
+                                usuarioAutenticado.getPassword(),
+                                Collections.emptyList()
+                        ));
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
-                                           HttpServletResponse response,
-                                           FilterChain chain,
-                                           Authentication authentication){
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authentication) {
 
-        autenticacaoService.addJWTToken( response , authentication);
+
+        autenticacaoService.addJWTToken(response, request, authentication);
 
     }
 

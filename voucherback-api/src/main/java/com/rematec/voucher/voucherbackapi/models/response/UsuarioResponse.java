@@ -6,19 +6,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Builder
-public class UsuarioCadastroResponse {
-
+public class UsuarioResponse {
     private String guid;
     private String userName;
     private String email;
+    private Boolean status;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataCadastro;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataAtualizacao;
-    private List<RuleResponse> roles;
+    private Set<PerfilResumidoResponse> perfis ;
 }

@@ -40,6 +40,8 @@ public class LojaEntity extends BaseEntity implements Serializable {
 
     private String identificacao;
 
+    private Boolean status;
+
 
     @ManyToMany(mappedBy = "lojas", cascade = CascadeType.ALL)
     @JsonBackReference

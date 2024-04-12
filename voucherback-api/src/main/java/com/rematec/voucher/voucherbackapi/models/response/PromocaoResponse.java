@@ -20,7 +20,11 @@ public class PromocaoResponse {
     private LocalDateTime fim;
     private String tipoDesconto;
     private String promocaoStatus;
+    private Double valorMinimoParaDisparo;
+    private Integer diasValidadeVoucher;
+    private Double discontoValor;
+    private Integer discontoPercentual;
 
-    private List<PromocaoLojaResponse> lojas;
+    private List<LojaResponse> lojas;
 
 }

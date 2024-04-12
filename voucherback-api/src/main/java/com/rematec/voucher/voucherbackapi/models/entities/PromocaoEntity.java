@@ -39,20 +39,20 @@ public class PromocaoEntity extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String descricao;
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime inicio;
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fim;
-
     @Enumerated(EnumType.STRING)
     private TipoDescontoEnum tipoDesconto;
-
     @Enumerated(EnumType.STRING)
     private PromocaoStatusEnum promocaoStatus;
+    private Double valorMinimoParaDisparo;
+    private Integer diasValidadeVoucher;
+    private Double discontoValor;
+    private Integer discontoPercentual;
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "promocoes_lojas",
