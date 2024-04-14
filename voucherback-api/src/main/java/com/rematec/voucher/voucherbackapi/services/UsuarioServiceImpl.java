@@ -12,8 +12,6 @@ import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UsuarioPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UsuarioRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
-import com.rematec.voucher.voucherbackapi.models.response.UsuarioPrintResponse;
 import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.response.UsuariosPaginadaResponse;
@@ -31,7 +29,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -174,13 +171,6 @@ public class UsuarioServiceImpl implements IUsuarioService {
         return listPerfils;
     }
 
-    private boolean checkData(String data) {
-
-        if (data != null && !data.isEmpty())
-            return true;
-
-        return false;
-    }
     @Override
     public String printUsuarios(List<UsuarioPrintRequest> prints) {
 
@@ -189,31 +179,6 @@ public class UsuarioServiceImpl implements IUsuarioService {
             parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
             parametros.put("logo", this.getClass().getResourceAsStream("/static/img/usuarioRelatorio.jpg"));
             InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/relatorio-de-usuarios.jasper");
-/*
-            List<UsuarioPrintResponse> responseList = new ArrayList<>();
-            responseList.clear();
-
-            prints.forEach(print -> {
-
-                UsuarioPrintResponse response = UsuarioPrintResponse.builder()
-                        .nome(print.getUserName())
-                        .email(print.getEmail())
-                        .status( print.getStatus() ? "Ativo" : "Inativo" )
-                        .dataCadastro(print.getDataCadastro())
-                        .dataAtualizacao(print.getDataAtualizacao())
-                        .build();
-                if (print.getPerfis() != null){
-                    response.setPerfis( print.getPerfis()
-                            .stream()
-                            .map(PerfilResumidoResponse::getNome)
-                            .toList());
-                }
-
-                responseList.add(response);
-
-            });
-
- */
             JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
                     new JRBeanCollectionDataSource(prints));
 
@@ -227,6 +192,13 @@ public class UsuarioServiceImpl implements IUsuarioService {
             throw new RuntimeException("Erro em gerar o PDF " + e);
         }
 
+    }
+    private boolean checkData(String data) {
+
+        if (data != null && !data.isEmpty())
+            return true;
+
+        return false;
     }
 
 

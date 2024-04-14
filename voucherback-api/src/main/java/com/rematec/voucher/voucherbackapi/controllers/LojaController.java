@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.voucherbackapi.models.requests.LojaPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
@@ -76,6 +77,12 @@ public class LojaController {
                                               UpdateStatusResquest statusResquest) {
         this.lojaService.updateStatus(guid, statusResquest);
         return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping(value = "/print" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> printPromocoes(@RequestBody List<LojaPrintRequest> prints){
+
+        return new ResponseEntity<String>(this.lojaService.printLojas(prints), HttpStatus.OK );
     }
 
 

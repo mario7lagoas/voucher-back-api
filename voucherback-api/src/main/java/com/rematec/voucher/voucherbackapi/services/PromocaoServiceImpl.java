@@ -14,8 +14,6 @@ import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
-import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PromocaoPrintResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
 import net.sf.jasperreports.engine.JRException;
@@ -30,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -164,30 +161,6 @@ public class PromocaoServiceImpl implements IPromocaoService {
             parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
             parametros.put("logo", this.getClass().getResourceAsStream("/static/img/promocaoRelatorio.jpg"));
             InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/relatorio-de-promocoes.jasper");
-/*
-            List<PromocaoPrintResponse> responseList = new ArrayList<>();
-            responseList.clear();
-
-            prints.forEach( print-> {
-                PromocaoPrintResponse response = PromocaoPrintResponse.builder()
-                        .fim(print.getFim())
-                        .inicio(print.getInicio())
-                        .promocaoStatus(print.getPromocaoStatus())
-                        .descricao(print.getDescricao())
-                        .diasValidadeVoucher(print.getDiasValidadeVoucher())
-                        .discontoPercentual(print.getDiscontoPercentual())
-                        .valorMinimoParaDisparo(print.getValorMinimoParaDisparo())
-                        .discontoValor(print.getDiscontoValor())
-                        .tipoDesconto(print.getTipoDesconto())
-                        .lojas(print.getLojas())
-                        .build();
-
-                responseList.add(response);
-
-            } );
-
- */
-
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
                     new JRBeanCollectionDataSource(prints));

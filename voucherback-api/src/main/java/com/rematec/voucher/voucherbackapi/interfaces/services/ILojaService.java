@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.interfaces.services;
 
+import com.rematec.voucher.voucherbackapi.models.requests.LojaPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
@@ -17,5 +18,6 @@ public interface ILojaService {
     LojaResponse updateStatus(String guid, UpdateStatusResquest statusResquest);
     List<LojaResponse> getLojasAtivas();
     LojasPaginadaResponse obterLojasPaginadas(String nome, int page, int size);
+    String printLojas(List<LojaPrintRequest> prints);
 
 }
