@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
@@ -10,6 +11,7 @@ import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
+import com.rematec.voucher.voucherbackapi.models.requests.AutorRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
@@ -59,6 +61,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
                 .promocaoStatus(PromocaoStatusEnum.PROGRESSO)
                 .inicio(promocaoRequest.getInicio())
                 .fim(promocaoRequest.getFim())
+                .autorAlteracao(promocaoRequest.getAutorAlteracao())
                 .valorMinimoParaDisparo(promocaoRequest.getValorMinimoParaDisparo())
                 .discontoPercentual(promocaoRequest.getDiscontoPercentual() != null ?
                         promocaoRequest.getDiscontoPercentual() : Integer.valueOf(0))
@@ -77,8 +80,13 @@ public class PromocaoServiceImpl implements IPromocaoService {
         PromocaoEntity promocaoEntity = iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
 
+        if (promocaoEntity.getPromocaoStatus().equals(PromocaoStatusEnum.FINALIZADA))
+            throw new NaoPermitidoAlterarStatusException("Promoção já finalizada!");
+
         if (promocaoUpdateRequest.getDescricao() != null && !promocaoUpdateRequest.getDescricao().isEmpty())
             promocaoEntity.setDescricao(promocaoUpdateRequest.getDescricao());
+        if (promocaoUpdateRequest.getAutorAlteracao() != null && !promocaoUpdateRequest.getAutorAlteracao().isEmpty())
+            promocaoEntity.setAutorAlteracao(promocaoUpdateRequest.getAutorAlteracao());
 
         if (promocaoUpdateRequest.getPromocaoStatus() != null && !promocaoUpdateRequest.getPromocaoStatus().isEmpty())
             promocaoEntity.setPromocaoStatus(PromocaoStatusEnum.valueOf(promocaoUpdateRequest.getPromocaoStatus()));
@@ -142,10 +150,11 @@ public class PromocaoServiceImpl implements IPromocaoService {
     }
 
     @Override
-    public PromocoesPaginadaResponse promocaoFiltro(String descricao, String promocaoStatus, LocalDate inicio, LocalDate fim, int page, int size) {
+    public PromocoesPaginadaResponse promocaoFiltro(String descricao, String tipoDesconto, String promocaoStatus, LocalDate inicio, LocalDate fim, int page, int size) {
 
         PromocaoFiltro filtro = PromocaoFiltro.builder()
                 .descricao(descricao)
+                .tipoDesconto(tipoDesconto)
                 .promocaoStatus(promocaoStatus)
                 .inicio(inicio)
                 .fim(fim)
@@ -177,11 +186,14 @@ public class PromocaoServiceImpl implements IPromocaoService {
     }
 
     @Override
-    public void ativarPromocao(String guid) {
+    public void ativarPromocao(String guid, String nomeAutorizador) {
 
         PromocaoEntity promocaoEntity = iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+        if(!promocaoEntity.getPromocaoStatus().equals(PromocaoStatusEnum.PROGRESSO))
+            throw new NaoPermitidoAlterarStatusException("Status da promoção não pode ser alterado.");
         promocaoEntity.setPromocaoStatus(PromocaoStatusEnum.ATIVA);
+        promocaoEntity.setAutorAlteracao(nomeAutorizador);
         this.iPromocaoRepository.save(promocaoEntity);
     }
 
@@ -191,6 +203,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
                 .map(loja -> iLojaReposity.findByGuid(loja.getGuid()).get())
                 .toList() : null;
     }
+
 
 
 }

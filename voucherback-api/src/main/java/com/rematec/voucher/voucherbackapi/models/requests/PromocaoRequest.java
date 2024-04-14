@@ -35,6 +35,8 @@ public class PromocaoRequest {
     private Double valorMinimoParaDisparo;
     @NotNull(message = "Validade no Voucher não pode ser nulo")
     private Integer diasValidadeVoucher;
+    @NotBlank(message = "Autor da operação não pode ser nulo ou vazio.")
+    private String autorAlteracao;
     private Double discontoValor;
     private Integer discontoPercentual;
     private List<Guid> lojas;

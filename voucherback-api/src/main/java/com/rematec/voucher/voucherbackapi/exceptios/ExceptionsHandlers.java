@@ -100,6 +100,20 @@ public class ExceptionsHandlers {
 
     }
 
+    @ExceptionHandler(NaoPermitidoAlterarStatusException.class)
+    public ResponseEntity<ErrorResponse> naoPermitidoalterarStatusExceptionHandler(NaoPermitidoAlterarStatusException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.NAO_PERMITIDO_ALTERAR_STATUS.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
+
     @ExceptionHandler(LojaCadastradaException.class)
     public ResponseEntity<ErrorResponse> lojaCadastradaExceptionHandler(LojaCadastradaException exception){
         Map<String, String> response = new HashMap<>();

@@ -24,6 +24,7 @@ public class PromocaoResponse {
     private Integer diasValidadeVoucher;
     private Double discontoValor;
     private Integer discontoPercentual;
+    private String autorAlteracao;
 
     private List<LojaResponse> lojas;
 

@@ -18,6 +18,7 @@ public class PromocaoFiltro {
     private LocalDate inicio;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fim;
+    private String tipoDesconto;
     private String promocaoStatus;
 
 }

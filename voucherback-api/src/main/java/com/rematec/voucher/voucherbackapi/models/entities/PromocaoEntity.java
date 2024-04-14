@@ -52,7 +52,7 @@ public class PromocaoEntity extends BaseEntity implements Serializable {
     private Integer diasValidadeVoucher;
     private Double discontoValor;
     private Integer discontoPercentual;
-
+    private String autorAlteracao;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "promocoes_lojas",

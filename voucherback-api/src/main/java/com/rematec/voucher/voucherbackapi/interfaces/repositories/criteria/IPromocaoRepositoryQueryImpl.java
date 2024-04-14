@@ -10,6 +10,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,19 +40,20 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
 
         orderByFromEntity = root;
 
-        criteriaQuery.orderBy(builder.desc(orderByFromEntity.get("dataCadastro")));
+        List<Order> orderList = new ArrayList();
+
+        orderList.add(builder.asc(orderByFromEntity.get("promocaoStatus")));
+        orderList.add(builder.desc(orderByFromEntity.get("fim")));
+        orderList.add(builder.desc(orderByFromEntity.get("dataCadastro")));
+
+        criteriaQuery.orderBy(orderList);
 
         TypedQuery<PromocaoEntity> query = manager.createQuery(criteriaQuery);
 
         additionalRestrictedDePaginate(query, page);
 
-        List<PromocaoEntity> list = query.getResultList();
-
-        PromocoesPaginadaResponse response =
-                mapper.pagePromocoesEntityToPromocoesPaginadaResponse(
-
-                        new PageImpl<>(query.getResultList(), page, total(promocaoFiltro)));
-        return response;
+        return mapper.pagePromocoesEntityToPromocoesPaginadaResponse(new PageImpl<>(query.getResultList(),
+                page, total(promocaoFiltro)));
     }
 
     private Long total(PromocaoFiltro promocaoFiltro) {
@@ -99,6 +101,10 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
         if (!promocaoFiltro.getPromocaoStatus().isEmpty() && promocaoFiltro.getPromocaoStatus() != null)
             predicates.add(builder.equal(root.get("promocaoStatus"),
                     promocaoFiltro.getPromocaoStatus()));
+
+        if (!promocaoFiltro.getTipoDesconto().isEmpty() && promocaoFiltro.getTipoDesconto() != null)
+            predicates.add(builder.equal(root.get("tipoDesconto"),
+                    promocaoFiltro.getTipoDesconto()));
 
 
         return predicates.toArray(new Predicate[predicates.size()]);

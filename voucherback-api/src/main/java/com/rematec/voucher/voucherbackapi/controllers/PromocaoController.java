@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.voucherbackapi.models.requests.AutorRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
@@ -53,11 +54,12 @@ public class PromocaoController {
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "descricao", defaultValue = "") String descricao,
             @RequestParam(name = "status", defaultValue = "") String promocaoStatus,
+            @RequestParam(name = "tipo", defaultValue = "") String tipoDesconto,
             @RequestParam(name = "inicio", defaultValue = "") LocalDate inicio,
             @RequestParam(name = "fim", defaultValue = "") LocalDate fim) {
 
         return new ResponseEntity<PromocoesPaginadaResponse>(promocaoService
-                .promocaoFiltro(descricao, promocaoStatus, inicio, fim, page, size), HttpStatus.OK);
+                .promocaoFiltro(descricao, tipoDesconto, promocaoStatus, inicio, fim, page, size), HttpStatus.OK);
     }
 
     @GetMapping(value = "{guid}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,9 +91,10 @@ public class PromocaoController {
     }
 
     @PatchMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> ativarPromocao(@PathVariable("guid") String guid){
+    public ResponseEntity<Void> ativarPromocao(@PathVariable("guid") String guid,
+                                               @RequestBody AutorRequest autorRequest){
 
-        this.promocaoService.ativarPromocao(guid);
+        this.promocaoService.ativarPromocao(guid, autorRequest.getAutorAlteracao());
         return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
     }
 
