@@ -3,11 +3,12 @@ package com.rematec.voucher.voucherbackapi.controllers;
 import com.rematec.voucher.voucherbackapi.models.requests.UsuarioPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UsuarioRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
-import com.rematec.voucher.voucherbackapi.models.response.LojasPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
 import com.rematec.voucher.voucherbackapi.models.response.UsuariosPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.services.UsuarioServiceImpl;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,17 +32,20 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioServiceImpl usuarioService;
+    @Autowired
+    private VoucherUtil voucherUtil;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UsuarioResponse>> getAllUsuarios() {
 
         return ResponseEntity.ok().body(this.usuarioService.getAllUsuarios());
     }
+
     @GetMapping(value = "/paginada", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsuariosPaginadaResponse> getAllLojasPaginada(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                                                         @RequestParam(name = "size", defaultValue = "10") int size,
-                                                                                         @RequestParam(name = "nome", defaultValue = "") String nome){
-        return new ResponseEntity<UsuariosPaginadaResponse>(this.usuarioService.obterUsuarioPaginadas(nome, page,size), HttpStatus.OK);
+                                                                        @RequestParam(name = "size", defaultValue = "10") int size,
+                                                                        @RequestParam(name = "nome", defaultValue = "") String nome) {
+        return new ResponseEntity<UsuariosPaginadaResponse>(this.usuarioService.obterUsuarioPaginadas(nome, page, size), HttpStatus.OK);
     }
 
     @GetMapping(value = "{guid}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,9 +74,10 @@ public class UsuarioController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value = "/print" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> printUsuarios(@RequestBody List<UsuarioPrintRequest> prints){
-        return new ResponseEntity<String>(this.usuarioService.printUsuarios(prints), HttpStatus.OK);
+    @PostMapping(value = "/print", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> printUsuarios(@RequestBody List<UsuarioPrintRequest> prints) {
+        return new ResponseEntity<String>(this.voucherUtil.print(new JRBeanCollectionDataSource(prints), "usuarios"),
+                HttpStatus.OK);
     }
 
     @PatchMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE)

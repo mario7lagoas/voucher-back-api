@@ -3,7 +3,7 @@ package com.rematec.voucher.voucherbackapi.controllers;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
-import com.rematec.voucher.voucherbackapi.services.PerfilService;
+import com.rematec.voucher.voucherbackapi.services.PerfilServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,49 +25,43 @@ import java.util.List;
 public class PerfilController {
 
     @Autowired
-    private PerfilService perfilService;
+    private PerfilServiceImpl perfilService;
 
-
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResponse>> getAllPerfil(){
         return new ResponseEntity<>(this.perfilService.getAllPeril(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/resumido")
+    @GetMapping(value = "/resumido", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResumidoResponse>> getAllPerfilResumido(){
-        return new ResponseEntity<>(this.perfilService.getAllPerilResumido(), HttpStatus.OK);
+        return new ResponseEntity<List<PerfilResumidoResponse>>(this.perfilService.getAllPerilResumido(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "{nome}/nome")
+    @GetMapping(value = "{nome}/nome", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PerfilResponse> getPerfilNome(@PathVariable("nome") String nome ){
-        return new ResponseEntity<>(this.perfilService.getPerfilNome(nome), HttpStatus.OK);
+        return new ResponseEntity<PerfilResponse>(this.perfilService.getPerfilNome(nome), HttpStatus.OK);
     }
 
-    @GetMapping(value = "{guid}")
+    @GetMapping(value = "{guid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PerfilResponse> getPerfilGuid(@PathVariable("guid") String guid ){
-        return new ResponseEntity<>(this.perfilService.getPerfilGuid(guid), HttpStatus.OK);
+        return new ResponseEntity<PerfilResponse>(this.perfilService.getPerfilGuid(guid), HttpStatus.OK);
     }
 
-
-
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PerfilResponse> addPerfil(@Valid @RequestBody PerfilRequest request){
 
-        return new ResponseEntity<>(this.perfilService.addPerfil(request), HttpStatus.CREATED);
+        return new ResponseEntity<PerfilResponse>(this.perfilService.addPerfil(request), HttpStatus.CREATED);
     }
-    @PutMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PerfilResponse> alterarPefil (@PathVariable("guid") String guid ,
                                                         @RequestBody PerfilRequest request){
-
         return new ResponseEntity<PerfilResponse>(this.perfilService.alterarPerfil(guid, request), HttpStatus.ACCEPTED);
 
     }
-
     @DeleteMapping(value = "{guid}")
     public ResponseEntity apagarPerfil(@PathVariable("guid") String guid){
-
         this.perfilService.apagarPerfil(guid);
-
         return  ResponseEntity.noContent().build();
     }
 

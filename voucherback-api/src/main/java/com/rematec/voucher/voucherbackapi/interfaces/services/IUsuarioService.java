@@ -1,6 +1,5 @@
 package com.rematec.voucher.voucherbackapi.interfaces.services;
 
-import com.rematec.voucher.voucherbackapi.models.requests.UsuarioPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UsuarioRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
 import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
@@ -16,6 +15,5 @@ public interface IUsuarioService {
     void apagarUsuario(String guid);
     UsuarioResponse updateStatus(String guid, UpdateStatusResquest statusResquest);
     UsuariosPaginadaResponse obterUsuarioPaginadas(String nome, int page, int size);
-    String printUsuarios(List<UsuarioPrintRequest> prints);
 
 }

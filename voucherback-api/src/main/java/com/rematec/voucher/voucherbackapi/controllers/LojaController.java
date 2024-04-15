@@ -6,7 +6,9 @@ import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.LojasPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.services.LojaServiceImpl;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +32,8 @@ public class LojaController {
 
     @Autowired
     private LojaServiceImpl lojaService;
+    @Autowired
+    private VoucherUtil voucherUtil;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LojaResponse> addLoja(@RequestBody @Valid LojaRequest lojaRequest){
@@ -82,7 +86,8 @@ public class LojaController {
     @PostMapping(value = "/print" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> printPromocoes(@RequestBody List<LojaPrintRequest> prints){
 
-        return new ResponseEntity<String>(this.lojaService.printLojas(prints), HttpStatus.OK );
+        return new ResponseEntity<String>(this.voucherUtil.print(new JRBeanCollectionDataSource(prints), "lojas")
+                , HttpStatus.OK );
     }
 
 

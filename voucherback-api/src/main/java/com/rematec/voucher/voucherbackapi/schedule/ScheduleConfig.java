@@ -22,15 +22,16 @@ public class ScheduleConfig {
 
     @Autowired
     private IPromocaoRepository iPromocaoRepository;
-    private static final String SCHEDULE_CONFIG_CRON = "00 30 * * * *";
+    private static final String SCHEDULE_CONFIG_CRON = "00 0/30 * * * *";
 
     @Async
-    @Scheduled(cron = SCHEDULE_CONFIG_CRON , zone = "America/Sao_Paulo")
-    public void verificandoPromoçoesVencidas(){
+    @Scheduled(cron = SCHEDULE_CONFIG_CRON, zone = "America/Sao_Paulo")
+    public void verificandoPromoçoesVencidas() {
+        log.warn("Verificando Promoções vencidas.");
         List<PromocaoEntity> promocaoEntities = this.iPromocaoRepository
                 .findByFimLessThanAndPromocaoStatusNot(LocalDateTime.now(), PromocaoStatusEnum.FINALIZADA);
-        if (promocaoEntities != null ){
-            promocaoEntities.forEach( p -> {
+        if (promocaoEntities != null) {
+            promocaoEntities.forEach(p -> {
                 log.info("Promoção [{}] vencida dia [{}] . Inativando promoção automaticamente.",
                         p.getDescricao(), p.getFim());
                 p.setPromocaoStatus(PromocaoStatusEnum.FINALIZADA);

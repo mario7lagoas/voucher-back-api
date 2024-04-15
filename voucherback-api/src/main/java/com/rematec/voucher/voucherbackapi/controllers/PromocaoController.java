@@ -7,7 +7,9 @@ import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.services.PromocaoServiceImpl;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +34,8 @@ public class PromocaoController {
 
     @Autowired
     private PromocaoServiceImpl promocaoService;
+    @Autowired
+    private VoucherUtil voucherUtil;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PromocaoResponse>> getAll() {
@@ -84,15 +88,17 @@ public class PromocaoController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(value = "/print" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> printPromocoes(@RequestBody List<PromocaoPrintRequest> prints){
+    @PostMapping(value = "/print", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> printPromocoes(@RequestBody List<PromocaoPrintRequest> prints) {
 
-        return new ResponseEntity<String>(this.promocaoService.printPromocoes(prints), HttpStatus.OK);
+        return new ResponseEntity<String>(this.voucherUtil.print(
+                new JRBeanCollectionDataSource(prints), "promocoes"),
+                HttpStatus.OK);
     }
 
     @PatchMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> ativarPromocao(@PathVariable("guid") String guid,
-                                               @RequestBody AutorRequest autorRequest){
+                                               @RequestBody AutorRequest autorRequest) {
 
         this.promocaoService.ativarPromocao(guid, autorRequest.getAutorAlteracao());
         return new ResponseEntity<Void>(HttpStatus.ACCEPTED);

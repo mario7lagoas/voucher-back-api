@@ -6,34 +6,21 @@ import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.services.IPromocaoService;
-import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
-import com.rematec.voucher.voucherbackapi.models.requests.AutorRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.Guid;
-import com.rematec.voucher.voucherbackapi.models.requests.PromocaoPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.apache.tomcat.util.codec.binary.Base64;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -47,6 +34,9 @@ public class PromocaoServiceImpl implements IPromocaoService {
 
     @Autowired
     private VouckBackMapper mapper;
+
+    @Autowired
+    private VoucherUtil voucherUtil;
 
     @Override
     public List<PromocaoResponse> getAllPromocoes() {
@@ -69,7 +59,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
                         promocaoRequest.getDiscontoValor() : Double.valueOf(0))
                 .diasValidadeVoucher(promocaoRequest.getDiasValidadeVoucher())
                 .tipoDesconto(TipoDescontoEnum.valueOf(promocaoRequest.getTipoDesconto()))
-                .lojas(getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
+                .lojas(voucherUtil.getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
                 .build();
 
         return mapper.promocaoEntitytopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
@@ -117,7 +107,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
             promocaoEntity.setFim(promocaoUpdateRequest.getFim());
         if (promocaoUpdateRequest.getLojas() != null) {
             promocaoEntity.getLojas().clear();
-            promocaoEntity.getLojas().addAll(getListGuidLojasToListLojasEntity(promocaoUpdateRequest.getLojas()));
+            promocaoEntity.getLojas().addAll(voucherUtil.getListGuidLojasToListLojasEntity(promocaoUpdateRequest.getLojas()));
         } else {
             promocaoEntity.setLojas(null);
         }
@@ -164,28 +154,6 @@ public class PromocaoServiceImpl implements IPromocaoService {
     }
 
     @Override
-    public String printPromocoes(List<PromocaoPrintRequest> prints) {
-        try {
-            Map<String, Object> parametros = new HashMap<>();
-            parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
-            parametros.put("logo", this.getClass().getResourceAsStream("/static/img/promocaoRelatorio.jpg"));
-            InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/relatorio-de-promocoes.jasper");
-
-            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
-                    new JRBeanCollectionDataSource(prints));
-
-            byte[] relatorio = JasperExportManager.exportReportToPdf(jasperPrint);
-
-            String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(relatorio);
-
-            return base64Pdf;
-        } catch (JRException e) {
-            throw new RuntimeException("Erro em gerar o PDF " + e);
-        }
-
-    }
-
-    @Override
     public void ativarPromocao(String guid, String nomeAutorizador) {
 
         PromocaoEntity promocaoEntity = iPromocaoRepository.findByGuid(guid)
@@ -196,14 +164,5 @@ public class PromocaoServiceImpl implements IPromocaoService {
         promocaoEntity.setAutorAlteracao(nomeAutorizador);
         this.iPromocaoRepository.save(promocaoEntity);
     }
-
-    private List<LojaEntity> getListGuidLojasToListLojasEntity(List<Guid> lojas) {
-
-        return lojas != null ? lojas.stream()
-                .map(loja -> iLojaReposity.findByGuid(loja.getGuid()).get())
-                .toList() : null;
-    }
-
-
 
 }
