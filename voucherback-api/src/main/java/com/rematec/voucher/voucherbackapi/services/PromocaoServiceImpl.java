@@ -142,6 +142,8 @@ public class PromocaoServiceImpl implements IPromocaoService {
     @Override
     public PromocoesPaginadaResponse promocaoFiltro(String descricao, String tipoDesconto, String promocaoStatus, LocalDate inicio, LocalDate fim, int page, int size) {
 
+        voucherUtil.verificarPromocoesVencidias();
+
         PromocaoFiltro filtro = PromocaoFiltro.builder()
                 .descricao(descricao)
                 .tipoDesconto(tipoDesconto)

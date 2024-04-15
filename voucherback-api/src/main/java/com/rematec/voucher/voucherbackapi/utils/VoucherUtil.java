@@ -2,13 +2,17 @@ package com.rematec.voucher.voucherbackapi.utils;
 
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IRoleRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
+import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
+import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.RoleRequest;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -19,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -27,11 +32,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class VoucherUtil {
 
     @Autowired
     private ILojaRepository iLojaReposity;
-
+    @Autowired
+    private IPromocaoRepository iPromocaoRepository;
     @Autowired
     private IPerfilRepository iPerfilRepository;
     @Autowired
@@ -86,6 +93,20 @@ public class VoucherUtil {
                 .stream()
                 .map(roleRequest -> iRoleRepository.findByNome(roleRequest.getNome()))
                 .collect(Collectors.toList());
+    }
+
+    public void verificarPromocoesVencidias(){
+        log.warn("Verificando Promoções vencidas.");
+        List<PromocaoEntity> promocaoEntities = this.iPromocaoRepository
+                .findByFimLessThanAndPromocaoStatusNot(LocalDateTime.now(), PromocaoStatusEnum.FINALIZADA);
+        if (promocaoEntities != null) {
+            promocaoEntities.forEach(p -> {
+                log.info("Promoção [{}] vencida dia [{}] . Inativando promoção automaticamente.",
+                        p.getDescricao(), p.getFim());
+                p.setPromocaoStatus(PromocaoStatusEnum.FINALIZADA);
+                this.iPromocaoRepository.save(p);
+            });
+        }
     }
 
 }
