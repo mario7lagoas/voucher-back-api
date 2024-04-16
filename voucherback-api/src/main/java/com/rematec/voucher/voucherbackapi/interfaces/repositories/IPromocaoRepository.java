@@ -16,10 +16,16 @@ import java.util.Optional;
 public interface IPromocaoRepository extends JpaRepository<PromocaoEntity, Long>, IPromocaoRepositoryQuery {
 
     Optional<PromocaoEntity> findByGuid(String guid);
-  //  List<Optional<PromocaoEntity>> findByLojasGuid(String guid);
 
     Page<PromocaoEntity> findByDescricaoContaining(String descricao, Pageable page);
 
     List<PromocaoEntity> findByFimLessThanAndPromocaoStatusNot(LocalDateTime dateNow, PromocaoStatusEnum notStatus);
+
+    List<PromocaoEntity> findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoGreaterThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
+            LocalDateTime inicio, LocalDateTime fim, Double valorMinimo, PromocaoStatusEnum status, String cnpj);
+
+
+    List<PromocaoEntity> findByLojasCnpjAndLojasStatusTrue(String cnpj);
+
 
 }

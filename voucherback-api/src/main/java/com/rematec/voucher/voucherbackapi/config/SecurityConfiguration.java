@@ -38,7 +38,6 @@ public class SecurityConfiguration {
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -48,6 +47,7 @@ public class SecurityConfiguration {
             "/login",
             "/login/refresh",
             "/login/revoke",
+            "/voucher",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**"
@@ -116,7 +116,6 @@ public class SecurityConfiguration {
                             .hasAnyAuthority(PermissaoEnum.ADMINISTRADOR.getRole())
                             .requestMatchers(HttpMethod.PUT, "/usuario", "/loja", "/promocao","/perfil")
                             .hasAnyAuthority(PermissaoEnum.ADMINISTRADOR.getRole())
-
 
                             .anyRequest().authenticated();
 

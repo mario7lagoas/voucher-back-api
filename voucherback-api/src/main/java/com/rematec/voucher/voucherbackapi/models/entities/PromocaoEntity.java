@@ -27,7 +27,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "promocao")
-@Table(indexes = {@Index(name = "IDX_GUID_PROMO", columnList = "guid")})
+@Table(indexes = {@Index(name = "IDX_GUID_PROMO", columnList = "guid"),
+        @Index(name = "IDX_INICIO_PROMO", columnList = "inicio"),
+        @Index(name = "IDX_FIM_PROMO", columnList = "fim"),
+        @Index(name = "IDX_VLR_MIN_PROMO", columnList = "valorMinimoParaDisparo")
+})
 @SuperBuilder
 @Getter
 @Setter

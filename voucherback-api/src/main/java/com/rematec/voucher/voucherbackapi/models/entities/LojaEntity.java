@@ -20,7 +20,9 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "loja")
-@Table(indexes = {@Index(name = "IDX_GUID_LOJA", columnList = "guid")})
+@Table(indexes = {@Index(name = "IDX_GUID_LOJA", columnList = "guid"),
+        @Index(name = "IDX_CNPJ_LOJA", columnList = "cnpj"),
+        @Index(name = "IDX_STATUS_LOJA", columnList = "status")})
 @SuperBuilder
 @Getter
 @Setter
