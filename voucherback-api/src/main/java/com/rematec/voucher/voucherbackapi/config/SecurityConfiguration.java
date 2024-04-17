@@ -62,8 +62,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(PUBLIC_MATCHERS).permitAll()
+                    auth
+                            .requestMatchers(PUBLIC_MATCHERS).permitAll()
+
                             .requestMatchers(HttpMethod.GET, "/loja")
                             .hasAnyAuthority(PermissaoEnum.MODERADOR.getRole(), PermissaoEnum.BUSCAR_LOJA.getRole())
                             .requestMatchers(HttpMethod.GET, "/usuario")
@@ -110,22 +113,19 @@ public class SecurityConfiguration {
 
                             .requestMatchers(HttpMethod.GET, "/usuario", "/loja", "/promocao")
                             .hasAnyAuthority(PermissaoEnum.USUARIO.getRole(), PermissaoEnum.ADMINISTRADOR.getRole())
-                            .requestMatchers(HttpMethod.POST, "/usuario", "/loja", "/promocao","/perfil")
+                            .requestMatchers(HttpMethod.POST, "/usuario", "/loja", "/promocao", "/perfil")
                             .hasAnyAuthority(PermissaoEnum.ADMINISTRADOR.getRole())
-                            .requestMatchers(HttpMethod.DELETE, "/usuario", "/loja", "/promocao","/perfil")
+                            .requestMatchers(HttpMethod.DELETE, "/usuario", "/loja", "/promocao", "/perfil")
                             .hasAnyAuthority(PermissaoEnum.ADMINISTRADOR.getRole())
-                            .requestMatchers(HttpMethod.PUT, "/usuario", "/loja", "/promocao","/perfil")
+                            .requestMatchers(HttpMethod.PUT, "/usuario", "/loja", "/promocao", "/perfil")
                             .hasAnyAuthority(PermissaoEnum.ADMINISTRADOR.getRole())
 
                             .anyRequest().authenticated();
 
                 });
 
-        http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-       //http.httpBasic(Customizer.withDefaults());
-
         http.addFilterBefore(new LoginFiltro("/login", authenticationConfiguration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new AutenticacaoFiltro(authenticationManager(authenticationConfiguration), jwtUtil ), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new AutenticacaoFiltro(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

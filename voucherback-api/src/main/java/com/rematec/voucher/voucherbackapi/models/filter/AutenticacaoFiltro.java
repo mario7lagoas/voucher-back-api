@@ -36,11 +36,12 @@ public class AutenticacaoFiltro extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         if (!"/voucher-back/v1/login/refresh".equals(request.getRequestURI())
-                && !"refresh_token".equals(request.getParameter("grant_type"))
-        ) {
+                && !"refresh_token".equals(request.getParameter("grant_type")) ) {
+            if (!"/voucher-back/v1/voucher".equals(request.getRequestURI()) ){
 
-            Authentication authentication = AutenticacaoService.obterAutenticacao(request, response);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                Authentication authentication = AutenticacaoService.obterAutenticacao(request, response);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         chain.doFilter(request, response);
 
