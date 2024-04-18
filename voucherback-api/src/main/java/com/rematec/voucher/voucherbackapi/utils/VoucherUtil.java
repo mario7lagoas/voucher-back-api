@@ -23,11 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -95,7 +98,7 @@ public class VoucherUtil {
                 .collect(Collectors.toList());
     }
 
-    public void verificarPromocoesVencidias(){
+    public void verificarPromocoesVencidias() {
         log.warn("Verificando Promoções vencidas.");
         List<PromocaoEntity> promocaoEntities = this.iPromocaoRepository
                 .findByFimLessThanAndPromocaoStatusNot(LocalDateTime.now(), PromocaoStatusEnum.FINALIZADA);
@@ -107,6 +110,36 @@ public class VoucherUtil {
                 this.iPromocaoRepository.save(p);
             });
         }
+    }
+
+    public String gerarCodigoVoucher(String pdv) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+
+        String voucher;
+        StringBuffer thebuffer;
+        String theAlphaNumericS;
+        byte[] chave = new byte[256];
+        new Random().nextBytes(chave);
+        voucher = new String(chave, Charset.forName("UTF-8"));
+        thebuffer = new StringBuffer();
+        theAlphaNumericS = voucher.replaceAll("[^0-9]", "");
+
+        int i = 3;
+        //random selection
+        for (int m = 0; m < theAlphaNumericS.length(); m++) {
+
+            if (Character.isLetter(theAlphaNumericS.charAt(m)) && (i > 0)
+                    || Character.isDigit(theAlphaNumericS.charAt(m)) && (i > 0)) {
+
+                thebuffer.append(theAlphaNumericS.charAt(m));
+                i--;
+            }
+        }
+        String voucherFinal = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmssSSS"));
+        return voucherFinal.concat(thebuffer.toString()).concat(pdv);
+
+
     }
 
 }

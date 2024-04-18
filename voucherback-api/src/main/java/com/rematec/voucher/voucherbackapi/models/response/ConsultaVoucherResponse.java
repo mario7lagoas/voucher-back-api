@@ -13,5 +13,6 @@ public class ConsultaVoucherResponse {
 
     private String guid;
     private String status;
+    private String informacao;
     private List<VoucherResponse> vouchers;
 }

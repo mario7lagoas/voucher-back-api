@@ -6,6 +6,7 @@ import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,14 @@ public class VoucherServiceImpl {
     @Autowired
     private IPromocaoRepository iPromocaoRepository;
 
+    @Autowired
+    private VoucherUtil voucherUtil;
+
     public ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta) {
 
         ConsultaVoucherResponse consultaVoucherResponse = ConsultaVoucherResponse
                 .builder().status("VOID")
-                .guid("")
+                .informacao("Sem Voucher Disponivels no somento")
                 .build();
 
         List<PromocaoEntity> promocaoEntities = iPromocaoRepository
@@ -39,6 +43,8 @@ public class VoucherServiceImpl {
 
         if (!promocaoEntities.isEmpty()) {
             consultaVoucherResponse.setStatus("OK");
+            consultaVoucherResponse.setInformacao("Total de {"+promocaoEntities.size() +"} voucher disponibilizados");
+
             consultaVoucherResponse.setGuid(UUID.randomUUID().toString());
 
             List<VoucherResponse> voucherResponses = new ArrayList<>();
@@ -46,6 +52,7 @@ public class VoucherServiceImpl {
                 VoucherResponse voucherResponse = VoucherResponse
                         .builder()
                         .descricao(p.getDescricao())
+                        .codigo(voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()))
                         .inicio(p.getInicio())
                         .fim(p.getFim())
                         .tipoDesconto(p.getTipoDesconto().toString())

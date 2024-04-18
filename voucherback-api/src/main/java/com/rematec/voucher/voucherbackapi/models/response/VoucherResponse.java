@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class VoucherResponse {
     private String descricao;
+    private String codigo;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime inicio;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
