@@ -11,8 +11,7 @@ import java.util.List;
 @Builder
 public class ConsultaVoucherResponse {
 
-    private String guid;
     private String status;
-    private String informacao;
+    private int totalVoucher;
     private List<VoucherResponse> vouchers;
 }

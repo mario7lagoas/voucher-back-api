@@ -40,7 +40,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
 
     @Override
     public List<PromocaoResponse> getAllPromocoes() {
-        return mapper.listPromocaoEntitytoListPromocaoResponse(iPromocaoRepository.findAll());
+        return mapper.listPromocaoEntityToListPromocaoResponse(iPromocaoRepository.findAll());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
                 .lojas(voucherUtil.getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
                 .build();
 
-        return mapper.promocaoEntitytopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
+        return mapper.promocaoEntityTopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
             promocaoEntity.setLojas(null);
         }
 
-        return mapper.promocaoEntitytopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
+        return mapper.promocaoEntityTopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
     }
 
     @Override
@@ -128,7 +128,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
         PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
 
-        return mapper.promocaoEntitytopromocaoResponse(promocaoEntity);
+        return mapper.promocaoEntityTopromocaoResponse(promocaoEntity);
     }
 
     @Override

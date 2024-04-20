@@ -1,8 +1,12 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
+import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
@@ -26,11 +30,17 @@ public class VoucherServiceImpl {
     @Autowired
     private VoucherUtil voucherUtil;
 
+    @Autowired
+    private VouckBackMapper mapper;
+
+    @Autowired
+    private IVoucherRepository iVoucherRepository;
+
     public ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta) {
 
         ConsultaVoucherResponse consultaVoucherResponse = ConsultaVoucherResponse
                 .builder().status("VOID")
-                .informacao("Sem Voucher Disponivels no somento")
+                .totalVoucher(0)
                 .build();
 
         List<PromocaoEntity> promocaoEntities = iPromocaoRepository
@@ -43,22 +53,22 @@ public class VoucherServiceImpl {
 
         if (!promocaoEntities.isEmpty()) {
             consultaVoucherResponse.setStatus("OK");
-            consultaVoucherResponse.setInformacao("Total de {"+promocaoEntities.size() +"} voucher disponibilizados");
-
-            consultaVoucherResponse.setGuid(UUID.randomUUID().toString());
-
+            consultaVoucherResponse.setTotalVoucher(promocaoEntities.size());
             List<VoucherResponse> voucherResponses = new ArrayList<>();
             promocaoEntities.forEach(p -> {
-                VoucherResponse voucherResponse = VoucherResponse
-                        .builder()
-                        .descricao(p.getDescricao())
-                        .codigo(voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()))
-                        .inicio(p.getInicio())
-                        .fim(p.getFim())
-                        .tipoDesconto(p.getTipoDesconto().toString())
-                        .valorDesconto(
-                                p.getTipoDesconto().name().equals("VALOR") ? p.getDiscontoValor() : p.getDiscontoPercentual()
-                        ).build();
+
+                VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(p,
+                        VoucherStatusEnum.DISPONIBILIZADO,
+                        UUID.randomUUID().toString(),
+                        voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
+                        consulta.getCpfCliente(),
+                        consulta.getCnpjFilial(),
+                        p.getTipoDesconto().name().equals("VALOR") ? p.getDiscontoValor() : p.getDiscontoPercentual()
+                );
+
+                VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
+                        this.iVoucherRepository.save(voucherEntity));
+
                 voucherResponses.add(voucherResponse);
             });
 

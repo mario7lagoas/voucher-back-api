@@ -1,7 +1,6 @@
 package com.rematec.voucher.voucherbackapi.models.enums;
 
 import lombok.Getter;
-
 @Getter
 public enum TipoDescontoEnum {
 
