@@ -52,27 +52,40 @@ public class VoucherServiceImpl {
                         consulta.getCnpjFilial());
 
         if (!promocaoEntities.isEmpty()) {
-            consultaVoucherResponse.setStatus("OK");
-            consultaVoucherResponse.setTotalVoucher(promocaoEntities.size());
+
+            final boolean[] promocaoDisponivel = new boolean[1];
+            promocaoDisponivel[0] = false;
+
             List<VoucherResponse> voucherResponses = new ArrayList<>();
+
             promocaoEntities.forEach(p -> {
+                if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatus(
+                        consulta.getCpfCliente(), p.getGuid(), VoucherStatusEnum.DISPONIBILIZADO).isPresent()) {
 
-                VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(p,
-                        VoucherStatusEnum.DISPONIBILIZADO,
-                        UUID.randomUUID().toString(),
-                        voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
-                        consulta.getCpfCliente(),
-                        consulta.getCnpjFilial(),
-                        p.getTipoDesconto().name().equals("VALOR") ? p.getDiscontoValor() : p.getDiscontoPercentual()
-                );
+                    VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(p,
+                            VoucherStatusEnum.DISPONIBILIZADO,
+                            UUID.randomUUID().toString(),
+                            voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
+                            consulta.getCpfCliente(),
+                            consulta.getCnpjFilial(),
+                            p.getTipoDesconto().name().equals("VALOR") ? p.getDiscontoValor() : p.getDiscontoPercentual()
+                    );
 
-                VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
-                        this.iVoucherRepository.save(voucherEntity));
+                    VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
+                            this.iVoucherRepository.save(voucherEntity));
 
-                voucherResponses.add(voucherResponse);
+                    voucherResponses.add(voucherResponse);
+                    promocaoDisponivel[0] = true;
+                }
             });
+            if (promocaoDisponivel[0]) {
+                consultaVoucherResponse.setStatus("OK");
+                consultaVoucherResponse.setTotalVoucher(promocaoEntities.size());
 
-            consultaVoucherResponse.setVouchers(voucherResponses);
+                consultaVoucherResponse.setVouchers(voucherResponses);
+
+            }
+
         }
 
         return consultaVoucherResponse;

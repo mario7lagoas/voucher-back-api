@@ -41,6 +41,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private String codigo;
     private String clienteCpf;
     private String filialCnpj;
+    private String promocaoGuid;
     private String descricao;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime inicio;
