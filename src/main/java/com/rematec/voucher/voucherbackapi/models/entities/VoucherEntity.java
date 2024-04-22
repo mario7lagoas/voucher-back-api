@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
+import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,20 +38,28 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private VoucherStatusEnum voucherStatus;
     private String codigo;
     private String clienteCpf;
     private String filialCnpj;
     private String promocaoGuid;
     private String descricao;
     private String pdv;
+    private String pdvResgate;
+    private String filialCnpjResgate;
+    private String cupomResgate;
+    private Double valorCompraResgate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataResgate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime inicio;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fim;
     @Enumerated(EnumType.STRING)
     private TipoDescontoEnum tipoDesconto;
+    @Enumerated(EnumType.STRING)
+    private VoucherStatusEnum voucherStatus;
+    @Enumerated(EnumType.STRING)
+    private VoucherPromocaoStatusEnum promocaoStatus;
     private Double valorDesconto;
     private Integer diasValidadeVoucher;
 

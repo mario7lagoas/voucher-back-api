@@ -5,6 +5,7 @@ import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
+import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.LojasPaginadaResponse;
@@ -61,7 +62,8 @@ public interface VouckBackMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "dataCadastro", ignore = true),
             @Mapping(target = "dataAtualizacao", ignore = true),
-            @Mapping(source = "statusEnum", target = "voucherStatus"),
+            @Mapping(source = "voucherStatus", target = "voucherStatus"),
+            @Mapping(source = "promocaoStatus", target = "promocaoStatus"),
             @Mapping(source = "codigo", target = "codigo"),
             @Mapping(source = "guid", target = "guid"),
             @Mapping(source = "clienteCpf", target = "clienteCpf"),
@@ -70,9 +72,10 @@ public interface VouckBackMapper {
             @Mapping(source = "promocao.guid", target = "promocaoGuid"),
             @Mapping(source = "pdv", target = "pdv")
     })
-    VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum statusEnum, String guid,
-                                                String codigo, String clienteCpf, String filialCnpj, Double valorDesc,
-                                                String pdv);
+    VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum voucherStatus,
+                                                VoucherPromocaoStatusEnum promocaoStatus,
+                                                String guid, String codigo, String clienteCpf,
+                                                String filialCnpj, Double valorDesc, String pdv);
 
     VoucherResponse voucherEntityToVoucherResponse(VoucherEntity voucherEntity);
 }

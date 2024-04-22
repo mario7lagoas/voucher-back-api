@@ -1,13 +1,16 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.VoucherPromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
@@ -60,18 +63,17 @@ public class VoucherServiceImpl {
 
             List<VoucherResponse> voucherResponses = new ArrayList<>();
 
-            promocaoEntities.forEach(p -> {
-                if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatus(
-                        this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), p.getGuid(),
-                        VoucherStatusEnum.DISPONIBILIZADO).isPresent()) {
+            promocaoEntities.forEach(promocaoEntity -> {
+                if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatusAndPromocaoStatus(
+                        this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
+                        VoucherStatusEnum.DISPONIBILIZADO, VoucherPromocaoStatusEnum.DISPONIVEL).isPresent()) {
 
-                    VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(p,
-                            VoucherStatusEnum.DISPONIBILIZADO,
-                            UUID.randomUUID().toString(),
-                            voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
+                    VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(promocaoEntity,
+                            VoucherStatusEnum.DISPONIBILIZADO, VoucherPromocaoStatusEnum.DISPONIVEL,
+                            UUID.randomUUID().toString(), this.voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
                             this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()),
                             this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()),
-                            p.getTipoDesconto().name().equals("VALOR") ? p.getDiscontoValor() : p.getDiscontoPercentual(),
+                            promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDiscontoValor() : promocaoEntity.getDiscontoPercentual(),
                             consulta.getPdvFilial()
                     );
 
@@ -106,4 +108,9 @@ public class VoucherServiceImpl {
         this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CANCELADO);
     }
 
+    public void resgateVoucher(VoucherPromocaoRequest promocaoRequest) {
+        VoucherEntity voucherEntity = this.iVoucherRepository.findByCodigoEquals(promocaoRequest.getCodigo())
+                .orElseThrow(()->  new  VoucherNaoEncontradoException("Voucher não ["+ promocaoRequest.getCodigo()
+                        +"] encontrado"));
+    }
 }
