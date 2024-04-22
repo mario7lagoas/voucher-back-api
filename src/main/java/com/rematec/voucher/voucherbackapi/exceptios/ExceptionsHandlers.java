@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Collections;
@@ -20,7 +21,7 @@ public class ExceptionsHandlers {
     @ExceptionHandler(UsuarioNaoEncontradoException.class)
     public ResponseEntity<ErrorResponse> usuarioNaoEncontradaExceptionHandler(UsuarioNaoEncontradoException exception){
         Map<String, String> response = new HashMap<>();
-        response.put("codigo", ErrosEnum.NAO_ENCONTRADA.toString());
+        response.put("codigo", ErrosEnum.NAO_ENCONTRADO.toString());
         response.put("mensagem", exception.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -28,8 +29,21 @@ public class ExceptionsHandlers {
                 .erros(Collections.singletonList(response))
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-
     }
+
+    @ExceptionHandler(VoucherNaoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> voucherNaoEncontradaExceptionHandler(VoucherNaoEncontradoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.NAO_ENCONTRADO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UsuarioInativoException.class)
     public ResponseEntity<ErrorResponse> lusuarioInativoExceptionHandler(UsuarioInativoException exception){
         Map<String, String> response = new HashMap<>();
@@ -47,7 +61,7 @@ public class ExceptionsHandlers {
     @ExceptionHandler(PromocaoNaoEncontradaException.class)
     public ResponseEntity<ErrorResponse> promocaoNaoEncontradaExceptionHandler(PromocaoNaoEncontradaException exception){
         Map<String, String> response = new HashMap<>();
-        response.put("codigo", ErrosEnum.NAO_ENCONTRADA.toString());
+        response.put("codigo", ErrosEnum.NAO_ENCONTRADO.toString());
         response.put("mensagem", exception.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -61,7 +75,7 @@ public class ExceptionsHandlers {
     @ExceptionHandler(LojaNaoEncontradaException.class)
     public ResponseEntity<ErrorResponse> lojaNaoEncontradaExceptionHandler(LojaNaoEncontradaException exception){
         Map<String, String> response = new HashMap<>();
-        response.put("codigo", ErrosEnum.NAO_ENCONTRADA.toString());
+        response.put("codigo", ErrosEnum.NAO_ENCONTRADO.toString());
         response.put("mensagem", exception.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -168,6 +182,21 @@ public class ExceptionsHandlers {
                 .build();
 
         return new ResponseEntity<>(errorresponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> methodValidationexceptionHandle(HandlerMethodValidationException ex) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", "PAYLOAD_INVALIDO");
+        response.put("mensagem", ex.getBody().toString());
+
+        ErrorResponse errorresponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(errorresponse, HttpStatus.BAD_REQUEST);
     }
 
 }

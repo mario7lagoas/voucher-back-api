@@ -6,7 +6,7 @@ import lombok.Getter;
 
 public enum ErrosEnum {
     NAO_PERMITIDO_EXCLUIR("Não permitido Excluir."),
-    NAO_ENCONTRADA("Não encontrado."),
+    NAO_ENCONTRADO("Não encontrado."),
     NAO_PERMITIDO_ALTERAR_STATUS("Não permitido alterar Status."),
     USUARIO_NAO_ENCONTRADO("Usuario não encontrado."),
     USUARIO_INATIVADO("Usuario Inativado."),

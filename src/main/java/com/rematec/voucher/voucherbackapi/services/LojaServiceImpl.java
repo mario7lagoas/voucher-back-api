@@ -11,6 +11,7 @@ import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.LojasPaginadaResponse;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,6 +34,9 @@ public class LojaServiceImpl implements ILojaService {
     @Autowired
     private VouckBackMapper mapper;
 
+    @Autowired
+    private VoucherUtil voucherUtil;
+
     @Override
     public LojaResponse addLoja(LojaRequest lojaRequest) {
         if (iLojaReposity.findByCnpj(lojaRequest.getCnpj()).isPresent()) {
@@ -43,7 +47,7 @@ public class LojaServiceImpl implements ILojaService {
                 .guid(UUID.randomUUID().toString())
                 .nome(lojaRequest.getNome())
                 .status(lojaRequest.getStatus())
-                .cnpj(lojaRequest.getCnpj().replaceAll("[^0-9]", ""))
+                .cnpj(this.voucherUtil.apenasNumerosNaString(lojaRequest.getCnpj()))
                 .identificacao(lojaRequest.getIdentificacao())
                 .build();
 

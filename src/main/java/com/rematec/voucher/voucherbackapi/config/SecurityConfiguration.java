@@ -48,6 +48,7 @@ public class SecurityConfiguration {
             "/login/refresh",
             "/login/revoke",
             "/voucher",
+            "/voucher/**",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**"

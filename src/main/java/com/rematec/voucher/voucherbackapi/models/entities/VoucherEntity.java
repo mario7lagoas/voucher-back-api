@@ -23,7 +23,8 @@ import java.time.LocalDateTime;
 @Entity(name = "voucher")
 @Table(indexes = {@Index(name = "IDX_GUID_VOUCHER", columnList = "guid"),
         @Index(name = "IDX_COD_VOUCHER", columnList = "codigo"),
-        @Index(name = "IDX_CNPJ_VOUCHER", columnList = "filialCnpj")
+        @Index(name = "IDX_CNPJ_VOUCHER", columnList = "filialCnpj"),
+        @Index(name = "IDX_CPF_VOUCHER", columnList = "clienteCpf")
 })
 @SuperBuilder
 @Getter
@@ -43,6 +44,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private String filialCnpj;
     private String promocaoGuid;
     private String descricao;
+    private String pdv;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime inicio;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

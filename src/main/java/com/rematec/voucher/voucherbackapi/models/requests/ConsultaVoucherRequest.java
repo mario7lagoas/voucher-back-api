@@ -16,13 +16,13 @@ import lombok.Setter;
 public class ConsultaVoucherRequest {
     @NotNull(message = "CNPJ da loja não pode ser nulo.")
     @NotBlank(message = "CNPJ da loja Obrigatorio")
-    private String cnpjFilial;
+    private String filialCnpj;
     @NotNull(message = "Numero do PDV não pode ser nulo.")
     @NotBlank(message = "Numero do PDV Obrigatorio")
     private String pdvFilial;
     @NotNull(message = "CPF do Cliente não pode ser nulo.")
     @NotBlank(message = "CPF do Cliente Obrigatorio")
-    private String cpfCliente;
+    private String clienteCpf;
     @NotNull(message = "Valor da compra.")
     private Double valorCompra;
 }

@@ -1,17 +1,22 @@
 package com.rematec.voucher.voucherbackapi.utils;
 
+import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IRoleRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
+import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.RoleRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -46,6 +51,8 @@ public class VoucherUtil {
     private IPerfilRepository iPerfilRepository;
     @Autowired
     private IRoleRepository iRoleRepository;
+    @Autowired
+    private IVoucherRepository iVoucherRepository;
 
     private static String DATA_BASE64 = "data:application/pdf;base64,";
 
@@ -139,7 +146,26 @@ public class VoucherUtil {
         String voucherFinal = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmssSSS"));
         return voucherFinal.concat(thebuffer.toString()).concat(pdv);
 
+    }
 
+    public void cancelOrConfirmVoucher(List<VoucherRequest> voucherRequests, VoucherStatusEnum statusEnum) {
+        voucherRequests.forEach(voucherRequest -> {
+            VoucherEntity voucherEntity =
+                    this.iVoucherRepository.findByCodigoEqualsAndClienteCpfEqualsAndFilialCnpjEqualsAndVoucherStatus(
+                            voucherRequest.getCodigo(), this.apenasNumerosNaString(voucherRequest.getClienteCpf()),
+                            this.apenasNumerosNaString(voucherRequest.getFilialCnpj()),
+                            VoucherStatusEnum.DISPONIBILIZADO
+                    ).orElseThrow(
+                            () -> new VoucherNaoEncontradoException("Voucher codigo [" + voucherRequest.getCodigo()
+                                    + "] não encontrado")
+                    );
+            voucherEntity.setVoucherStatus(statusEnum);
+            this.iVoucherRepository.save(voucherEntity);
+        });
+    }
+
+    public String apenasNumerosNaString(String input){
+        return input.replaceAll("[^0-9]", "");
     }
 
 }

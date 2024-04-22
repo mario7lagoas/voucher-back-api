@@ -8,11 +8,13 @@ import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,7 +51,7 @@ public class VoucherServiceImpl {
                         LocalDateTime.now(),
                         consulta.getValorCompra(),
                         PromocaoStatusEnum.ATIVA,
-                        consulta.getCnpjFilial());
+                        this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()));
 
         if (!promocaoEntities.isEmpty()) {
 
@@ -60,15 +62,17 @@ public class VoucherServiceImpl {
 
             promocaoEntities.forEach(p -> {
                 if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatus(
-                        consulta.getCpfCliente(), p.getGuid(), VoucherStatusEnum.DISPONIBILIZADO).isPresent()) {
+                        this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), p.getGuid(),
+                        VoucherStatusEnum.DISPONIBILIZADO).isPresent()) {
 
                     VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(p,
                             VoucherStatusEnum.DISPONIBILIZADO,
                             UUID.randomUUID().toString(),
                             voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
-                            consulta.getCpfCliente(),
-                            consulta.getCnpjFilial(),
-                            p.getTipoDesconto().name().equals("VALOR") ? p.getDiscontoValor() : p.getDiscontoPercentual()
+                            this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()),
+                            this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()),
+                            p.getTipoDesconto().name().equals("VALOR") ? p.getDiscontoValor() : p.getDiscontoPercentual(),
+                            consulta.getPdvFilial()
                     );
 
                     VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
@@ -85,9 +89,21 @@ public class VoucherServiceImpl {
                 consultaVoucherResponse.setVouchers(voucherResponses);
 
             }
-
         }
 
         return consultaVoucherResponse;
     }
+
+    @Async("threadPollConfirmandoVoucherExecutor")
+    public void confirmarVoucher(List<VoucherRequest> voucherRequests) {
+
+        this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CONFIRMADO);
+
+    }
+
+    @Async("threadPollCancelandoVoucherExecutor")
+    public void cancelarVoucher(List<VoucherRequest> voucherRequests) {
+        this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CANCELADO);
+    }
+
 }

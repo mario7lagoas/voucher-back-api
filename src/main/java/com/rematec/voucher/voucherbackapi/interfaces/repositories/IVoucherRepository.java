@@ -11,5 +11,10 @@ import java.util.Optional;
 public interface IVoucherRepository extends JpaRepository<VoucherEntity, Long> {
 
     Optional<VoucherEntity> findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatus(String cpf, String promocaoGuid,
-                                                                               VoucherStatusEnum statusEnum);
+                                                                                      VoucherStatusEnum statusEnum);
+
+    Optional<VoucherEntity> findByCodigoEqualsAndClienteCpfEqualsAndFilialCnpjEqualsAndVoucherStatus(String codigo,
+                                                                                                     String clienteCpf,
+                                                                                                     String filialCnpj,
+                                                                                                     VoucherStatusEnum statusEnum);
 }
