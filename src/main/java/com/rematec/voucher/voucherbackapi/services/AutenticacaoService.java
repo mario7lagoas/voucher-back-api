@@ -48,7 +48,7 @@ public class AutenticacaoService {
     private static final String AUTHORITIES = "authorities";
     private static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
     //private static final int EXPIRATION_TOKEN = 3600000;
-    private static final int EXPIRATION_TOKEN = 2* 900000;
+    private static final int EXPIRATION_TOKEN = 2 * 900000;
     private static final int EXPIRATION_REFRESH_TOKEN = 3600000;
 
     static public void addJWTToken(HttpServletResponse response, HttpServletRequest request,
@@ -120,18 +120,13 @@ public class AutenticacaoService {
                                                    HttpServletResponse response) {
 
         String token = request.getHeader(HEAD_AUTHORIZATION);
-
-        System.out.println(token);
         try {
 
             if (token != null) {
-
-
                 Claims user = Jwts.parser()
                         .setSigningKey(JWT_KEY)
                         .parseClaimsJws(token.replace(BEARER, ""))
                         .getBody();
-
 
                 if (user != null && user.get(AUTHORITIES) != null) {
 
@@ -143,8 +138,6 @@ public class AutenticacaoService {
                 } else {
                     throw new RuntimeException("Autenticação falhou.");
                 }
-
-
             }
         } catch (Exception ex) {
 

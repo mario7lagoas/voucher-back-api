@@ -13,6 +13,7 @@ import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherPromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
+import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +76,7 @@ public class VoucherServiceImpl {
                             this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()),
                             this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()),
                             promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDiscontoValor() : promocaoEntity.getDiscontoPercentual(),
-                            consulta.getPdvFilial()
+                            consulta.getPdvFilial(), promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher())
                     );
 
                     VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
@@ -108,9 +110,55 @@ public class VoucherServiceImpl {
         this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CANCELADO);
     }
 
-    public void resgateVoucher(VoucherPromocaoRequest promocaoRequest) {
-        VoucherEntity voucherEntity = this.iVoucherRepository.findByCodigoEquals(promocaoRequest.getCodigo())
-                .orElseThrow(()->  new  VoucherNaoEncontradoException("Voucher não ["+ promocaoRequest.getCodigo()
-                        +"] encontrado"));
+    public VoucherPromocaoResponse resgateVoucher(VoucherPromocaoRequest promocaoRequest) {
+        VoucherEntity voucherEntity = this.iVoucherRepository.findByCodigoEqualsAndFimResgateGreaterThanEqualAndPromocaoStatus(
+                promocaoRequest.getCodigo(), LocalDateTime.now(), VoucherPromocaoStatusEnum.DISPONIVEL).orElseThrow(
+                () -> new VoucherNaoEncontradoException("Voucher não [" + promocaoRequest.getCodigo()
+                        + "] encontrado"));
+
+        VoucherPromocaoResponse voucherPromocaoResponse = VoucherPromocaoResponse.builder()
+                .descricao(voucherEntity.getDescricao())
+                .guid(voucherEntity.getGuid())
+                .build();
+
+
+        if (voucherEntity.getTipoDesconto().name().equals("PERCENTUAL")) {
+            voucherPromocaoResponse.setValorDesconto(getValorformatado(promocaoRequest.getValorCompra(),
+                    voucherEntity.getValorDesconto(), voucherEntity.getTipoDesconto().name()));
+
+
+
+        } else {
+            voucherPromocaoResponse.setValorDesconto(voucherEntity.getValorDesconto());
+        }
+
+        return voucherPromocaoResponse;
+
+    }
+
+    private Double getValorformatado(Double compra, Double desconto, String tipo) {
+
+        DecimalFormat formato = new DecimalFormat("0,00");
+        Double valor = 0.00;
+
+        if ("PERCENTUAL".equals(tipo)) {
+            desconto = Double.valueOf(formato.format(desconto.intValue()));
+
+            System.out.println("desconto " + desconto);
+            System.out.println("compra " + compra);
+            valor = compra * desconto;
+
+            System.out.println("valor " + valor);
+
+            System.out.println(formato.format(valor));
+
+            System.out.println(Double.valueOf(formato.format(valor)));
+            System.out.println( new DecimalFormat("0.00").format(valor));
+
+   //TODO Dando ruim
+
+        }
+
+        return Double.valueOf(formato.format(valor));
     }
 }

@@ -22,6 +22,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {})
@@ -70,12 +71,13 @@ public interface VouckBackMapper {
             @Mapping(source = "filialCnpj", target = "filialCnpj"),
             @Mapping(source = "valorDesc", target = "valorDesconto"),
             @Mapping(source = "promocao.guid", target = "promocaoGuid"),
-            @Mapping(source = "pdv", target = "pdv")
+            @Mapping(source = "pdv", target = "pdv"),
+            @Mapping(source = "fimResgate", target = "fimResgate")
     })
     VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum voucherStatus,
-                                                VoucherPromocaoStatusEnum promocaoStatus,
-                                                String guid, String codigo, String clienteCpf,
-                                                String filialCnpj, Double valorDesc, String pdv);
+                                                VoucherPromocaoStatusEnum promocaoStatus, String guid, String codigo,
+                                                String clienteCpf, String filialCnpj, Double valorDesc, String pdv,
+                                                LocalDateTime fimResgate);
 
     VoucherResponse voucherEntityToVoucherResponse(VoucherEntity voucherEntity);
 }
