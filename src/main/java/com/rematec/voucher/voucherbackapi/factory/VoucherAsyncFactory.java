@@ -22,4 +22,9 @@ public class VoucherAsyncFactory implements Serializable {
     public Executor threadPollCancelandoVoucherExecutor() {
         return new ThreadPoolTaskExecutor();
     }
+    @Bean(name = "threadPollverificarPromocoesVencidasExecutor")
+    public Executor threadPollverificarPromocoesVencidasExecutor() {
+        return new ThreadPoolTaskExecutor();
+    }
+
 }

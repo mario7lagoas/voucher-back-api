@@ -27,6 +27,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
@@ -107,7 +108,8 @@ public class VoucherUtil {
                 .collect(Collectors.toList());
     }
 
-    public void verificarPromocoesVencidias() {
+    @Async("threadPollverificarPromocoesVencidasExecutor")
+    public void verificarPromocoesVencidas() {
         log.warn("Verificando Promoções vencidas.");
         List<PromocaoEntity> promocaoEntities = this.iPromocaoRepository
                 .findByFimLessThanAndPromocaoStatusNot(LocalDateTime.now(), PromocaoStatusEnum.FINALIZADA);

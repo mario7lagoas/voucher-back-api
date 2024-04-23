@@ -1,8 +1,5 @@
 package com.rematec.voucher.voucherbackapi.schedule;
 
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
-import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,8 @@ public class ScheduleConfig {
     @Async
     @Scheduled(cron = SCHEDULE_CONFIG_CRON, zone = "America/Sao_Paulo")
     public void verificandoPromoçoesVencidas() {
-        voucherUtil.verificarPromocoesVencidias();
+
+        voucherUtil.verificarPromocoesVencidas();
 
     }
 
