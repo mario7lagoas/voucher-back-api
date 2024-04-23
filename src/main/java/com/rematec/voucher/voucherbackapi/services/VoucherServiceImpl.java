@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -127,7 +129,6 @@ public class VoucherServiceImpl {
                     voucherEntity.getValorDesconto(), voucherEntity.getTipoDesconto().name()));
 
 
-
         } else {
             voucherPromocaoResponse.setValorDesconto(voucherEntity.getValorDesconto());
         }
@@ -136,29 +137,13 @@ public class VoucherServiceImpl {
 
     }
 
-    private Double getValorformatado(Double compra, Double desconto, String tipo) {
+    private BigDecimal getValorformatado(BigDecimal compra, BigDecimal desconto, String tipo) {
 
-        DecimalFormat formato = new DecimalFormat("0,00");
-        Double valor = 0.00;
+        BigDecimal valor = BigDecimal.ZERO;
 
         if ("PERCENTUAL".equals(tipo)) {
-            desconto = Double.valueOf(formato.format(desconto.intValue()));
-
-            System.out.println("desconto " + desconto);
-            System.out.println("compra " + compra);
-            valor = compra * desconto;
-
-            System.out.println("valor " + valor);
-
-            System.out.println(formato.format(valor));
-
-            System.out.println(Double.valueOf(formato.format(valor)));
-            System.out.println( new DecimalFormat("0.00").format(valor));
-
-   //TODO Dando ruim
-
+            valor = (compra.multiply(desconto).divide(BigDecimal.valueOf(100)));
         }
-
-        return Double.valueOf(formato.format(valor));
+        return valor.setScale(2, RoundingMode.HALF_EVEN);
     }
 }

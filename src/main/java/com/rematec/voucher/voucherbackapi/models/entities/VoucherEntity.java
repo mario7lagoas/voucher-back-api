@@ -19,6 +19,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity(name = "voucher")
@@ -47,7 +48,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private String pdvResgate;
     private String filialCnpjResgate;
     private String cupomResgate;
-    private Double valorCompraResgate;
+    private BigDecimal valorCompraResgate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fimResgate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -62,7 +63,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private VoucherStatusEnum voucherStatus;
     @Enumerated(EnumType.STRING)
     private VoucherPromocaoStatusEnum promocaoStatus;
-    private Double valorDesconto;
+    private BigDecimal valorDesconto;
     private Integer diasValidadeVoucher;
 
 }

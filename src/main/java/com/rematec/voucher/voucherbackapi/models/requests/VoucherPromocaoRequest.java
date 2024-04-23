@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -20,5 +22,5 @@ public class VoucherPromocaoRequest {
     @NotBlank(message = "Cupom não pode ser vazio.")
     private String cupom;
     @NotNull(message = "Valor da compra nao pode ser nulo.")
-    private Double valorCompra;
+    private BigDecimal valorCompra;
 }

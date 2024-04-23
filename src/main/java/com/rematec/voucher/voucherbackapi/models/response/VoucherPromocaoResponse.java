@@ -4,12 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
 public class VoucherPromocaoResponse {
     private String guid;
     private String descricao;
-    private Double valorDesconto;
+    private BigDecimal valorDesconto;
 
 }
