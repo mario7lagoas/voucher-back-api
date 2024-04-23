@@ -44,6 +44,31 @@ public class ExceptionsHandlers {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(VoucherEmUsoException.class)
+    public ResponseEntity<ErrorResponse> voucherEmUsoExceptionHandler(VoucherEmUsoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.EM_USO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+    @ExceptionHandler(VoucherUtilizadoException.class)
+    public ResponseEntity<ErrorResponse> voucherUtilizadoExceptionHandler(VoucherUtilizadoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.UTILIZADO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     @ExceptionHandler(UsuarioInativoException.class)
     public ResponseEntity<ErrorResponse> lusuarioInativoExceptionHandler(UsuarioInativoException exception){
         Map<String, String> response = new HashMap<>();

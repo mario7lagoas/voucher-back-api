@@ -1,6 +1,8 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
+import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
@@ -17,13 +19,13 @@ import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoRespons
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@Slf4j
 public class VoucherServiceImpl {
 
     @Autowired
@@ -68,9 +71,9 @@ public class VoucherServiceImpl {
             List<VoucherResponse> voucherResponses = new ArrayList<>();
 
             promocaoEntities.forEach(promocaoEntity -> {
-                if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatusAndPromocaoStatus(
+                if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatusNot(
                         this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
-                        VoucherStatusEnum.DISPONIBILIZADO, VoucherPromocaoStatusEnum.DISPONIVEL).isPresent()) {
+                        VoucherStatusEnum.CANCELADO).isPresent()) {
 
                     VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(promocaoEntity,
                             VoucherStatusEnum.DISPONIBILIZADO, VoucherPromocaoStatusEnum.DISPONIVEL,
@@ -113,10 +116,19 @@ public class VoucherServiceImpl {
     }
 
     public VoucherPromocaoResponse resgateVoucher(VoucherPromocaoRequest promocaoRequest) {
-        VoucherEntity voucherEntity = this.iVoucherRepository.findByCodigoEqualsAndFimResgateGreaterThanEqualAndPromocaoStatus(
-                promocaoRequest.getCodigo(), LocalDateTime.now(), VoucherPromocaoStatusEnum.DISPONIVEL).orElseThrow(
-                () -> new VoucherNaoEncontradoException("Voucher não [" + promocaoRequest.getCodigo()
+
+        VoucherEntity voucherEntity = this.iVoucherRepository
+                .findByCodigoEqualsAndFimResgateGreaterThanEqualAndVoucherStatus(
+                        promocaoRequest.getCodigo(), LocalDateTime.now(), VoucherStatusEnum.CONFIRMADO)
+                .orElseThrow(() -> new VoucherNaoEncontradoException("Voucher não [" + promocaoRequest.getCodigo()
                         + "] encontrado"));
+
+        this.checkStatusVoucher(voucherEntity);
+
+        this.iPromocaoRepository.findByGuidAndLojasCnpjAndLojasStatusTrue(voucherEntity.getPromocaoGuid(),
+                        promocaoRequest.getFilialCnpj())
+                .orElseThrow(() -> new VoucherNaoEncontradoException("Promoção não disponivel para o CNPJ ["
+                        + promocaoRequest.getFilialCnpj()));
 
         VoucherPromocaoResponse voucherPromocaoResponse = VoucherPromocaoResponse.builder()
                 .descricao(voucherEntity.getDescricao())
@@ -127,13 +139,39 @@ public class VoucherServiceImpl {
         if (voucherEntity.getTipoDesconto().name().equals("PERCENTUAL")) {
             voucherPromocaoResponse.setValorDesconto(getValorformatado(promocaoRequest.getValorCompra(),
                     voucherEntity.getValorDesconto(), voucherEntity.getTipoDesconto().name()));
-
-
         } else {
             voucherPromocaoResponse.setValorDesconto(voucherEntity.getValorDesconto());
         }
 
+       /*
+        voucherEntity.setCupomResgate(promocaoRequest.getCupom());
+        voucherEntity.setFilialCnpjResgate(promocaoRequest.getFilialCnpj());
+        voucherEntity.setValorCompraResgate(promocaoRequest.getValorCompra());
+        voucherEntity.setPdvResgate(promocaoRequest.getPdv());
+        voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.EM_USO);
+        */
+
         return voucherPromocaoResponse;
+
+    }
+
+    private void checkStatusVoucher(VoucherEntity voucherEntity) {
+
+        switch (voucherEntity.getPromocaoStatus().name()) {
+            case "EM_USO":
+                throw new VoucherEmUsoException("Em uso no PDV [" + voucherEntity.getPdvResgate()
+                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
+                        + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
+            case "UTILIZADO":
+                throw new VoucherUtilizadoException("Utilizado [" + voucherEntity.getPdvResgate()
+                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
+                        + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
+            default:
+                log.info("Promoção Valida");
+                break;
+
+
+        }
 
     }
 

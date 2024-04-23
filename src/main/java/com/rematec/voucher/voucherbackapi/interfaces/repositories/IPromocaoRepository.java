@@ -27,5 +27,8 @@ public interface IPromocaoRepository extends JpaRepository<PromocaoEntity, Long>
 
     List<PromocaoEntity> findByLojasCnpjAndLojasStatusTrue(String cnpj);
 
+    Optional<PromocaoEntity> findByGuidAndLojasCnpjAndLojasStatusTrue(String guid, String cnpjFilial);
+
+
 
 }

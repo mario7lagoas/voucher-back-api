@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -54,9 +55,9 @@ public class PromocaoServiceImpl implements IPromocaoService {
                 .autorAlteracao(promocaoRequest.getAutorAlteracao())
                 .valorMinimoParaDisparo(promocaoRequest.getValorMinimoParaDisparo())
                 .discontoPercentual(promocaoRequest.getDiscontoPercentual() != null ?
-                        promocaoRequest.getDiscontoPercentual() : Integer.valueOf(0))
+                        promocaoRequest.getDiscontoPercentual() : BigDecimal.ZERO)
                 .discontoValor(promocaoRequest.getDiscontoValor() != null ?
-                        promocaoRequest.getDiscontoValor() : Double.valueOf(0))
+                        promocaoRequest.getDiscontoValor() : BigDecimal.ZERO)
                 .diasValidadeVoucher(promocaoRequest.getDiasValidadeVoucher())
                 .tipoDesconto(TipoDescontoEnum.valueOf(promocaoRequest.getTipoDesconto()))
                 .lojas(voucherUtil.getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
@@ -93,13 +94,15 @@ public class PromocaoServiceImpl implements IPromocaoService {
         if (promocaoUpdateRequest.getDiasValidadeVoucher() != null)
             promocaoEntity.setDiasValidadeVoucher(promocaoUpdateRequest.getDiasValidadeVoucher());
 
-        if (promocaoUpdateRequest.getDiscontoValor() != null && promocaoUpdateRequest.getDiscontoValor() > 0) {
+        if (promocaoUpdateRequest.getDiscontoValor() != null && promocaoUpdateRequest.getDiscontoValor()
+                .compareTo(BigDecimal.ZERO) > 0) {
             promocaoEntity.setDiscontoValor(promocaoUpdateRequest.getDiscontoValor());
-            promocaoEntity.setDiscontoPercentual(0);
+            promocaoEntity.setDiscontoPercentual(BigDecimal.ZERO);
         }
 
-        if (promocaoUpdateRequest.getDiscontoPercentual() != null && promocaoUpdateRequest.getDiscontoPercentual() > 0) {
-            promocaoEntity.setDiscontoValor(Double.valueOf(0));
+        if (promocaoUpdateRequest.getDiscontoPercentual() != null && promocaoUpdateRequest
+                .getDiscontoPercentual().compareTo(BigDecimal.ZERO) > 0) {
+            promocaoEntity.setDiscontoValor(BigDecimal.ZERO);
             promocaoEntity.setDiscontoPercentual(promocaoUpdateRequest.getDiscontoPercentual());
         }
 

@@ -23,6 +23,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,10 +53,10 @@ public class PromocaoEntity extends BaseEntity implements Serializable {
     private TipoDescontoEnum tipoDesconto;
     @Enumerated(EnumType.STRING)
     private PromocaoStatusEnum promocaoStatus;
-    private Double valorMinimoParaDisparo;
+    private BigDecimal valorMinimoParaDisparo;
     private Integer diasValidadeVoucher;
-    private Double discontoValor;
-    private Integer discontoPercentual;
+    private BigDecimal discontoValor;
+    private BigDecimal discontoPercentual;
     private String autorAlteracao;
 
     @ManyToMany(fetch = FetchType.LAZY)

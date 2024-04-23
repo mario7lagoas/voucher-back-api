@@ -22,6 +22,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public interface VouckBackMapper {
     })
     VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum voucherStatus,
                                                 VoucherPromocaoStatusEnum promocaoStatus, String guid, String codigo,
-                                                String clienteCpf, String filialCnpj, Double valorDesc, String pdv,
+                                                String clienteCpf, String filialCnpj, BigDecimal valorDesc, String pdv,
                                                 LocalDateTime fimResgate);
 
     VoucherResponse voucherEntityToVoucherResponse(VoucherEntity voucherEntity);

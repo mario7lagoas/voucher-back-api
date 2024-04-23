@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,13 +33,13 @@ public class PromocaoRequest {
     @NotBlank(message = "Tipo de desconto da promoção não pode ser nulo ou vazio.")
     private String tipoDesconto;
     @NotNull(message = "Valor minimo para disparo nao pode ser nulo.")
-    private Double valorMinimoParaDisparo;
+    private BigDecimal valorMinimoParaDisparo;
     @NotNull(message = "Validade no Voucher não pode ser nulo")
     private Integer diasValidadeVoucher;
     @NotBlank(message = "Autor da operação não pode ser nulo ou vazio.")
     private String autorAlteracao;
-    private Double discontoValor;
-    private Integer discontoPercentual;
+    private BigDecimal discontoValor;
+    private BigDecimal discontoPercentual;
     private List<Guid> lojas;
 
 }

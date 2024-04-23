@@ -13,6 +13,8 @@ public enum ErrosEnum {
     CNPJ_JA_CADASTRADO("CNPJ já Cadastrado."),
     USUARIO_JA_CADASTRADO("Usuario já Cadastrado."),
     PERFIL_JA_CADASTRADO("Perfil já cadastrado."),
+    EM_USO("Em uso no momento."),
+    UTILIZADO("Já utilizado."),
     ENDPOINT_NAO_ENCONTRADO("Endpoint não encontrado.");
 
     private String nome;

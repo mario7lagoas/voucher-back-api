@@ -18,6 +18,9 @@ public class VoucherPromocaoRequest {
     @NotNull(message = "CNPJ da filial não pode ser nulo.")
     @NotBlank(message = "CNPJ da filial não pode ser vazio.")
     private String filialCnpj;
+    @NotNull(message = "PDV não pode ser nulo.")
+    @NotBlank(message = "PDV não pode ser vazio.")
+    private String pdv;
     @NotNull(message = "Cupom não pode ser nulo.")
     @NotBlank(message = "Cupom não pode ser vazio.")
     private String cupom;
