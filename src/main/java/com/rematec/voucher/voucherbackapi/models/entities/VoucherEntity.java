@@ -26,7 +26,8 @@ import java.time.LocalDateTime;
 @Table(indexes = {@Index(name = "IDX_GUID_VOUCHER", columnList = "guid"),
         @Index(name = "IDX_COD_VOUCHER", columnList = "codigo"),
         @Index(name = "IDX_CNPJ_VOUCHER", columnList = "filialCnpj"),
-        @Index(name = "IDX_CPF_VOUCHER", columnList = "clienteCpf")
+        @Index(name = "IDX_CPF_VOUCHER", columnList = "clienteCpf"),
+        @Index(name = "IDX_PROMO_GUID_VOUCHER", columnList = "promocaoGuid")
 })
 @SuperBuilder
 @Getter

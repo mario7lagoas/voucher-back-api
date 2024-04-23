@@ -1,6 +1,8 @@
 package com.rematec.voucher.voucherbackapi.utils;
 
+import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
+import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
@@ -166,6 +168,25 @@ public class VoucherUtil {
 
     public String apenasNumerosNaString(String input){
         return input.replaceAll("[^0-9]", "");
+    }
+
+    public void checkStatusVoucher(VoucherEntity voucherEntity) {
+
+        switch (voucherEntity.getPromocaoStatus().name()) {
+            case "EM_USO":
+                throw new VoucherEmUsoException("Em uso no PDV [" + voucherEntity.getPdvResgate()
+                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
+                        + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
+            case "UTILIZADO":
+                throw new VoucherUtilizadoException("Utilizado [" + voucherEntity.getPdvResgate()
+                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
+                        + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
+            default:
+                log.info("Promoção Valida");
+                break;
+
+
+        }
     }
 
 }

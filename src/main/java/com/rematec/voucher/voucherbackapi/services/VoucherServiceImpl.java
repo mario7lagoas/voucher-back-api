@@ -1,8 +1,7 @@
 package com.rematec.voucher.voucherbackapi.services;
 
-import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
-import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
+import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
@@ -12,6 +11,7 @@ import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.VoucherFinalizeRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherPromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
@@ -115,6 +115,48 @@ public class VoucherServiceImpl {
         this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CANCELADO);
     }
 
+    @Async("threadPollConfirmandoVoucherExecutor")
+    public void consumer(List<VoucherFinalizeRequest> list) {
+        list.forEach(voucher -> {
+            if (this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).isPresent()) {
+                VoucherEntity entity = this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).get();
+                if (entity.getPromocaoStatus().name().equals("EM_USO")) {
+                    entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
+                    entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
+                    log.warn("Baixa no Voucher {} .", voucher.getTransacao());
+
+                    this.iVoucherRepository.save(entity);
+                } else {
+                    log.warn("Voucher {} não não está com status de EM_USO, status atual {}."
+                            , voucher.getTransacao(), entity.getPromocaoStatus().name());
+                }
+            } else {
+                log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
+            }
+        });
+    }
+
+    @Async("threadPollCancelandoVoucherExecutor")
+    public void rollback(List<VoucherFinalizeRequest> list) {
+        list.forEach(voucher -> {
+            if (this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).isPresent()) {
+                VoucherEntity entity = this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).get();
+                if (entity.getPromocaoStatus().name().equals("EM_USO")) {
+                    entity.setVoucherStatus(VoucherStatusEnum.DISPONIBILIZADO);
+                    entity.setPromocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL);
+                    log.warn("Rollback no Voucher {} .", voucher.getTransacao());
+
+                    this.iVoucherRepository.save(entity);
+                } else {
+                    log.warn("Voucher {} não não está com status de EM_USO, status atual {} ."
+                            , voucher.getTransacao(), entity.getPromocaoStatus().name());
+                }
+             } else {
+                log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
+            }
+        });
+    }
+
     public VoucherPromocaoResponse resgateVoucher(VoucherPromocaoRequest promocaoRequest) {
 
         VoucherEntity voucherEntity = this.iVoucherRepository
@@ -123,7 +165,7 @@ public class VoucherServiceImpl {
                 .orElseThrow(() -> new VoucherNaoEncontradoException("Voucher não [" + promocaoRequest.getCodigo()
                         + "] encontrado"));
 
-        this.checkStatusVoucher(voucherEntity);
+        this.voucherUtil.checkStatusVoucher(voucherEntity);
 
         this.iPromocaoRepository.findByGuidAndLojasCnpjAndLojasStatusTrue(voucherEntity.getPromocaoGuid(),
                         promocaoRequest.getFilialCnpj())
@@ -132,7 +174,7 @@ public class VoucherServiceImpl {
 
         VoucherPromocaoResponse voucherPromocaoResponse = VoucherPromocaoResponse.builder()
                 .descricao(voucherEntity.getDescricao())
-                .guid(voucherEntity.getGuid())
+                .transacao(voucherEntity.getGuid())
                 .build();
 
 
@@ -143,35 +185,20 @@ public class VoucherServiceImpl {
             voucherPromocaoResponse.setValorDesconto(voucherEntity.getValorDesconto());
         }
 
-       /*
+        if (voucherPromocaoResponse.getValorDesconto().compareTo(promocaoRequest.getValorCompra()) == 1) {
+            throw new VoucherNaoPermitidoException("Desconto [" + voucherPromocaoResponse.getValorDesconto()
+                    + "] maior que pagamento [" + promocaoRequest.getValorCompra() + "]");
+        }
+
+
         voucherEntity.setCupomResgate(promocaoRequest.getCupom());
         voucherEntity.setFilialCnpjResgate(promocaoRequest.getFilialCnpj());
         voucherEntity.setValorCompraResgate(promocaoRequest.getValorCompra());
         voucherEntity.setPdvResgate(promocaoRequest.getPdv());
         voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.EM_USO);
-        */
+        this.iVoucherRepository.save(voucherEntity);
 
         return voucherPromocaoResponse;
-
-    }
-
-    private void checkStatusVoucher(VoucherEntity voucherEntity) {
-
-        switch (voucherEntity.getPromocaoStatus().name()) {
-            case "EM_USO":
-                throw new VoucherEmUsoException("Em uso no PDV [" + voucherEntity.getPdvResgate()
-                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
-                        + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
-            case "UTILIZADO":
-                throw new VoucherUtilizadoException("Utilizado [" + voucherEntity.getPdvResgate()
-                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
-                        + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
-            default:
-                log.info("Promoção Valida");
-                break;
-
-
-        }
 
     }
 
@@ -184,4 +211,5 @@ public class VoucherServiceImpl {
         }
         return valor.setScale(2, RoundingMode.HALF_EVEN);
     }
+
 }

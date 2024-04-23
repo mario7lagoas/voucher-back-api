@@ -41,7 +41,9 @@ public class AutenticacaoFiltro extends BasicAuthenticationFilter {
             if (!"/voucher-back/v1/voucher".equals(request.getRequestURI()) &&
                     !"/voucher-back/v1/voucher/cancel".equals(request.getRequestURI()) &&
                     !"/voucher-back/v1/voucher/confirm".equals(request.getRequestURI()) &&
-                    !"/voucher-back/v1/voucher/resgate".equals(request.getRequestURI())) {
+                    !"/voucher-back/v1/voucher/resgate".equals(request.getRequestURI()) &&
+                    !"/voucher-back/v1/voucher/consumer".equals(request.getRequestURI()) &&
+                    !"/voucher-back/v1/voucher/rollback".equals(request.getRequestURI())) {
 
                 Authentication authentication = AutenticacaoService.obterAutenticacao(request, response);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.VoucherFinalizeRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherPromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
@@ -48,6 +49,20 @@ public class VoucherController {
     public ResponseEntity<VoucherPromocaoResponse> resgateVoucher(@RequestBody @Valid VoucherPromocaoRequest promocaoRequest) {
 
         return new ResponseEntity<VoucherPromocaoResponse>(this.voucherService.resgateVoucher(promocaoRequest), HttpStatus.OK);
+
+    }
+
+    @PostMapping(value = "/consumer", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity consumerVoucher(@RequestBody @Valid List<VoucherFinalizeRequest> list) {
+        this.voucherService.consumer(list);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @PostMapping(value = "/rollback", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity cancelVoucher(@RequestBody @Valid List<VoucherFinalizeRequest> list) {
+        this.voucherService.rollback(list);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 

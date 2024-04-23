@@ -15,6 +15,7 @@ public enum ErrosEnum {
     PERFIL_JA_CADASTRADO("Perfil já cadastrado."),
     EM_USO("Em uso no momento."),
     UTILIZADO("Já utilizado."),
+    NAO_PERMITIDO("Não permitido."),
     ENDPOINT_NAO_ENCONTRADO("Endpoint não encontrado.");
 
     private String nome;

@@ -24,4 +24,6 @@ public interface IVoucherRepository extends JpaRepository<VoucherEntity, Long> {
                                                                                                      String clienteCpf,
                                                                                                      String filialCnpj,
                                                                                                      VoucherStatusEnum statusEnum);
+
+    Optional<VoucherEntity> findByPromocaoGuid(String promocaoGuid);
 }

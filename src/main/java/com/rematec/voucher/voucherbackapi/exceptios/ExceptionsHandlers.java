@@ -68,6 +68,19 @@ public class ExceptionsHandlers {
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
+    @ExceptionHandler(VoucherNaoPermitidoException.class)
+    public ResponseEntity<ErrorResponse> voucherNaoPermitidoExceptionHandler(VoucherNaoPermitidoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.NAO_PERMITIDO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
 
     @ExceptionHandler(UsuarioInativoException.class)
     public ResponseEntity<ErrorResponse> lusuarioInativoExceptionHandler(UsuarioInativoException exception){
