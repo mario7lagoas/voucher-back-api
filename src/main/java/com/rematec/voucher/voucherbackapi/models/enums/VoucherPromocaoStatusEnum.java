@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum VoucherPromocaoStatusEnum {
-    DISPONIVEL("Disponível"), EM_USO("Em uso"), UTILIZADO("Utilizado");
+    DISPONIVEL("Disponível"), EM_USO("Em uso"), UTILIZADO("Utilizado"), CANCELADO("Cancelado");
 
     private String nome;
 

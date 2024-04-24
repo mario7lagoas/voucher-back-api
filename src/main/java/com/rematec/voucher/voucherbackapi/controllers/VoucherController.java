@@ -26,7 +26,7 @@ public class VoucherController {
     @Autowired
     private VoucherServiceImpl voucherService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/consulta",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConsultaVoucherResponse> consultarPromocao(@RequestBody @Valid ConsultaVoucherRequest consulta) {
 
         return new ResponseEntity<ConsultaVoucherResponse>(this.voucherService.consultarPromocoes(consulta), HttpStatus.OK);
@@ -53,15 +53,15 @@ public class VoucherController {
     }
 
     @PostMapping(value = "/consumer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity consumerVoucher(@RequestBody @Valid List<VoucherFinalizeRequest> list) {
-        this.voucherService.consumer(list);
+    public ResponseEntity consumerVoucher(@RequestBody @Valid VoucherFinalizeRequest voucherComsumer) {
+        this.voucherService.consumer(voucherComsumer);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
     @PostMapping(value = "/rollback", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity cancelVoucher(@RequestBody @Valid List<VoucherFinalizeRequest> list) {
-        this.voucherService.rollback(list);
+    public ResponseEntity cancelVoucher(@RequestBody @Valid VoucherFinalizeRequest voucherRollback) {
+        this.voucherService.rollback(voucherRollback);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }

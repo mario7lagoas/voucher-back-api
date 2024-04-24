@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -18,6 +19,6 @@ public class VoucherResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fim;
     private TipoDescontoEnum tipoDesconto;
-    private Double valorDesconto;
+    private BigDecimal valorDesconto;
 
 }

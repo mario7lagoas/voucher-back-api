@@ -14,6 +14,7 @@ import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
@@ -164,6 +165,9 @@ public class VoucherUtil {
                                     + "] não encontrado")
                     );
             voucherEntity.setVoucherStatus(statusEnum);
+            if (VoucherStatusEnum.CANCELADO.equals(statusEnum)){
+                voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.CANCELADO);
+            }
             this.iVoucherRepository.save(voucherEntity);
         });
     }

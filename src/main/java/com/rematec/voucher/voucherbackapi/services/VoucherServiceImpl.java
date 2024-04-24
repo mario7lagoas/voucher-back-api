@@ -56,11 +56,8 @@ public class VoucherServiceImpl {
                 .build();
 
         List<PromocaoEntity> promocaoEntities = iPromocaoRepository
-                .findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoGreaterThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        consulta.getValorCompra(),
-                        PromocaoStatusEnum.ATIVA,
+                .findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
+                        LocalDateTime.now(), LocalDateTime.now(), consulta.getValorCompra(), PromocaoStatusEnum.ATIVA,
                         this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()));
 
         if (!promocaoEntities.isEmpty()) {
@@ -96,7 +93,6 @@ public class VoucherServiceImpl {
                 consultaVoucherResponse.setTotalVoucher(promocaoEntities.size());
 
                 consultaVoucherResponse.setVouchers(voucherResponses);
-
             }
         }
 
@@ -116,45 +112,27 @@ public class VoucherServiceImpl {
     }
 
     @Async("threadPollConfirmandoVoucherExecutor")
-    public void consumer(List<VoucherFinalizeRequest> list) {
-        list.forEach(voucher -> {
-            if (this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).isPresent()) {
-                VoucherEntity entity = this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).get();
-                if (entity.getPromocaoStatus().name().equals("EM_USO")) {
-                    entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
-                    entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
-                    log.warn("Baixa no Voucher {} .", voucher.getTransacao());
+    public void consumer(VoucherFinalizeRequest voucher) {
 
-                    this.iVoucherRepository.save(entity);
-                } else {
-                    log.warn("Voucher {} não não está com status de EM_USO, status atual {}."
-                            , voucher.getTransacao(), entity.getPromocaoStatus().name());
-                }
-            } else {
-                log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
-            }
-        });
+        VoucherEntity entity = getVoucherPosVenda(voucher);
+        if (entity != null) {
+            entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
+            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
+            log.warn("Baixa no Voucher {} .", voucher.getTransacao());
+            this.iVoucherRepository.save(entity);
+        }
     }
 
     @Async("threadPollCancelandoVoucherExecutor")
-    public void rollback(List<VoucherFinalizeRequest> list) {
-        list.forEach(voucher -> {
-            if (this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).isPresent()) {
-                VoucherEntity entity = this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).get();
-                if (entity.getPromocaoStatus().name().equals("EM_USO")) {
-                    entity.setVoucherStatus(VoucherStatusEnum.DISPONIBILIZADO);
-                    entity.setPromocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL);
-                    log.warn("Rollback no Voucher {} .", voucher.getTransacao());
+    public void rollback(VoucherFinalizeRequest voucher) {
+        VoucherEntity entity = getVoucherPosVenda(voucher);
+        if (entity != null) {
+            entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
+            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
+            log.warn("Rollback no Voucher {} .", voucher.getTransacao());
+            this.iVoucherRepository.save(entity);
 
-                    this.iVoucherRepository.save(entity);
-                } else {
-                    log.warn("Voucher {} não não está com status de EM_USO, status atual {} ."
-                            , voucher.getTransacao(), entity.getPromocaoStatus().name());
-                }
-             } else {
-                log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
-            }
-        });
+        }
     }
 
     public VoucherPromocaoResponse resgateVoucher(VoucherPromocaoRequest promocaoRequest) {
@@ -168,7 +146,7 @@ public class VoucherServiceImpl {
         this.voucherUtil.checkStatusVoucher(voucherEntity);
 
         this.iPromocaoRepository.findByGuidAndLojasCnpjAndLojasStatusTrue(voucherEntity.getPromocaoGuid(),
-                        promocaoRequest.getFilialCnpj())
+                        this.voucherUtil.apenasNumerosNaString(promocaoRequest.getFilialCnpj()))
                 .orElseThrow(() -> new VoucherNaoEncontradoException("Promoção não disponivel para o CNPJ ["
                         + promocaoRequest.getFilialCnpj()));
 
@@ -176,7 +154,6 @@ public class VoucherServiceImpl {
                 .descricao(voucherEntity.getDescricao())
                 .transacao(voucherEntity.getGuid())
                 .build();
-
 
         if (voucherEntity.getTipoDesconto().name().equals("PERCENTUAL")) {
             voucherPromocaoResponse.setValorDesconto(getValorformatado(promocaoRequest.getValorCompra(),
@@ -190,7 +167,6 @@ public class VoucherServiceImpl {
                     + "] maior que pagamento [" + promocaoRequest.getValorCompra() + "]");
         }
 
-
         voucherEntity.setCupomResgate(promocaoRequest.getCupom());
         voucherEntity.setFilialCnpjResgate(promocaoRequest.getFilialCnpj());
         voucherEntity.setValorCompraResgate(promocaoRequest.getValorCompra());
@@ -199,7 +175,6 @@ public class VoucherServiceImpl {
         this.iVoucherRepository.save(voucherEntity);
 
         return voucherPromocaoResponse;
-
     }
 
     private BigDecimal getValorformatado(BigDecimal compra, BigDecimal desconto, String tipo) {
@@ -212,4 +187,19 @@ public class VoucherServiceImpl {
         return valor.setScale(2, RoundingMode.HALF_EVEN);
     }
 
+    private VoucherEntity getVoucherPosVenda(VoucherFinalizeRequest voucher) {
+
+        if (this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).isPresent()) {
+            VoucherEntity entity = this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).get();
+            if (entity.getPromocaoStatus().name().equals("EM_USO")) {
+                return entity;
+            } else {
+                log.warn("Voucher {} não está com status de EM_USO, status atual {}.", voucher.getTransacao(),
+                        entity.getPromocaoStatus().name());
+            }
+        } else {
+            log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
+        }
+        return null;
+    }
 }
