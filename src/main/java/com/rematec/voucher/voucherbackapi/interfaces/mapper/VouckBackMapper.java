@@ -17,6 +17,7 @@ import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaRespo
 import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
 import com.rematec.voucher.voucherbackapi.models.response.UsuariosPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
+import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -81,5 +82,8 @@ public interface VouckBackMapper {
                                                 LocalDateTime fimResgate);
 
     VoucherResponse voucherEntityToVoucherResponse(VoucherEntity voucherEntity);
+
+    @Mapping(source = "voucherEntities.content", target = "transacoes")
+    VouchersPaginadaResponse pageVouchersEntityToVouchersPaginadaResponse(Page<VoucherEntity> voucherEntities);
 }
 

@@ -46,6 +46,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private String promocaoGuid;
     private String descricao;
     private String pdv;
+    private String cupom;
     private String pdvResgate;
     private String filialCnpjResgate;
     private String cupomResgate;

@@ -10,13 +10,15 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-public class PromocaoFiltro {
+public class VoucherFiltro {
+    private String codigo;
     private String descricao;
+    private String clienteCpf;
+    private String pdv;
+    private String cupomResgate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate inicio;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fim;
-    private String tipoDesconto;
-    private String promocaoStatus;
 
 }

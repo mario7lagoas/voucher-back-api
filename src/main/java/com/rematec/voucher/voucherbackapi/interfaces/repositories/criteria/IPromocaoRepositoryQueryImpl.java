@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
+
     @PersistenceContext
     private EntityManager manager;
+
     @Autowired
     private VouckBackMapper mapper;
 
@@ -98,11 +100,11 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
             predicates.add(builder.lessThanOrEqualTo(root.get("fim"),
                     promocaoFiltro.getFim()));
 
-        if (!promocaoFiltro.getPromocaoStatus().isEmpty() && promocaoFiltro.getPromocaoStatus() != null)
+        if (promocaoFiltro.getPromocaoStatus() != null && !promocaoFiltro.getPromocaoStatus().isEmpty())
             predicates.add(builder.equal(root.get("promocaoStatus"),
                     promocaoFiltro.getPromocaoStatus()));
 
-        if (!promocaoFiltro.getTipoDesconto().isEmpty() && promocaoFiltro.getTipoDesconto() != null)
+        if (promocaoFiltro.getTipoDesconto() != null && !promocaoFiltro.getTipoDesconto().isEmpty())
             predicates.add(builder.equal(root.get("tipoDesconto"),
                     promocaoFiltro.getTipoDesconto()));
 

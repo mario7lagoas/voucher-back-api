@@ -10,6 +10,7 @@ import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.filter.VoucherFiltro;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherFinalizeRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherPromocaoRequest;
@@ -17,15 +18,18 @@ import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
+import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -201,5 +205,20 @@ public class VoucherServiceImpl {
             log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
         }
         return null;
+    }
+
+    public VouchersPaginadaResponse voucherFiltro(int page, int size, String codigo, String descricao, String clienteCpf
+            , String pdv, String cupomResgate, LocalDate inicio, LocalDate fim) {
+
+        VoucherFiltro filtro = VoucherFiltro.builder()
+                .codigo(codigo)
+                .descricao(descricao)
+                .clienteCpf(clienteCpf)
+                .pdv(pdv)
+                .cupomResgate(cupomResgate)
+                .inicio(inicio)
+                .fim(fim).build();
+
+        return this.iVoucherRepository.filtrar(filtro, PageRequest.of(page,size));
     }
 }

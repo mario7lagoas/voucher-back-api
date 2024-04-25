@@ -23,6 +23,9 @@ public class ConsultaVoucherRequest {
     @NotNull(message = "CPF do Cliente não pode ser nulo.")
     @NotBlank(message = "CPF do Cliente Obrigatorio")
     private String clienteCpf;
+    @NotNull(message = "Cupom pode ser nulo.")
+    @NotBlank(message = "Cupom Obrigatorio")
+    private String cupom;
     @NotNull(message = "Valor da compra.")
     private Double valorCompra;
 }

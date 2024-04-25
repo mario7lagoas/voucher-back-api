@@ -39,7 +39,7 @@ public class PromocaoController {
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PromocaoResponse>> getAll() {
-        return new ResponseEntity<>(promocaoService.getAllPromocoes(), HttpStatus.OK);
+        return new ResponseEntity<>(this.promocaoService.getAllPromocoes(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/paginada", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,7 +48,7 @@ public class PromocaoController {
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "descricao", defaultValue = "") String descricao) {
 
-        return new ResponseEntity<PromocoesPaginadaResponse>(promocaoService
+        return new ResponseEntity<PromocoesPaginadaResponse>(this.promocaoService
                 .obterPromocoesPaginadas(descricao, page, size), HttpStatus.OK);
     }
 
@@ -62,24 +62,24 @@ public class PromocaoController {
             @RequestParam(name = "inicio", defaultValue = "") LocalDate inicio,
             @RequestParam(name = "fim", defaultValue = "") LocalDate fim) {
 
-        return new ResponseEntity<PromocoesPaginadaResponse>(promocaoService
+        return new ResponseEntity<PromocoesPaginadaResponse>(this.promocaoService
                 .promocaoFiltro(descricao, tipoDesconto, promocaoStatus, inicio, fim, page, size), HttpStatus.OK);
     }
 
     @GetMapping(value = "{guid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PromocaoResponse> buscarPromocaiPorGuid(@PathVariable("guid") String guid) {
-        return new ResponseEntity<>(promocaoService.buscarPromocaoByGuid(guid), HttpStatus.OK);
+        return new ResponseEntity<>(this.promocaoService.buscarPromocaoByGuid(guid), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PromocaoResponse> addPromocao(@RequestBody @Valid PromocaoRequest promocaoRequest) {
-        return new ResponseEntity<>(promocaoService.addPromocao(promocaoRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.promocaoService.addPromocao(promocaoRequest), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PromocaoResponse> editPromocao(@PathVariable("guid") String guid,
                                                          @RequestBody @Valid PromocaoUpdateRequest promocaoUpdateRequest) {
-        return new ResponseEntity<>(promocaoService.alterarPromocao(guid, promocaoUpdateRequest), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(this.promocaoService.alterarPromocao(guid, promocaoUpdateRequest), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping(value = "{guid}")
