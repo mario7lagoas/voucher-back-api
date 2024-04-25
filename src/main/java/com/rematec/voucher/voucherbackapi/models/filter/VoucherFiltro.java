@@ -16,6 +16,9 @@ public class VoucherFiltro {
     private String clienteCpf;
     private String pdv;
     private String cupomResgate;
+    private String voucherStatus;
+    private String tipoDesconto;
+    private String filialCnpj;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate inicio;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

@@ -82,7 +82,8 @@ public class VoucherServiceImpl {
                             this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()),
                             this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()),
                             promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDiscontoValor() : promocaoEntity.getDiscontoPercentual(),
-                            consulta.getPdvFilial(), promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher())
+                            consulta.getPdvFilial(), promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher()),
+                            consulta.getCupom()
                     );
 
                     VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
@@ -208,15 +209,19 @@ public class VoucherServiceImpl {
     }
 
     public VouchersPaginadaResponse voucherFiltro(int page, int size, String codigo, String descricao, String clienteCpf
-            , String pdv, String cupomResgate, LocalDate inicio, LocalDate fim) {
+            , String pdv, String cupomResgate, LocalDate inicio, LocalDate fim, String voucherStatus, String filialCnpj,
+                                                  String tipoDesconto) {
 
         VoucherFiltro filtro = VoucherFiltro.builder()
-                .codigo(codigo)
+                .codigo(this.voucherUtil.apenasNumerosNaString(codigo))
                 .descricao(descricao)
-                .clienteCpf(clienteCpf)
+                .clienteCpf(this.voucherUtil.apenasNumerosNaString(clienteCpf))
+                .tipoDesconto(tipoDesconto)
+                .filialCnpj(this.voucherUtil.apenasNumerosNaString(filialCnpj))
                 .pdv(pdv)
                 .cupomResgate(cupomResgate)
                 .inicio(inicio)
+                .voucherStatus(voucherStatus)
                 .fim(fim).build();
 
         return this.iVoucherRepository.filtrar(filtro, PageRequest.of(page,size));

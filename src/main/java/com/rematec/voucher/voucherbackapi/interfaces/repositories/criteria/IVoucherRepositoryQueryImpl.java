@@ -44,7 +44,7 @@ public class IVoucherRepositoryQueryImpl implements IVoucherRepositoryQuery {
 
         List<Order> orderList = new ArrayList();
 
-        orderList.add(builder.asc(orderByFromEntity.get("voucherStatus")));
+        //orderList.add(builder.asc(orderByFromEntity.get("voucherStatus")));
         orderList.add(builder.desc(orderByFromEntity.get("dataAtualizacao")));
         orderList.add(builder.desc(orderByFromEntity.get("filialCnpj")));
 
@@ -97,24 +97,28 @@ public class IVoucherRepositoryQueryImpl implements IVoucherRepositoryQuery {
                     voucherFiltro.getInicio()));
 
         if (voucherFiltro.getFim() != null)
-            predicates.add(builder.lessThanOrEqualTo(root.get("fim"),
-                    voucherFiltro.getFim()));
+            predicates.add(builder.lessThanOrEqualTo(root.get("fim"), voucherFiltro.getFim()));
 
         if (voucherFiltro.getCodigo() != null && !voucherFiltro.getCodigo().isEmpty())
-            predicates.add(builder.equal(root.get("codigo"),
-                    voucherFiltro.getCodigo()));
+            predicates.add(builder.equal(root.get("codigo"), voucherFiltro.getCodigo()));
 
         if (voucherFiltro.getClienteCpf() != null && !voucherFiltro.getClienteCpf().isEmpty())
-            predicates.add(builder.equal(root.get("clienteCpf"),
-                    voucherFiltro.getClienteCpf()));
+            predicates.add(builder.equal(root.get("clienteCpf"), voucherFiltro.getClienteCpf()));
 
         if (voucherFiltro.getPdv() != null && !voucherFiltro.getPdv().isEmpty())
-            predicates.add(builder.equal(root.get("pdv"),
-                    voucherFiltro.getPdv()));
+            predicates.add(builder.equal(root.get("pdv"), voucherFiltro.getPdv()));
+
+        if (voucherFiltro.getVoucherStatus() != null && !voucherFiltro.getVoucherStatus().isEmpty())
+            predicates.add(builder.equal(root.get("voucherStatus"), voucherFiltro.getVoucherStatus()));
 
         if (voucherFiltro.getCupomResgate() != null && !voucherFiltro.getCupomResgate().isEmpty())
-            predicates.add(builder.equal(root.get("cupomResgate"),
-                    voucherFiltro.getPdv()));
+            predicates.add(builder.equal(root.get("cupomResgate"), voucherFiltro.getPdv()));
+
+        if (voucherFiltro.getFilialCnpj() != null && !voucherFiltro.getFilialCnpj().isEmpty())
+            predicates.add(builder.equal(root.get("filialCnpj"), voucherFiltro.getFilialCnpj()));
+
+        if (voucherFiltro.getTipoDesconto() != null && !voucherFiltro.getTipoDesconto().isEmpty())
+            predicates.add(builder.equal(root.get("tipoDesconto"), voucherFiltro.getTipoDesconto()));
 
         return predicates.toArray(new Predicate[predicates.size()]);
 

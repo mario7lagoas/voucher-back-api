@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum VoucherStatusEnum {
 
     DISPONIBILIZADO("Disponibilizado"), CANCELADO("Cancelado"), CONFIRMADO("Confirmado"),
-    UTILIZADO("Utilizado");
+    UTILIZADO("Utilizado"), EXPIRADO("Expirado");
 
     private String nome;
 

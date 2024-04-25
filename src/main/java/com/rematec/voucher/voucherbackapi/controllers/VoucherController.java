@@ -79,13 +79,16 @@ public class VoucherController {
             @RequestParam(name = "clienteCpf", defaultValue = "") String clienteCpf,
             @RequestParam(name = "pdv", defaultValue = "") String pdv,
             @RequestParam(name = "cupomResgate", defaultValue = "") String cupomResgate,
+            @RequestParam(name = "voucherStatus", defaultValue = "") String voucherStatus,
+            @RequestParam(name = "filialCnpj", defaultValue = "") String filialCnpj,
+            @RequestParam(name = "tipoDesconto", defaultValue = "") String tipoDesconto,
             @RequestParam(name = "inicio", defaultValue = "") LocalDate inicio,
             @RequestParam(name = "fim", defaultValue = "") LocalDate fim) {
 
 
         return new ResponseEntity<VouchersPaginadaResponse>(
                 this.voucherService.voucherFiltro(page, size, codigo, descricao, clienteCpf, pdv, cupomResgate,
-                        inicio, fim), HttpStatus.OK);
+                        inicio, fim, voucherStatus, filialCnpj, tipoDesconto), HttpStatus.OK);
 
     }
 

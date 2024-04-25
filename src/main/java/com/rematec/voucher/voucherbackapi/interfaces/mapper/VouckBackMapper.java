@@ -74,12 +74,13 @@ public interface VouckBackMapper {
             @Mapping(source = "valorDesc", target = "valorDesconto"),
             @Mapping(source = "promocao.guid", target = "promocaoGuid"),
             @Mapping(source = "pdv", target = "pdv"),
-            @Mapping(source = "fimResgate", target = "fimResgate")
+            @Mapping(source = "fimResgate", target = "fimResgate"),
+            @Mapping(source = "cupom", target = "cupom")
     })
     VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum voucherStatus,
                                                 VoucherPromocaoStatusEnum promocaoStatus, String guid, String codigo,
                                                 String clienteCpf, String filialCnpj, BigDecimal valorDesc, String pdv,
-                                                LocalDateTime fimResgate);
+                                                LocalDateTime fimResgate, String cupom);
 
     VoucherResponse voucherEntityToVoucherResponse(VoucherEntity voucherEntity);
 
