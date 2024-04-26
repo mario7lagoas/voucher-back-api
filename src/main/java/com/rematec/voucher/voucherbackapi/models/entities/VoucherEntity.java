@@ -42,6 +42,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private Long id;
     private String codigo;
     private String clienteCpf;
+    private String filialNome;
     private String filialCnpj;
     private String promocaoGuid;
     private String descricao;
@@ -49,6 +50,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private String cupom;
     private String pdvResgate;
     private String filialCnpjResgate;
+    private String filialResgateNome;
     private String cupomResgate;
     private BigDecimal valorPagamento;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

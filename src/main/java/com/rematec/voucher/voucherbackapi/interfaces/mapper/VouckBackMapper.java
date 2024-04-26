@@ -75,7 +75,7 @@ public interface VouckBackMapper {
             @Mapping(source = "promocao.guid", target = "promocaoGuid"),
             @Mapping(source = "pdv", target = "pdv"),
             @Mapping(source = "fimResgate", target = "fimResgate"),
-            @Mapping(source = "cupom", target = "cupom")
+            @Mapping(source = "cupom", target = "cupom"),
     })
     VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum voucherStatus,
                                                 VoucherPromocaoStatusEnum promocaoStatus, String guid, String codigo,

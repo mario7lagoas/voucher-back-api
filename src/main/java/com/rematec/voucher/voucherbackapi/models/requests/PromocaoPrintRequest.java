@@ -1,12 +1,10 @@
 package com.rematec.voucher.voucherbackapi.models.requests;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter

@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.services;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
@@ -51,6 +52,9 @@ public class VoucherServiceImpl {
 
     @Autowired
     private IVoucherRepository iVoucherRepository;
+
+    @Autowired
+    private ILojaRepository iLojaRepository;
 
     public ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta) {
 
@@ -121,6 +125,7 @@ public class VoucherServiceImpl {
 
         VoucherEntity entity = getVoucherPosVenda(voucher);
         if (entity != null) {
+            entity.setDataResgate(LocalDateTime.now());
             entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
             entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
             log.warn("Baixa no Voucher {} .", voucher.getTransacao());

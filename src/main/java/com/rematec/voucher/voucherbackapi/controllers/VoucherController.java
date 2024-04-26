@@ -2,13 +2,16 @@ package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherFinalizeRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.VoucherPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherPromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoResponse;
 import com.rematec.voucher.voucherbackapi.services.VoucherServiceImpl;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +32,9 @@ public class VoucherController {
 
     @Autowired
     private VoucherServiceImpl voucherService;
+
+    @Autowired
+    private VoucherUtil voucherUtil;
 
     @PostMapping(value = "/consulta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConsultaVoucherResponse> consultarPromocao(@RequestBody @Valid ConsultaVoucherRequest consulta) {
@@ -91,5 +97,14 @@ public class VoucherController {
                         inicio, fim, voucherStatus, filialCnpj, tipoDesconto), HttpStatus.OK);
 
     }
+    @PostMapping(value =  "/print", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> printPromocoes(@RequestBody List<VoucherPrintRequest> prints){
+        return new ResponseEntity<String>(this.voucherUtil.print(
+                new JRBeanCollectionDataSource(prints), "vouchers"),
+                HttpStatus.OK);
+
+    }
+
+
 
 }

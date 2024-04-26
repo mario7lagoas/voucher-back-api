@@ -23,7 +23,11 @@ public class VoucherFiltroResponse {
     private String pdvResgate;
     private String filialCnpjResgate;
     private String cupomResgate;
-    private BigDecimal valorCompraResgate;
+    private BigDecimal valorPagamento;
+    private String tipoDesconto;
+    private String voucherStatus;
+    private String promocaoStatus;
+    private BigDecimal valorDesconto;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fimResgate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -34,8 +38,6 @@ public class VoucherFiltroResponse {
     private LocalDateTime fim;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataAtualizacao;
-    private String tipoDesconto;
-    private String voucherStatus;
-    private String promocaoStatus;
-    private BigDecimal valorDesconto;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataCadastro;
 }
