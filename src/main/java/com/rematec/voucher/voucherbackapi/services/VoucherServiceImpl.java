@@ -99,9 +99,8 @@ public class VoucherServiceImpl {
             });
             if (promocaoDisponivel[0]) {
                 consultaVoucherResponse.setStatus("OK");
-                consultaVoucherResponse.setTotalVoucher(promocaoEntities.size());
-
                 consultaVoucherResponse.setVouchers(voucherResponses);
+                consultaVoucherResponse.setTotalVoucher(voucherResponses.size());
             }
         }
 
@@ -137,8 +136,8 @@ public class VoucherServiceImpl {
     public void rollback(VoucherFinalizeRequest voucher) {
         VoucherEntity entity = getVoucherPosVenda(voucher);
         if (entity != null) {
-            entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
-            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
+            entity.setVoucherStatus(VoucherStatusEnum.CONFIRMADO);
+            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL);
             log.warn("Rollback no Voucher {} .", voucher.getTransacao());
             this.iVoucherRepository.save(entity);
 
@@ -150,15 +149,15 @@ public class VoucherServiceImpl {
         VoucherEntity voucherEntity = this.iVoucherRepository
                 .findByCodigoEqualsAndFimResgateGreaterThanEqualAndVoucherStatus(
                         promocaoRequest.getCodigo(), LocalDateTime.now(), VoucherStatusEnum.CONFIRMADO)
-                .orElseThrow(() -> new VoucherNaoEncontradoException("Voucher não [" + promocaoRequest.getCodigo()
+                .orElseThrow(() -> new VoucherNaoEncontradoException("Voucher nao [" + promocaoRequest.getCodigo()
                         + "] encontrado"));
 
         this.voucherUtil.checkStatusVoucher(voucherEntity);
 
         this.iPromocaoRepository.findByGuidAndLojasCnpjAndLojasStatusTrue(voucherEntity.getPromocaoGuid(),
                         this.voucherUtil.apenasNumerosNaString(promocaoRequest.getFilialCnpj()))
-                .orElseThrow(() -> new VoucherNaoEncontradoException("Promoção não disponivel para o CNPJ ["
-                        + promocaoRequest.getFilialCnpj()));
+                .orElseThrow(() -> new VoucherNaoEncontradoException("Promocao indisponivel para "
+                        + this.voucherUtil.getLojaNome(promocaoRequest.getFilialCnpj())));
 
         VoucherPromocaoResponse voucherPromocaoResponse = VoucherPromocaoResponse.builder()
                 .status("OK")

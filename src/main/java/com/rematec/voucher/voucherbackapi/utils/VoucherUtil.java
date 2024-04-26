@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -125,8 +126,8 @@ public class VoucherUtil {
     }
 
     public String gerarCodigoVoucher(String pdv) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
         String voucher;
         StringBuffer thebuffer;
@@ -165,14 +166,14 @@ public class VoucherUtil {
                                     + "] não encontrado")
                     );
             voucherEntity.setVoucherStatus(statusEnum);
-            if (VoucherStatusEnum.CANCELADO.equals(statusEnum)){
+            if (VoucherStatusEnum.CANCELADO.equals(statusEnum)) {
                 voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.CANCELADO);
             }
             this.iVoucherRepository.save(voucherEntity);
         });
     }
 
-    public String apenasNumerosNaString(String input){
+    public String apenasNumerosNaString(String input) {
         return input.replaceAll("[^0-9]", "");
     }
 
@@ -181,18 +182,25 @@ public class VoucherUtil {
         switch (voucherEntity.getPromocaoStatus().name()) {
             case "EM_USO":
                 throw new VoucherEmUsoException("Em uso no PDV [" + voucherEntity.getPdvResgate()
-                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
+                        + "] - Filial [" + getLojaNome(voucherEntity.getFilialCnpjResgate())
                         + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
             case "UTILIZADO":
                 throw new VoucherUtilizadoException("Utilizado [" + voucherEntity.getPdvResgate()
-                        + "] - Filial [" + voucherEntity.getFilialCnpjResgate()
+                        + "] - Filial [" + getLojaNome(voucherEntity.getFilialCnpjResgate())
                         + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
             default:
                 log.info("Promoção Valida");
                 break;
-
-
         }
+    }
+
+    public String getLojaNome(String cnpj) {
+
+        Optional<LojaEntity> lojaEntity = this.iLojaReposity.findByCnpj(this.apenasNumerosNaString(cnpj));
+        if (lojaEntity.isPresent()) {
+            return lojaEntity.get().getNome();
+        }
+        return cnpj;
     }
 
 }
