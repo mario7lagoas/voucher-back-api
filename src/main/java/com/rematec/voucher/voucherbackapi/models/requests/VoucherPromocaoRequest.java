@@ -24,6 +24,6 @@ public class VoucherPromocaoRequest {
     @NotNull(message = "Cupom não pode ser nulo.")
     @NotBlank(message = "Cupom não pode ser vazio.")
     private String cupom;
-    @NotNull(message = "Valor da compra nao pode ser nulo.")
-    private BigDecimal valorCompra;
+    @NotNull(message = "Valor do pagamento nao pode ser nulo.")
+    private BigDecimal valorPagamento;
 }

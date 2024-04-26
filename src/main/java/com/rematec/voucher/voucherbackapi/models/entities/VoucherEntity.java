@@ -50,7 +50,7 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private String pdvResgate;
     private String filialCnpjResgate;
     private String cupomResgate;
-    private BigDecimal valorCompraResgate;
+    private BigDecimal valorPagamento;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fimResgate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

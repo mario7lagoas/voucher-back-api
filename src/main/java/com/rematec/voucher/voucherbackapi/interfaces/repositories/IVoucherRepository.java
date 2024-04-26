@@ -25,5 +25,5 @@ public interface IVoucherRepository extends JpaRepository<VoucherEntity, Long>, 
                                                                                                      String filialCnpj,
                                                                                                      VoucherStatusEnum statusEnum);
 
-    Optional<VoucherEntity> findByPromocaoGuid(String promocaoGuid);
+    Optional<VoucherEntity> findByGuid(String voucherGuid);
 }

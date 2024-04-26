@@ -156,25 +156,26 @@ public class VoucherServiceImpl {
                         + promocaoRequest.getFilialCnpj()));
 
         VoucherPromocaoResponse voucherPromocaoResponse = VoucherPromocaoResponse.builder()
+                .status("OK")
                 .descricao(voucherEntity.getDescricao())
                 .transacao(voucherEntity.getGuid())
                 .build();
 
         if (voucherEntity.getTipoDesconto().name().equals("PERCENTUAL")) {
-            voucherPromocaoResponse.setValorDesconto(getValorformatado(promocaoRequest.getValorCompra(),
+            voucherPromocaoResponse.setValorDesconto(getValorformatado(promocaoRequest.getValorPagamento(),
                     voucherEntity.getValorDesconto(), voucherEntity.getTipoDesconto().name()));
         } else {
             voucherPromocaoResponse.setValorDesconto(voucherEntity.getValorDesconto());
         }
 
-        if (voucherPromocaoResponse.getValorDesconto().compareTo(promocaoRequest.getValorCompra()) == 1) {
+        if (voucherPromocaoResponse.getValorDesconto().compareTo(promocaoRequest.getValorPagamento()) == 1) {
             throw new VoucherNaoPermitidoException("Desconto [" + voucherPromocaoResponse.getValorDesconto()
-                    + "] maior que pagamento [" + promocaoRequest.getValorCompra() + "]");
+                    + "] maior que pagamento [" + promocaoRequest.getValorPagamento() + "]");
         }
 
         voucherEntity.setCupomResgate(promocaoRequest.getCupom());
         voucherEntity.setFilialCnpjResgate(promocaoRequest.getFilialCnpj());
-        voucherEntity.setValorCompraResgate(promocaoRequest.getValorCompra());
+        voucherEntity.setValorPagamento(promocaoRequest.getValorPagamento());
         voucherEntity.setPdvResgate(promocaoRequest.getPdv());
         voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.EM_USO);
         this.iVoucherRepository.save(voucherEntity);
@@ -194,8 +195,8 @@ public class VoucherServiceImpl {
 
     private VoucherEntity getVoucherPosVenda(VoucherFinalizeRequest voucher) {
 
-        if (this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).isPresent()) {
-            VoucherEntity entity = this.iVoucherRepository.findByPromocaoGuid(voucher.getTransacao()).get();
+        if (this.iVoucherRepository.findByGuid(voucher.getTransacao()).isPresent()) {
+            VoucherEntity entity = this.iVoucherRepository.findByGuid(voucher.getTransacao()).get();
             if (entity.getPromocaoStatus().name().equals("EM_USO")) {
                 return entity;
             } else {

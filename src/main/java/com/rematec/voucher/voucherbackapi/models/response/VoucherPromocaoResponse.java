@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Setter
 @Builder
 public class VoucherPromocaoResponse {
+    private String status;
     private String transacao;
     private String descricao;
     private BigDecimal valorDesconto;
