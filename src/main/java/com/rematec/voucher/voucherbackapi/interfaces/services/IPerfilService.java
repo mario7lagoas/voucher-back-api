@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface IPerfilService {
 
-    List<PerfilResponse> getAllPeril();
-    List<PerfilResumidoResponse> getAllPerilResumido();
+    List<PerfilResponse> getAllPerfil();
+    List<PerfilResumidoResponse> getAllPerfilResumido();
     PerfilResponse addPerfil(PerfilRequest request);
     PerfilResponse getPerfilNome(String nome);
     PerfilResponse getPerfilGuid(String guid);

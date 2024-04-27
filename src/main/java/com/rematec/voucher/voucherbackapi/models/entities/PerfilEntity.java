@@ -39,13 +39,6 @@ public class PerfilEntity extends BaseEntity implements Serializable {
 
     private String nome;
 
-    /*
-    @ManyToMany(mappedBy = "perfis", cascade = CascadeType.ALL)
-    @JsonBackReference
-    private List<UsuarioEntity> usuarios ;
-    */
-
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "perfil_roles",
             joinColumns = @JoinColumn(name = "perfil_id"),

@@ -32,11 +32,11 @@ public class PerfilServiceImpl implements IPerfilService {
     private VoucherUtil voucherUtil;
 
     @Override
-    public List<PerfilResponse> getAllPeril() {
+    public List<PerfilResponse> getAllPerfil() {
         return mapper.listPerfilEntityToListPerfilResponse(this.iPerfilRepository.findAll());
     }
     @Override
-    public List<PerfilResumidoResponse> getAllPerilResumido() {
+    public List<PerfilResumidoResponse> getAllPerfilResumido() {
         return mapper.listPerfilEntityToListPerfilResumidoResponse(this.iPerfilRepository.findAll());
     }
     @Override

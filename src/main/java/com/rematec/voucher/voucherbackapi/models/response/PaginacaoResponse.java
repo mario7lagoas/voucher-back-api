@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaginacaoResponse {
     private int number;
     private Long totalPages;

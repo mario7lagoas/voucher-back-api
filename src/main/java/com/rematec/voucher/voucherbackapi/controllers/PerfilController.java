@@ -29,12 +29,12 @@ public class PerfilController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResponse>> getAllPerfil(){
-        return new ResponseEntity<>(this.perfilService.getAllPeril(), HttpStatus.OK);
+        return new ResponseEntity<>(this.perfilService.getAllPerfil(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/resumido", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResumidoResponse>> getAllPerfilResumido(){
-        return new ResponseEntity<List<PerfilResumidoResponse>>(this.perfilService.getAllPerilResumido(), HttpStatus.OK);
+        return new ResponseEntity<List<PerfilResumidoResponse>>(this.perfilService.getAllPerfilResumido(), HttpStatus.OK);
     }
 
     @GetMapping(value = "{nome}/nome", produces = MediaType.APPLICATION_JSON_VALUE)
