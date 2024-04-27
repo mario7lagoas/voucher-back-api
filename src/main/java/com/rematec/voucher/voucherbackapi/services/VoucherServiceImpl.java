@@ -6,6 +6,7 @@ import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.services.IVoucherService;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
@@ -39,7 +40,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @Slf4j
-public class VoucherServiceImpl {
+public class VoucherServiceImpl implements IVoucherService {
 
     @Autowired
     private IPromocaoRepository iPromocaoRepository;
@@ -56,17 +57,17 @@ public class VoucherServiceImpl {
     @Autowired
     private ILojaRepository iLojaRepository;
 
+    @Override
     public ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta) {
 
-        ConsultaVoucherResponse consultaVoucherResponse = ConsultaVoucherResponse
-                .builder().status("VOID")
-                .totalVoucher(0)
-                .build();
+        ConsultaVoucherResponse consultaVoucherResponse = ConsultaVoucherResponse.builder().status("VOID")
+                .totalVoucher(0).build();
 
         List<PromocaoEntity> promocaoEntities = iPromocaoRepository
                 .findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
                         LocalDateTime.now(), LocalDateTime.now(), consulta.getValorCompra(), PromocaoStatusEnum.ATIVA,
-                        this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()));
+                        this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj())
+                );
 
         if (!promocaoEntities.isEmpty()) {
 
@@ -74,7 +75,6 @@ public class VoucherServiceImpl {
             promocaoDisponivel[0] = false;
 
             List<VoucherResponse> voucherResponses = new ArrayList<>();
-
             promocaoEntities.forEach(promocaoEntity -> {
                 if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatusNot(
                         this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
@@ -107,43 +107,7 @@ public class VoucherServiceImpl {
         return consultaVoucherResponse;
     }
 
-    @Async("threadPollConfirmandoVoucherExecutor")
-    public void confirmarVoucher(List<VoucherRequest> voucherRequests) {
-
-        this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CONFIRMADO);
-
-    }
-
-    @Async("threadPollCancelandoVoucherExecutor")
-    public void cancelarVoucher(List<VoucherRequest> voucherRequests) {
-        this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CANCELADO);
-    }
-
-    @Async("threadPollConfirmandoVoucherExecutor")
-    public void consumer(VoucherFinalizeRequest voucher) {
-
-        VoucherEntity entity = getVoucherPosVenda(voucher);
-        if (entity != null) {
-            entity.setDataResgate(LocalDateTime.now());
-            entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
-            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
-            log.warn("Baixa no Voucher {} .", voucher.getTransacao());
-            this.iVoucherRepository.save(entity);
-        }
-    }
-
-    @Async("threadPollCancelandoVoucherExecutor")
-    public void rollback(VoucherFinalizeRequest voucher) {
-        VoucherEntity entity = getVoucherPosVenda(voucher);
-        if (entity != null) {
-            entity.setVoucherStatus(VoucherStatusEnum.CONFIRMADO);
-            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL);
-            log.warn("Rollback no Voucher {} .", voucher.getTransacao());
-            this.iVoucherRepository.save(entity);
-
-        }
-    }
-
+    @Override
     public VoucherPromocaoResponse resgateVoucher(VoucherPromocaoRequest promocaoRequest) {
 
         VoucherEntity voucherEntity = this.iVoucherRepository
@@ -187,6 +151,67 @@ public class VoucherServiceImpl {
         return voucherPromocaoResponse;
     }
 
+    @Override
+    public VouchersPaginadaResponse voucherFiltro(int page, int size, String codigo, String descricao, String clienteCpf
+            , String pdv, String cupomResgate, LocalDate inicio, LocalDate fim, String voucherStatus, String filialCnpj,
+                                                  String tipoDesconto) {
+
+        VoucherFiltro filtro = VoucherFiltro.builder()
+                .codigo(this.voucherUtil.apenasNumerosNaString(codigo))
+                .descricao(descricao)
+                .clienteCpf(this.voucherUtil.apenasNumerosNaString(clienteCpf))
+                .tipoDesconto(tipoDesconto)
+                .filialCnpj(this.voucherUtil.apenasNumerosNaString(filialCnpj))
+                .pdv(pdv)
+                .cupomResgate(cupomResgate)
+                .inicio(inicio)
+                .voucherStatus(voucherStatus)
+                .fim(fim).build();
+
+        return this.iVoucherRepository.filtrar(filtro, PageRequest.of(page, size));
+    }
+
+    @Async("threadPollConfirmandoVoucherExecutor")
+    @Override
+    public void confirmarVoucher(List<VoucherRequest> voucherRequests) {
+
+        this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CONFIRMADO);
+
+    }
+
+    @Async("threadPollCancelandoVoucherExecutor")
+    @Override
+    public void cancelarVoucher(List<VoucherRequest> voucherRequests) {
+        this.voucherUtil.cancelOrConfirmVoucher(voucherRequests, VoucherStatusEnum.CANCELADO);
+    }
+
+    @Async("threadPollConfirmandoVoucherExecutor")
+    @Override
+    public void consumer(VoucherFinalizeRequest voucher) {
+
+        VoucherEntity entity = getVoucherPosVenda(voucher);
+        if (entity != null) {
+            entity.setDataResgate(LocalDateTime.now());
+            entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
+            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
+            log.warn("Baixa no Voucher {} .", voucher.getTransacao());
+            this.iVoucherRepository.save(entity);
+        }
+    }
+
+    @Async("threadPollCancelandoVoucherExecutor")
+    @Override
+    public void rollback(VoucherFinalizeRequest voucher) {
+        VoucherEntity entity = getVoucherPosVenda(voucher);
+        if (entity != null) {
+            entity.setVoucherStatus(VoucherStatusEnum.CONFIRMADO);
+            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL);
+            log.warn("Rollback no Voucher {} .", voucher.getTransacao());
+            this.iVoucherRepository.save(entity);
+
+        }
+    }
+
     private BigDecimal getValorformatado(BigDecimal compra, BigDecimal desconto, String tipo) {
 
         BigDecimal valor = BigDecimal.ZERO;
@@ -211,24 +236,5 @@ public class VoucherServiceImpl {
             log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
         }
         return null;
-    }
-
-    public VouchersPaginadaResponse voucherFiltro(int page, int size, String codigo, String descricao, String clienteCpf
-            , String pdv, String cupomResgate, LocalDate inicio, LocalDate fim, String voucherStatus, String filialCnpj,
-                                                  String tipoDesconto) {
-
-        VoucherFiltro filtro = VoucherFiltro.builder()
-                .codigo(this.voucherUtil.apenasNumerosNaString(codigo))
-                .descricao(descricao)
-                .clienteCpf(this.voucherUtil.apenasNumerosNaString(clienteCpf))
-                .tipoDesconto(tipoDesconto)
-                .filialCnpj(this.voucherUtil.apenasNumerosNaString(filialCnpj))
-                .pdv(pdv)
-                .cupomResgate(cupomResgate)
-                .inicio(inicio)
-                .voucherStatus(voucherStatus)
-                .fim(fim).build();
-
-        return this.iVoucherRepository.filtrar(filtro, PageRequest.of(page,size));
     }
 }
