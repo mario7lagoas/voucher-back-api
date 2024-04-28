@@ -81,7 +81,6 @@ public class ExceptionsHandlers {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-
     @ExceptionHandler(UsuarioInativoException.class)
     public ResponseEntity<ErrorResponse> lusuarioInativoExceptionHandler(UsuarioInativoException exception){
         Map<String, String> response = new HashMap<>();
@@ -98,6 +97,20 @@ public class ExceptionsHandlers {
 
     @ExceptionHandler(PromocaoNaoEncontradaException.class)
     public ResponseEntity<ErrorResponse> promocaoNaoEncontradaExceptionHandler(PromocaoNaoEncontradaException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.NAO_ENCONTRADO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+
+    }
+
+    @ExceptionHandler(PerfilNaoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> perfilNaoEncontradaExceptionHandler(PerfilNaoEncontradoException exception){
         Map<String, String> response = new HashMap<>();
         response.put("codigo", ErrosEnum.NAO_ENCONTRADO.toString());
         response.put("mensagem", exception.getMessage());

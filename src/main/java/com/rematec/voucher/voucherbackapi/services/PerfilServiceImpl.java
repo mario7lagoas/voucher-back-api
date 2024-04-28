@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
+import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
@@ -42,20 +43,20 @@ public class PerfilServiceImpl implements IPerfilService {
     @Override
     public PerfilResponse addPerfil(PerfilRequest request) {
 
-        if (iPerfilRepository.findByNome(request.getNome()).isPresent()) {
-            throw new PerfilCadastradoException("Já existe um Perfil com este nome");
+        if (this.iPerfilRepository.findByNome(request.getNome()).isPresent()) {
+            throw new PerfilCadastradoException("Já existe um Perfil com este nome.");
         }
         PerfilEntity perfilEntity = PerfilEntity.builder()
                 .guid(UUID.randomUUID().toString())
                 .nome(request.getNome())
                 .roles(voucherUtil.listRolesRequestToListRoleEntity(request.getRoles()))
                 .build();
-        return mapper.perfilEntityToPerfilResponse(iPerfilRepository.save(perfilEntity));
+        return mapper.perfilEntityToPerfilResponse(this.iPerfilRepository.save(perfilEntity));
     }
     @Override
     public PerfilResponse getPerfilNome(String nome) {
         PerfilEntity entity = iPerfilRepository.findByNome(nome)
-                .orElseThrow(() -> new PromocaoNaoEncontradaException("Perfil não encontrado"));
+                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
         return mapper.perfilEntityToPerfilResponse(entity);
     }
@@ -63,7 +64,7 @@ public class PerfilServiceImpl implements IPerfilService {
     public PerfilResponse getPerfilGuid(String guid) {
 
         PerfilEntity entity = iPerfilRepository.findByGuid(guid)
-                .orElseThrow(() -> new PromocaoNaoEncontradaException("Perfil não encontrado"));
+                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
         return mapper.perfilEntityToPerfilResponse(entity);
     }
@@ -71,9 +72,9 @@ public class PerfilServiceImpl implements IPerfilService {
     public PerfilResponse alterarPerfil(String guid, PerfilRequest request) {
 
         PerfilEntity entity = iPerfilRepository.findByGuid(guid)
-                .orElseThrow(() -> new PromocaoNaoEncontradaException("Perfil não encontrado"));
+                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
-        if (voucherUtil.checkDataNullAndEmpty(request.getNome())) {
+        if (this.voucherUtil.checkDataNullAndEmpty(request.getNome())) {
             entity.setNome(request.getNome());
         }
 
@@ -93,7 +94,7 @@ public class PerfilServiceImpl implements IPerfilService {
         try {
             this.iPerfilRepository.delete(entity);
         } catch (Exception ex) {
-            throw new NaoPermitidoExcluirPerfilException("Não permitido Excluir. Perfil associado a algum Usuario");
+            throw new NaoPermitidoExcluirPerfilException("Não permitido Excluir. Perfil associado a algum Usuario.");
         }
     }
 }
