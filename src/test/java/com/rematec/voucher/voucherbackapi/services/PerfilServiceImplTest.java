@@ -64,8 +64,8 @@ public class PerfilServiceImplTest {
                 .dataAtualizacao(LocalDateTime.now())
                 .dataCadastro(LocalDateTime.now())
                 .guid("123456")
-                .roles(Arrays.asList(RoleEntity.builder().id(1L).nome(PermissaoEnum.MODERADOR).build(),
-                        RoleEntity.builder().id(2L).nome(PermissaoEnum.ADMINISTRADOR).build()))
+                .roles(Arrays.asList(RoleEntity.builder().id(1L).nome(PermissaoEnum.MENU_LOJA).build(),
+                        RoleEntity.builder().id(2L).nome(PermissaoEnum.MENU_USUARIO).build()))
                 .build();
     }
 
@@ -106,8 +106,8 @@ public class PerfilServiceImplTest {
         //having
         PerfilRequest request = PerfilRequest.builder()
                 .nome("Any Description")
-                .roles(Arrays.asList(RoleRequest.builder().nome(PermissaoEnum.MODERADOR).build(),
-                        RoleRequest.builder().nome(PermissaoEnum.ADMINISTRADOR).build()))
+                .roles(Arrays.asList(RoleRequest.builder().nome(PermissaoEnum.MENU_LOJA).build(),
+                        RoleRequest.builder().nome(PermissaoEnum.MENU_USUARIO).build()))
                 .build();
 
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
@@ -136,8 +136,8 @@ public class PerfilServiceImplTest {
 
         PerfilRequest request = PerfilRequest.builder()
                 .nome("Any Description")
-                .roles(Arrays.asList(RoleRequest.builder().nome(PermissaoEnum.MODERADOR).build(),
-                        RoleRequest.builder().nome(PermissaoEnum.ADMINISTRADOR).build()))
+                .roles(Arrays.asList(RoleRequest.builder().nome(PermissaoEnum.MENU_LOJA).build(),
+                        RoleRequest.builder().nome(PermissaoEnum.MENU_USUARIO).build()))
                 .build();
 
         when(this.iPerfilRepository.findByNome(anyString()).isPresent())

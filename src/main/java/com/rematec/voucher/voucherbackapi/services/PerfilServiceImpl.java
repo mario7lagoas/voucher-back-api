@@ -6,6 +6,7 @@ import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.services.IPerfilService;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
@@ -32,14 +33,19 @@ public class PerfilServiceImpl implements IPerfilService {
     @Autowired
     private VoucherUtil voucherUtil;
 
+    @Autowired
+    private IUsuarioRepository iUsuarioRepository;
+
     @Override
     public List<PerfilResponse> getAllPerfil() {
         return mapper.listPerfilEntityToListPerfilResponse(this.iPerfilRepository.findAll());
     }
+
     @Override
     public List<PerfilResumidoResponse> getAllPerfilResumido() {
         return mapper.listPerfilEntityToListPerfilResumidoResponse(this.iPerfilRepository.findAll());
     }
+
     @Override
     public PerfilResponse addPerfil(PerfilRequest request) {
 
@@ -53,6 +59,7 @@ public class PerfilServiceImpl implements IPerfilService {
                 .build();
         return mapper.perfilEntityToPerfilResponse(this.iPerfilRepository.save(perfilEntity));
     }
+
     @Override
     public PerfilResponse getPerfilNome(String nome) {
         PerfilEntity entity = iPerfilRepository.findByNome(nome)
@@ -60,6 +67,7 @@ public class PerfilServiceImpl implements IPerfilService {
 
         return mapper.perfilEntityToPerfilResponse(entity);
     }
+
     @Override
     public PerfilResponse getPerfilGuid(String guid) {
 
@@ -68,6 +76,7 @@ public class PerfilServiceImpl implements IPerfilService {
 
         return mapper.perfilEntityToPerfilResponse(entity);
     }
+
     @Override
     public PerfilResponse alterarPerfil(String guid, PerfilRequest request) {
 
@@ -85,16 +94,17 @@ public class PerfilServiceImpl implements IPerfilService {
 
         return mapper.perfilEntityToPerfilResponse(iPerfilRepository.save(entity));
     }
+
     @Override
     public void apagarPerfil(String guid) {
 
         PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
                 .orElseThrow(() -> new RuntimeException("Perfil não encontrado."));
 
-        try {
-            this.iPerfilRepository.delete(entity);
-        } catch (Exception ex) {
+        if (this.iUsuarioRepository.findTop1ByPerfisGuid(guid).isPresent()) {
             throw new NaoPermitidoExcluirPerfilException("Não permitido Excluir. Perfil associado a algum Usuario.");
         }
+        this.iPerfilRepository.delete(entity);
+
     }
 }

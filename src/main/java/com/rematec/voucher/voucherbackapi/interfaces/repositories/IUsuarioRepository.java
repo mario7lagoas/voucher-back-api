@@ -13,4 +13,5 @@ public interface IUsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     Optional<UsuarioEntity> findByEmail(String email);
     Optional<UsuarioEntity> findByGuid(String guid);
     Page<UsuarioEntity> findByUserNameContaining(String nome, PageRequest of);
+    Optional<UsuarioEntity> findTop1ByPerfisGuid(String guid);
 }

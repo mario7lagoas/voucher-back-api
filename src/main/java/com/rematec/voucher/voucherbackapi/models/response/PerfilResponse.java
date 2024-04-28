@@ -16,7 +16,6 @@ import java.util.List;
 public class PerfilResponse {
     private String guid;
     private String nome;
-    private Boolean status;
 
     private List<RoleResponse> roles;
 
