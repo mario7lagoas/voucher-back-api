@@ -182,7 +182,7 @@ public class VoucherUtil {
         switch (voucherEntity.getPromocaoStatus().name()) {
             case "EM_USO":
                 throw new VoucherEmUsoException("Em uso no PDV [" + voucherEntity.getPdvResgate()
-                        + "] - Filial [" + getLojaNome(voucherEntity.getFilialCnpjResgate())
+                        + "] - Filial [" + this.getLojaNome(voucherEntity.getFilialCnpjResgate())
                         + "] - Cupom [" + voucherEntity.getCupomResgate() + "]");
             case "UTILIZADO":
                 throw new VoucherUtilizadoException("Utilizado [" + voucherEntity.getPdvResgate()
