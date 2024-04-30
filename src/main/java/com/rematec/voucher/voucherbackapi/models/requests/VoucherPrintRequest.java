@@ -32,4 +32,5 @@ public class VoucherPrintRequest {
     private String fim;
     private String dataAtualizacao;
     private String dataCadastro;
+    private BigDecimal valorMaximoDesconto;
 }

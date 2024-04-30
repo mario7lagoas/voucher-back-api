@@ -14,10 +14,12 @@ import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
+import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.RoleRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -201,6 +204,16 @@ public class VoucherUtil {
             return lojaEntity.get().getNome();
         }
         return cnpj;
+    }
+
+    public BigDecimal getValorMaximoDesconto(PromocaoRequest promocaoRequest) {
+
+        if (promocaoRequest.getValorMaximoDesconto() != null &&
+                promocaoRequest.getTipoDesconto().equals(TipoDescontoEnum.PERCENTUAL.name()) &&
+                promocaoRequest.getValorMaximoDesconto().compareTo(BigDecimal.ZERO) > 0) {
+            return promocaoRequest.getValorMaximoDesconto();
+        }
+        return BigDecimal.ZERO;
     }
 
 }

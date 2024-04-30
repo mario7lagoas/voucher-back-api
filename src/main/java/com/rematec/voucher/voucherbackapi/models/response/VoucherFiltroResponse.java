@@ -32,6 +32,7 @@ public class VoucherFiltroResponse {
     private String voucherStatus;
     private String promocaoStatus;
     private BigDecimal valorDesconto;
+    private BigDecimal valorMaximoDesconto;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fimResgate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -130,8 +130,14 @@ public class VoucherServiceImpl implements IVoucherService {
                 .build();
 
         if (voucherEntity.getTipoDesconto().name().equals("PERCENTUAL")) {
-            voucherPromocaoResponse.setValorDesconto(getValorformatado(promocaoRequest.getValorPagamento(),
-                    voucherEntity.getValorDesconto(), voucherEntity.getTipoDesconto().name()));
+
+            BigDecimal desconto = getValorformatado(promocaoRequest.getValorPagamento(), voucherEntity.getValorDesconto(),
+                    voucherEntity.getTipoDesconto().name());
+
+            voucherPromocaoResponse.setValorDesconto(
+                    desconto.compareTo(voucherEntity.getValorMaximoDesconto()) > 0 ? desconto : voucherEntity.getValorMaximoDesconto()
+            );
+
         } else {
             voucherPromocaoResponse.setValorDesconto(voucherEntity.getValorDesconto());
         }

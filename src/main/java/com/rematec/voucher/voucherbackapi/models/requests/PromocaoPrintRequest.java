@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -17,9 +18,10 @@ public class PromocaoPrintRequest {
     private String fim;
     private String tipoDesconto;
     private String promocaoStatus;
-    private Double valorMinimoParaDisparo;
+    private BigDecimal valorMinimoParaDisparo;
+    private BigDecimal valorMaximoDesconto;
     private Integer diasValidadeVoucher;
-    private Double discontoValor;
+    private BigDecimal discontoValor;
     private Integer discontoPercentual;
     private String autorAlteracao;
     private List<LojaResponse> lojas;

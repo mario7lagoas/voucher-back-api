@@ -54,6 +54,7 @@ public class PromocaoEntity extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private PromocaoStatusEnum promocaoStatus;
     private BigDecimal valorMinimoParaDisparo;
+    private BigDecimal valorMaximoDesconto;
     private Integer diasValidadeVoucher;
     private BigDecimal discontoValor;
     private BigDecimal discontoPercentual;

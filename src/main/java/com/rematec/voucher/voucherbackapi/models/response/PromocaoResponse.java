@@ -30,6 +30,7 @@ public class PromocaoResponse {
     private BigDecimal discontoValor;
     private BigDecimal discontoPercentual;
     private String autorAlteracao;
+    private BigDecimal valorMaximoDesconto;
 
     private List<LojaResponse> lojas;
 

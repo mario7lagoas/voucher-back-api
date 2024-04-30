@@ -40,6 +40,7 @@ public class PromocaoRequest {
     private String autorAlteracao;
     private BigDecimal discontoValor;
     private BigDecimal discontoPercentual;
+    private BigDecimal valorMaximoDesconto;
     private List<Guid> lojas;
 
 }

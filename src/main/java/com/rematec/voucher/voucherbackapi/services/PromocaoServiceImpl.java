@@ -31,9 +31,6 @@ public class PromocaoServiceImpl implements IPromocaoService {
     private IPromocaoRepository iPromocaoRepository;
 
     @Autowired
-    private ILojaRepository iLojaReposity;
-
-    @Autowired
     private VouckBackMapper mapper;
 
     @Autowired
@@ -41,7 +38,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
 
     @Override
     public List<PromocaoResponse> getAllPromocoes() {
-        return mapper.listPromocaoEntityToListPromocaoResponse(iPromocaoRepository.findAll());
+        return this.mapper.listPromocaoEntityToListPromocaoResponse(this.iPromocaoRepository.findAll());
     }
 
     @Override
@@ -58,17 +55,18 @@ public class PromocaoServiceImpl implements IPromocaoService {
                         promocaoRequest.getDiscontoPercentual() : BigDecimal.ZERO)
                 .discontoValor(promocaoRequest.getDiscontoValor() != null ?
                         promocaoRequest.getDiscontoValor() : BigDecimal.ZERO)
+                .valorMaximoDesconto(this.voucherUtil.getValorMaximoDesconto(promocaoRequest))
                 .diasValidadeVoucher(promocaoRequest.getDiasValidadeVoucher())
                 .tipoDesconto(TipoDescontoEnum.valueOf(promocaoRequest.getTipoDesconto()))
-                .lojas(voucherUtil.getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
+                .lojas(this.voucherUtil.getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
                 .build();
 
-        return mapper.promocaoEntityTopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
+        return this.mapper.promocaoEntityTopromocaoResponse(this.iPromocaoRepository.save(promocaoEntity));
     }
 
     @Override
     public PromocaoResponse alterarPromocao(String guid, PromocaoUpdateRequest promocaoUpdateRequest) {
-        PromocaoEntity promocaoEntity = iPromocaoRepository.findByGuid(guid)
+        PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
 
         if (promocaoEntity.getPromocaoStatus().equals(PromocaoStatusEnum.FINALIZADA))
@@ -94,6 +92,9 @@ public class PromocaoServiceImpl implements IPromocaoService {
         if (promocaoUpdateRequest.getDiasValidadeVoucher() != null)
             promocaoEntity.setDiasValidadeVoucher(promocaoUpdateRequest.getDiasValidadeVoucher());
 
+        if (promocaoUpdateRequest.getValorMaximoDesconto() != null)
+            promocaoEntity.setValorMaximoDesconto(this.voucherUtil.getValorMaximoDesconto(promocaoUpdateRequest));
+
         if (promocaoUpdateRequest.getDiscontoValor() != null && promocaoUpdateRequest.getDiscontoValor()
                 .compareTo(BigDecimal.ZERO) > 0) {
             promocaoEntity.setDiscontoValor(promocaoUpdateRequest.getDiscontoValor());
@@ -110,12 +111,14 @@ public class PromocaoServiceImpl implements IPromocaoService {
             promocaoEntity.setFim(promocaoUpdateRequest.getFim());
         if (promocaoUpdateRequest.getLojas() != null) {
             promocaoEntity.getLojas().clear();
-            promocaoEntity.getLojas().addAll(voucherUtil.getListGuidLojasToListLojasEntity(promocaoUpdateRequest.getLojas()));
+            promocaoEntity.getLojas().addAll(
+                    this.voucherUtil.getListGuidLojasToListLojasEntity(promocaoUpdateRequest.getLojas())
+            );
         } else {
             promocaoEntity.setLojas(null);
         }
 
-        return mapper.promocaoEntityTopromocaoResponse(iPromocaoRepository.save(promocaoEntity));
+        return this.mapper.promocaoEntityTopromocaoResponse(this.iPromocaoRepository.save(promocaoEntity));
     }
 
     @Override
@@ -123,7 +126,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
         PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
 
-        iPromocaoRepository.delete(promocaoEntity);
+        this.iPromocaoRepository.delete(promocaoEntity);
     }
 
     @Override
@@ -131,13 +134,13 @@ public class PromocaoServiceImpl implements IPromocaoService {
         PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
 
-        return mapper.promocaoEntityTopromocaoResponse(promocaoEntity);
+        return this.mapper.promocaoEntityTopromocaoResponse(promocaoEntity);
     }
 
     @Override
     public PromocoesPaginadaResponse obterPromocoesPaginadas(String descricao, int page, int size) {
 
-        return mapper.pagePromocoesEntityToPromocoesPaginadaResponse(
+        return this.mapper.pagePromocoesEntityToPromocoesPaginadaResponse(
                 this.iPromocaoRepository.findByDescricaoContaining(descricao, PageRequest.of(page, size)));
 
     }
@@ -164,7 +167,7 @@ public class PromocaoServiceImpl implements IPromocaoService {
 
         PromocaoEntity promocaoEntity = iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
-        if(!promocaoEntity.getPromocaoStatus().equals(PromocaoStatusEnum.PROGRESSO))
+        if (!promocaoEntity.getPromocaoStatus().equals(PromocaoStatusEnum.PROGRESSO))
             throw new NaoPermitidoAlterarStatusException("Status da promoção não pode ser alterado.");
         promocaoEntity.setPromocaoStatus(PromocaoStatusEnum.ATIVA);
         promocaoEntity.setAutorAlteracao(nomeAutorizador);
