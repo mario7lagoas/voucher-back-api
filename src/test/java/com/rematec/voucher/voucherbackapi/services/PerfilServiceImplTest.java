@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -44,10 +45,9 @@ public class PerfilServiceImplTest {
 
     @Mock
     private IPerfilRepository iPerfilRepository;
-    @Mock
+    @Spy
     private VouckBackMapper mapper;
-
-    @Mock
+    @Spy
     private VoucherUtil voucherUtil;
 
     @Before("")
@@ -73,8 +73,6 @@ public class PerfilServiceImplTest {
     public void getAllPerfilCase1() {
         //having
         when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
-        when(this.mapper.listPerfilEntityToListPerfilResponse(anyList()))
-                .thenReturn(new CollisionCheckStack<PerfilResponse>());
 
         //when
         List<PerfilResponse> perfilResponseList = this.perfilService.getAllPerfil();
@@ -88,8 +86,6 @@ public class PerfilServiceImplTest {
     public void getAllPerfilResumidoCase1() {
         //having
         when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
-        when(this.mapper.listPerfilEntityToListPerfilResumidoResponse(anyList()))
-                .thenReturn(new CollisionCheckStack<PerfilResumidoResponse>());
 
         //when
         List<PerfilResumidoResponse> perfilResponseList = this.perfilService.getAllPerfilResumido();
@@ -110,11 +106,13 @@ public class PerfilServiceImplTest {
                 .build();
 
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
+        when(this.voucherUtil.listRolesRequestToListRoleEntity(anyList()))
+                .thenReturn(new CollisionCheckStack<RoleEntity>());
         when(mapper.perfilEntityToPerfilResponse(any(PerfilEntity.class)))
                 .thenReturn(new PerfilResponse());
 
-        //when
 
+        //when
         PerfilResponse perfilResponse = this.perfilService.addPerfil(request);
 
         //then
@@ -139,11 +137,9 @@ public class PerfilServiceImplTest {
                         RoleRequest.builder().nome(PermissaoEnum.MENU_USUARIO).build()))
                 .build();
 
-        when(this.iPerfilRepository.findByNome(anyString()).isPresent())
-                .thenThrow(new PerfilCadastradoException("Já existe um Perfil com este nome."));
-        //doReturn(true).when(this.iPerfilRepository.findByNome(anyString())).isPresent();
+        PerfilEntity perfilEntity = getPerfilEntity();
 
-        //when
+        when(this.iPerfilRepository.findByNome(anyString())).thenReturn(Optional.of(perfilEntity));
 
         //then
         Assertions.assertNotNull(request);
@@ -270,7 +266,6 @@ public class PerfilServiceImplTest {
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));
         when(this.mapper.perfilEntityToPerfilResponse(any(PerfilEntity.class))).thenReturn(new PerfilResponse());
-        when(this.voucherUtil.checkDataNullAndEmpty(request.getNome())).thenReturn(true);
 
         //when
         PerfilResponse perfilResponse = this.perfilService.alterarPerfil(guid, request);
