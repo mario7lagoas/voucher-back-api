@@ -60,7 +60,7 @@ public class VoucherUtilTest {
     public void getListGuidLojasToListLojasEntityCase2() {
 
         //having
-        List<Guid> guidList =  Arrays.asList(Guid.builder().guid("1234").build());
+        List<Guid> guidList = Arrays.asList(Guid.builder().guid("1234").build());
 
         LojaEntity lojaEntity = LojaEntity.builder()
                 .id(1L).cnpj("123456").guid("1234").cnpj("123456").identificacao("Lj 01").build();
@@ -76,12 +76,12 @@ public class VoucherUtilTest {
 
     @Test
     @DisplayName("Should Return A boolen False")
-    public void checkDataNullAndEmptyCase1(){
+    public void checkDataNullAndEmptyCase1() {
         //having
         String data = "";
 
         //when
-        boolean retorno =  this.voucherUtil.checkDataNullAndEmpty(data);
+        boolean retorno = this.voucherUtil.checkDataNullAndEmpty(data);
 
         //then
         Assertions.assertNotNull(retorno);
@@ -91,12 +91,12 @@ public class VoucherUtilTest {
 
     @Test
     @DisplayName("Should Return A boolen False")
-    public void checkDataNullAndEmptyCase2(){
+    public void checkDataNullAndEmptyCase2() {
         //having
         String data = null;
 
         //when
-        boolean retorno =  this.voucherUtil.checkDataNullAndEmpty(data);
+        boolean retorno = this.voucherUtil.checkDataNullAndEmpty(data);
 
         //then
         Assertions.assertNotNull(retorno);
@@ -105,12 +105,12 @@ public class VoucherUtilTest {
 
     @Test
     @DisplayName("Should Return A boolen True")
-    public void checkDataNullAndEmptyCase3(){
+    public void checkDataNullAndEmptyCase3() {
         //having
         String data = "Any String";
 
         //when
-        boolean retorno =  this.voucherUtil.checkDataNullAndEmpty(data);
+        boolean retorno = this.voucherUtil.checkDataNullAndEmpty(data);
 
         //then
         Assertions.assertNotNull(retorno);
@@ -119,7 +119,7 @@ public class VoucherUtilTest {
 
     @Test
     @DisplayName("Should Return A Code Voucher Successfully")
-    public void gerarCodigoVoucherCase1(){
+    public void gerarCodigoVoucherCase1() {
         //having
         String pdv = "001";
 
@@ -133,7 +133,7 @@ public class VoucherUtilTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Get Perfil Promocao Status EM_USO")
-    public void checkStatusVoucherCase1(){
+    public void checkStatusVoucherCase1() {
         //having
         String loja = "Loja 002";
 
@@ -151,7 +151,7 @@ public class VoucherUtilTest {
 
         //then
         Exception exception = Assertions.assertThrows(VoucherEmUsoException.class,
-                ()-> this.voucherUtil.checkStatusVoucher(voucherEntity));
+                () -> this.voucherUtil.checkStatusVoucher(voucherEntity));
         assertThat(exception.getMessage(), is("Em uso no PDV [" + voucherEntity.getPdvResgate()
                 + "] - Filial [" + loja + "] - Cupom [" + voucherEntity.getCupomResgate() + "]"));
 
@@ -159,7 +159,7 @@ public class VoucherUtilTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Get Perfil Promocao Status UTILIZADO")
-    public void checkStatusVoucherCase2(){
+    public void checkStatusVoucherCase2() {
         //having
         String loja = "Loja 002";
 
@@ -177,7 +177,7 @@ public class VoucherUtilTest {
 
         //then
         Exception exception = Assertions.assertThrows(VoucherUtilizadoException.class,
-                ()-> this.voucherUtil.checkStatusVoucher(voucherEntity));
+                () -> this.voucherUtil.checkStatusVoucher(voucherEntity));
         assertThat(exception.getMessage(), is("Utilizado [" + voucherEntity.getPdvResgate()
                 + "] - Filial [" + loja + "] - Cupom [" + voucherEntity.getCupomResgate() + "]"));
 
@@ -185,7 +185,7 @@ public class VoucherUtilTest {
 
     @Test
     @DisplayName("Should Return A LojaNome Successfully")
-    public void getLojaNomeCase1(){
+    public void getLojaNomeCase1() {
 
         //having
         Optional<LojaEntity> lojaEntity = Optional.ofNullable(LojaEntity.builder().nome("Loja 001").build());
