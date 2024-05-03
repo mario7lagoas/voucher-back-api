@@ -135,7 +135,7 @@ public class VoucherServiceImpl implements IVoucherService {
                     voucherEntity.getTipoDesconto().name());
 
             voucherPromocaoResponse.setValorDesconto(
-                    desconto.compareTo(voucherEntity.getValorMaximoDesconto()) > 0 ? desconto : voucherEntity.getValorMaximoDesconto()
+                    desconto.compareTo(voucherEntity.getValorMaximoDesconto()) < 0 ? desconto : voucherEntity.getValorMaximoDesconto()
             );
 
         } else {
@@ -200,6 +200,7 @@ public class VoucherServiceImpl implements IVoucherService {
             entity.setDataResgate(LocalDateTime.now());
             entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
             entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
+            entity.setValorPago(voucher.getValorPago());
             log.warn("Baixa no Voucher {} .", voucher.getTransacao());
             this.iVoucherRepository.save(entity);
         }

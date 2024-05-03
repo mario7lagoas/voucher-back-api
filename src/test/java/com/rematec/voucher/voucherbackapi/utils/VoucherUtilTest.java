@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,10 +45,9 @@ public class VoucherUtilTest {
     public void getListGuidLojasToListLojasEntityCase1() {
 
         //having
-        List<Guid> guidList = null;
 
         //when
-        List<LojaEntity> lojaEntities = this.voucherUtil.getListGuidLojasToListLojasEntity(guidList);
+        List<LojaEntity> lojaEntities = this.voucherUtil.getListGuidLojasToListLojasEntity(null);
 
         //then
         Assertions.assertNull(lojaEntities);
@@ -60,7 +59,7 @@ public class VoucherUtilTest {
     public void getListGuidLojasToListLojasEntityCase2() {
 
         //having
-        List<Guid> guidList = Arrays.asList(Guid.builder().guid("1234").build());
+        List<Guid> guidList = Collections.singletonList(Guid.builder().guid("1234").build());
 
         LojaEntity lojaEntity = LojaEntity.builder()
                 .id(1L).cnpj("123456").guid("1234").cnpj("123456").identificacao("Lj 01").build();
@@ -84,7 +83,6 @@ public class VoucherUtilTest {
         boolean retorno = this.voucherUtil.checkDataNullAndEmpty(data);
 
         //then
-        Assertions.assertNotNull(retorno);
         Assertions.assertFalse(retorno);
 
     }
@@ -93,14 +91,12 @@ public class VoucherUtilTest {
     @DisplayName("Should Return A boolen False")
     public void checkDataNullAndEmptyCase2() {
         //having
-        String data = null;
 
         //when
-        boolean retorno = this.voucherUtil.checkDataNullAndEmpty(data);
+        boolean retorno = this.voucherUtil.checkDataNullAndEmpty(null);
 
         //then
-        Assertions.assertNotNull(retorno);
-        Assertions.assertFalse(retorno);
+         Assertions.assertFalse(retorno);
     }
 
     @Test
@@ -113,7 +109,6 @@ public class VoucherUtilTest {
         boolean retorno = this.voucherUtil.checkDataNullAndEmpty(data);
 
         //then
-        Assertions.assertNotNull(retorno);
         Assertions.assertTrue(retorno);
     }
 

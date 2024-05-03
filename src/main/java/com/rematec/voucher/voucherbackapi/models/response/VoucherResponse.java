@@ -24,5 +24,5 @@ public class VoucherResponse {
     private LocalDateTime fim;
     private TipoDescontoEnum tipoDesconto;
     private BigDecimal valorDesconto;
-
+    private BigDecimal valorMaximoDesconto;
 }
