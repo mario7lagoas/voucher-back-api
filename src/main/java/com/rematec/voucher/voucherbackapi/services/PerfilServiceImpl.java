@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.PerfilApiResponse;
+import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
@@ -36,8 +37,12 @@ public class PerfilServiceImpl implements IPerfilService {
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
 
-    public List<PerfilApiResponse> getAllPerfilTeste() {
+    public List<PerfilApiResponse> buscandoListaPerfil() {
         return mapper.listPerfilEntityToListPerfilApiResponse(this.iPerfilRepository.findAll());
+    }
+
+    public List<PerfilResumidoApiResponse> buscandoListaResumidoPerfil() {
+        return mapper.listPerfilEntityToListPerfilResumidoApiResponse(this.iPerfilRepository.findAll());
     }
 
     @Override
@@ -111,4 +116,6 @@ public class PerfilServiceImpl implements IPerfilService {
         this.iPerfilRepository.delete(entity);
 
     }
+
+
 }

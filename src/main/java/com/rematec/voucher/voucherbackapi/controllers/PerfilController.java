@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.rematec.voucher.models.PerfilApiResponse;
+import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
@@ -30,7 +31,13 @@ public class PerfilController implements PerfilApi{
 
     @Override
     public ResponseEntity<List<PerfilApiResponse>> buscandoListaPerfil() {
-        return new ResponseEntity<>(this.perfilService.getAllPerfilTeste(), HttpStatus.OK);
+        return new ResponseEntity<>(this.perfilService.buscandoListaPerfil(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<PerfilResumidoApiResponse>> buscandoListaResumidoPerfil() {
+        return new ResponseEntity<List<PerfilResumidoApiResponse>>(
+                this.perfilService.buscandoListaResumidoPerfil(), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

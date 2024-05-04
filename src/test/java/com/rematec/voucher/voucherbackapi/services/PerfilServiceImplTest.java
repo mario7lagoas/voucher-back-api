@@ -1,5 +1,7 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.PerfilApiResponse;
+import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
@@ -82,13 +84,39 @@ public class PerfilServiceImplTest {
     }
 
     @Test
+    @DisplayName("Should Return A List PerfilResponse Successfully")
+    public void getAllPerfilCase2() {
+        //having
+        when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
+
+        //when
+        List<PerfilApiResponse> perfilResponseList = this.perfilService.buscandoListaPerfil();
+
+        //then
+        Assertions.assertNotNull(perfilResponseList);
+    }
+
+    @Test
     @DisplayName("Should Return A List PerfilResumidoResponse Successfully")
     public void getAllPerfilResumidoCase1() {
         //having
         when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
 
         //when
-        List<PerfilResumidoResponse> perfilResponseList = this.perfilService.getAllPerfilResumido();
+        List<PerfilApiResponse> perfilResponseList = this.perfilService.buscandoListaPerfil();
+
+        //then
+        Assertions.assertNotNull(perfilResponseList);
+    }
+
+    @Test
+    @DisplayName("Should Return A List PerfilResumidoResponse Successfully")
+    public void getAllPerfilResumidoCase2() {
+        //having
+        when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
+
+        //when
+        List<PerfilResumidoApiResponse> perfilResponseList = this.perfilService.buscandoListaResumidoPerfil();
 
         //then
         Assertions.assertNotNull(perfilResponseList);

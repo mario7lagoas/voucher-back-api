@@ -37,8 +37,24 @@ paths:
             type: array
             items:
               $ref: '#/definitions/PerfilApiResponse'
+  /perfil/resumido:
+    get:
+      tags:
+        - Perfil
+      summary: Buscando Lista de Perfil Resumido
+      description: Buscando Lista de Perfil Resumido na Plataforma
+      operationId: buscandoListaResumidoPerfil
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PerfilResumidoApiResponse'
 definitions:
-  PerfilApiResponse:
+  PerfilResumidoApiResponse:
     type: object
     properties:
       guid:
@@ -46,7 +62,15 @@ definitions:
         example: aaaa-bbbb-cccc-dddd-eeeee
       nome:
         type: string
-        example: Moderador
+        example: Moderator
+  PerfilApiResponse:
+    properties:
+      guid:
+        type: string
+        example: aaaa-bbbb-cccc-dddd-eeeee
+      nome:
+        type: string
+        example: Moderator
       roles:
         type: array
         items:
