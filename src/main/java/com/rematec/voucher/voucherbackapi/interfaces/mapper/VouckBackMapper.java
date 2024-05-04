@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.interfaces.mapper;
 
+import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
@@ -86,5 +87,9 @@ public interface VouckBackMapper {
 
     @Mapping(source = "voucherEntities.content", target = "transacoes")
     VouchersPaginadaResponse pageVouchersEntityToVouchersPaginadaResponse(Page<VoucherEntity> voucherEntities);
+
+    List<PerfilApiResponse> listPerfilEntityToListPerfilApiResponse(List<PerfilEntity> all);
+
+    PerfilApiResponse perfilEntityToPerfilApiResponse(PerfilEntity perfil);
 }
 

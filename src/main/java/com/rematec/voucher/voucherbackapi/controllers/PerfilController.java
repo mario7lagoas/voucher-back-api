@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
@@ -22,15 +23,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/perfil")
-public class PerfilController {
+public class PerfilController implements PerfilApi{
 
     @Autowired
     private PerfilServiceImpl perfilService;
+
+    @Override
+    public ResponseEntity<List<PerfilApiResponse>> buscandoListaPerfil() {
+        return new ResponseEntity<>(this.perfilService.getAllPerfilTeste(), HttpStatus.OK);
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResponse>> getAllPerfil(){
         return new ResponseEntity<>(this.perfilService.getAllPerfil(), HttpStatus.OK);
     }
+
 
     @GetMapping(value = "/resumido", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResumidoResponse>> getAllPerfilResumido(){
@@ -64,5 +71,6 @@ public class PerfilController {
         this.perfilService.apagarPerfil(guid);
         return  ResponseEntity.noContent().build();
     }
+
 
 }

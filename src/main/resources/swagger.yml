@@ -1,0 +1,59 @@
+swagger: '2.0'
+info:
+  title: VouckBack
+  description: |-
+    Microserviço para geração de voucher como descontos em valor ou percentual paras clientes em seu ponto de venda.
+
+    _Se você que saber mais sobre a REMATEC, então  click [aqui](http://rematecvarejo.com.br). Aproveite e nos façam uma visita!_
+    
+    contact:
+    email: mario7lagoas@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+host: localhost:8080
+basePath: /voucher-back/v1
+schemes:
+  - http
+  - https
+
+tags:
+  - name: Perfil
+paths:
+  /perfil:
+    get:
+      tags:
+        - Perfil
+      summary: Buscando Lista de Perfil
+      description: Buscando Lista de Perfil na Plataforma
+      operationId: buscandoListaPerfil
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/PerfilApiResponse'
+definitions:
+  PerfilApiResponse:
+    type: object
+    properties:
+      guid:
+        type: string
+        example: aaaa-bbbb-cccc-dddd-eeeee
+      nome:
+        type: string
+        example: Moderador
+      roles:
+        type: array
+        items:
+          $ref: '#/definitions/RoleApiResponse'
+  RoleApiResponse:
+    type: object
+    properties:
+      nome:
+        type: string
+        example: MENU_LOJA

@@ -1,9 +1,9 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
-import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
@@ -35,6 +35,10 @@ public class PerfilServiceImpl implements IPerfilService {
 
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
+
+    public List<PerfilApiResponse> getAllPerfilTeste() {
+        return mapper.listPerfilEntityToListPerfilApiResponse(this.iPerfilRepository.findAll());
+    }
 
     @Override
     public List<PerfilResponse> getAllPerfil() {

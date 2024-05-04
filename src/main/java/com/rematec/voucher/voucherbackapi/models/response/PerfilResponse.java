@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PerfilResponse {
+public class PerfilResponse  {
     private String guid;
     private String nome;
 
