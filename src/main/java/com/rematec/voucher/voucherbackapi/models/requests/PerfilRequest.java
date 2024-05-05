@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 public class PerfilRequest {
 
-    @NotNull(message = "Nome do Perfil é Obrigatorio")
     @NotBlank(message = "Nome do Perfil é Obrigatorio")
     private String nome;
     @NotNull(message = "Roles do Perfil é Obrigatorio")

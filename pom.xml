@@ -16,9 +16,9 @@
 	<properties>
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-		<jasperreports.version>6.20.0</jasperreports.version>
-		<jasperreports-functions.version>6.20.0</jasperreports-functions.version>
-		<jasperreports-fonts.version>6.20.0</jasperreports-fonts.version>
+		<jasperreports.version>6.21.3</jasperreports.version>
+		<jasperreports-functions.version>6.21.3</jasperreports-functions.version>
+		<jasperreports-fonts.version>6.21.3</jasperreports-fonts.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -86,18 +86,20 @@
 			<version>2.3.1</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
+	<!--
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-codegen-maven-plugin</artifactId>
+			<version>2.4.30</version>
+		</dependency>
+		-->
+
 		<!-- Jasper Reports -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>${jasperreports.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-codegen-maven-plugin</artifactId>
-			<version>3.0.0-rc1</version>
 		</dependency>
 
 		<dependency>
@@ -110,6 +112,47 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-fonts</artifactId>
 			<version>${jasperreports-fonts.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>2.0.1.Final</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/io.swagger.parser.v3/swagger-parser -->
+		<dependency>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser</artifactId>
+			<version>2.1.20</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.7.0</version>
 		</dependency>
 
 		<dependency>
@@ -133,6 +176,34 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.3.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/swagger.yml</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>com.rematec.voucher.voucherbackapi.controllers</apiPackage>
+							<modelPackage>com.rematec.voucher.models</modelPackage>
+							<supportingFilesToGenerate>
+								ApiUtil.java
+							</supportingFilesToGenerate>
+							<configOptions>
+								<delegatePattern>true</delegatePattern>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+<!--
+
 			<plugin>
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-codegen-maven-plugin</artifactId>
@@ -184,7 +255,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

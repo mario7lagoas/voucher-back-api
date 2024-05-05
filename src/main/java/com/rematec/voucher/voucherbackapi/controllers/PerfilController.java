@@ -24,15 +24,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/perfil")
-public class PerfilController implements PerfilApi{
+public class PerfilController  implements PerfilApi{
+
 
     @Autowired
     private PerfilServiceImpl perfilService;
+
 
     @Override
     public ResponseEntity<List<PerfilApiResponse>> buscandoListaPerfil() {
         return new ResponseEntity<>(this.perfilService.buscandoListaPerfil(), HttpStatus.OK);
     }
+
 
     @Override
     public ResponseEntity<List<PerfilResumidoApiResponse>> buscandoListaResumidoPerfil() {
@@ -49,44 +52,56 @@ public class PerfilController implements PerfilApi{
     public ResponseEntity<PerfilApiResponse> buscandoPerfilPeloNome(String nome) {
         return new ResponseEntity<PerfilApiResponse>(this.perfilService.buscandoPerfilPeloNome(nome), HttpStatus.OK);
     }
+/*
+    @Override
+    public ResponseEntity<PerfilApiResponse> criandoPerfil(@Valid @RequestBody PerfilApiRequest perfilApiRequest) {
+        return new ResponseEntity<PerfilApiResponse>(this.perfilService.criandoPerfil(
+        this.dto.perfilApiRequestToPerfilRequest(perfilApiRequest)
+        ), HttpStatus.CREATED);
+    }
+    */
+
+
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PerfilResponse>> getAllPerfil(){
+    public ResponseEntity<List<PerfilResponse>> getAllPerfil() {
         return new ResponseEntity<>(this.perfilService.getAllPerfil(), HttpStatus.OK);
     }
 
 
     @GetMapping(value = "/resumido", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PerfilResumidoResponse>> getAllPerfilResumido(){
+    public ResponseEntity<List<PerfilResumidoResponse>> getAllPerfilResumido() {
         return new ResponseEntity<List<PerfilResumidoResponse>>(this.perfilService.getAllPerfilResumido(), HttpStatus.OK);
     }
 
     @GetMapping(value = "{nome}/nome", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PerfilResponse> getPerfilNome(@PathVariable("nome") String nome ){
+    public ResponseEntity<PerfilResponse> getPerfilNome(@PathVariable("nome") String nome) {
         return new ResponseEntity<PerfilResponse>(this.perfilService.getPerfilNome(nome), HttpStatus.OK);
     }
 
     @GetMapping(value = "{guid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PerfilResponse> getPerfilGuid(@PathVariable("guid") String guid ){
+    public ResponseEntity<PerfilResponse> getPerfilGuid(@PathVariable("guid") String guid) {
         return new ResponseEntity<PerfilResponse>(this.perfilService.getPerfilGuid(guid), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PerfilResponse> addPerfil(@Valid @RequestBody PerfilRequest request){
+    public ResponseEntity<PerfilResponse> addPerfil(@Valid @RequestBody PerfilRequest request) {
 
         return new ResponseEntity<PerfilResponse>(this.perfilService.addPerfil(request), HttpStatus.CREATED);
     }
+
     @PutMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PerfilResponse> alterarPefil (@PathVariable("guid") String guid ,
-                                                        @RequestBody PerfilRequest request){
+    public ResponseEntity<PerfilResponse> alterarPefil(@PathVariable("guid") String guid,
+                                                       @RequestBody PerfilRequest request) {
         return new ResponseEntity<PerfilResponse>(this.perfilService.alterarPerfil(guid, request), HttpStatus.ACCEPTED);
 
     }
+
     @DeleteMapping(value = "{guid}")
-    public ResponseEntity apagarPerfil(@PathVariable("guid") String guid){
+    public ResponseEntity apagarPerfil(@PathVariable("guid") String guid) {
         this.perfilService.apagarPerfil(guid);
-        return  ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 
 

@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.utils;
 
+
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
@@ -104,6 +105,7 @@ public class VoucherUtil {
 
         return listPerfils;
     }
+
 
     public List<RoleEntity> listRolesRequestToListRoleEntity(List<RoleRequest> roles) {
 

@@ -37,6 +37,8 @@ public class PerfilServiceImpl implements IPerfilService {
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
 
+
+
     public List<PerfilApiResponse> buscandoListaPerfil() {
         return this.mapper.listPerfilEntityToListPerfilApiResponse(this.iPerfilRepository.findAll());
     }
@@ -60,6 +62,22 @@ public class PerfilServiceImpl implements IPerfilService {
 
         return this.mapper.perfilEntityToPerfilApiResponse(entity);
     }
+
+    public PerfilApiResponse criandoPerfil(PerfilRequest perfilRequest) {
+
+        if (this.iPerfilRepository.findByNome(perfilRequest.getNome()).isPresent()) {
+            throw new PerfilCadastradoException("Já existe um Perfil com este nome.");
+        }
+        PerfilEntity perfilEntity = PerfilEntity.builder()
+                .guid(UUID.randomUUID().toString())
+                .nome(perfilRequest.getNome())
+                .roles(voucherUtil.listRolesRequestToListRoleEntity(perfilRequest.getRoles()))
+                .build();
+        return this.mapper.perfilEntityToPerfilApiResponse(this.iPerfilRepository.save(perfilEntity));
+
+    }
+
+
 
     @Override
     public List<PerfilResponse> getAllPerfil() {
@@ -130,10 +148,9 @@ public class PerfilServiceImpl implements IPerfilService {
         if (this.iUsuarioRepository.findTop1ByPerfisGuid(guid).isPresent()) {
             throw new NaoPermitidoExcluirPerfilException("Não permitido Excluir. Perfil associado a algum Usuario.");
         }
-        this.iPerfilRepository.delete(entity);
+         this.iPerfilRepository.delete(entity);
 
     }
-
 
 
 }

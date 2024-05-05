@@ -109,6 +109,7 @@ public class PerfilServiceImplTest {
         Assertions.assertNotNull(perfilResponseList);
     }
 
+
     @Test
     @DisplayName("Should Return A List PerfilResumidoResponse Successfully")
     public void getAllPerfilResumidoCase2() {
@@ -121,6 +122,8 @@ public class PerfilServiceImplTest {
         //then
         Assertions.assertNotNull(perfilResponseList);
     }
+
+
 
     @Test
     @DisplayName("Should Create a Perfil Successfully")
