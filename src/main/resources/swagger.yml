@@ -133,6 +133,7 @@ components:
           type: string
           description: Nome do Perfil
           example: Moderator
+          x-constraints: "NotBlank(message = 'Nome do Perfil é Obrigatorio')"
         roles:
           type: array
           items:

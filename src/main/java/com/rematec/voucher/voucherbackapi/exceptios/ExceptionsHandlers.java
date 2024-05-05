@@ -250,4 +250,19 @@ public class ExceptionsHandlers {
         return new ResponseEntity<>(errorresponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> badRequestExceptionHandle(BadRequestException ex) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", "CAMPO_OBRIGATORIO");
+        response.put("mensagem", ex.getMessage());
+
+        ErrorResponse errorresponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(errorresponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

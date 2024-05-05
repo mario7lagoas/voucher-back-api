@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
@@ -52,14 +53,12 @@ public class PerfilController  implements PerfilApi{
     public ResponseEntity<PerfilApiResponse> buscandoPerfilPeloNome(String nome) {
         return new ResponseEntity<PerfilApiResponse>(this.perfilService.buscandoPerfilPeloNome(nome), HttpStatus.OK);
     }
-/*
+
     @Override
-    public ResponseEntity<PerfilApiResponse> criandoPerfil(@Valid @RequestBody PerfilApiRequest perfilApiRequest) {
-        return new ResponseEntity<PerfilApiResponse>(this.perfilService.criandoPerfil(
-        this.dto.perfilApiRequestToPerfilRequest(perfilApiRequest)
-        ), HttpStatus.CREATED);
+    public ResponseEntity<PerfilApiResponse> criandoPerfil(PerfilApiRequest perfilApiRequest) {
+        return new ResponseEntity<PerfilApiResponse>(this.perfilService.criandoPerfil( perfilApiRequest ), HttpStatus.CREATED);
     }
-    */
+
 
 
 

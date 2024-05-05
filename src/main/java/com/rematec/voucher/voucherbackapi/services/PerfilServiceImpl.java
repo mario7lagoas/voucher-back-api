@@ -1,8 +1,10 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
+import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
@@ -17,6 +19,7 @@ import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +39,6 @@ public class PerfilServiceImpl implements IPerfilService {
 
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
-
 
 
     public List<PerfilApiResponse> buscandoListaPerfil() {
@@ -63,20 +65,28 @@ public class PerfilServiceImpl implements IPerfilService {
         return this.mapper.perfilEntityToPerfilApiResponse(entity);
     }
 
-    public PerfilApiResponse criandoPerfil(PerfilRequest perfilRequest) {
+    public PerfilApiResponse criandoPerfil(PerfilApiRequest perfilApiRequest) {
 
-        if (this.iPerfilRepository.findByNome(perfilRequest.getNome()).isPresent()) {
+        if (!this.voucherUtil.checkDataNullAndEmpty(perfilApiRequest.getNome())) {
+            throw new BadRequestException("Nome do perfil não pode ser nulo.");
+        }
+
+        if (this.iPerfilRepository.findByNome(perfilApiRequest.getNome()).isPresent()) {
             throw new PerfilCadastradoException("Já existe um Perfil com este nome.");
         }
+
+
+        /*
         PerfilEntity perfilEntity = PerfilEntity.builder()
                 .guid(UUID.randomUUID().toString())
-                .nome(perfilRequest.getNome())
+                .nome(perfilApiRequest.getNome())
                 .roles(voucherUtil.listRolesRequestToListRoleEntity(perfilRequest.getRoles()))
                 .build();
         return this.mapper.perfilEntityToPerfilApiResponse(this.iPerfilRepository.save(perfilEntity));
 
+         */
+        return new PerfilApiResponse();
     }
-
 
 
     @Override
@@ -148,7 +158,7 @@ public class PerfilServiceImpl implements IPerfilService {
         if (this.iUsuarioRepository.findTop1ByPerfisGuid(guid).isPresent()) {
             throw new NaoPermitidoExcluirPerfilException("Não permitido Excluir. Perfil associado a algum Usuario.");
         }
-         this.iPerfilRepository.delete(entity);
+        this.iPerfilRepository.delete(entity);
 
     }
 
