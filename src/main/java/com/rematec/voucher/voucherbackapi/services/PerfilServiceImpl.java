@@ -38,21 +38,37 @@ public class PerfilServiceImpl implements IPerfilService {
     private IUsuarioRepository iUsuarioRepository;
 
     public List<PerfilApiResponse> buscandoListaPerfil() {
-        return mapper.listPerfilEntityToListPerfilApiResponse(this.iPerfilRepository.findAll());
+        return this.mapper.listPerfilEntityToListPerfilApiResponse(this.iPerfilRepository.findAll());
     }
 
     public List<PerfilResumidoApiResponse> buscandoListaResumidoPerfil() {
-        return mapper.listPerfilEntityToListPerfilResumidoApiResponse(this.iPerfilRepository.findAll());
+        return this.mapper.listPerfilEntityToListPerfilResumidoApiResponse(this.iPerfilRepository.findAll());
+    }
+
+    public PerfilApiResponse buscandoPerfilPeloGUID(String guid) {
+
+        PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
+                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
+
+        return this.mapper.perfilEntityToPerfilApiResponse(entity);
+    }
+
+    public PerfilApiResponse buscandoPerfilPeloNome(String nome) {
+
+        PerfilEntity entity = this.iPerfilRepository.findByNome(nome)
+                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
+
+        return this.mapper.perfilEntityToPerfilApiResponse(entity);
     }
 
     @Override
     public List<PerfilResponse> getAllPerfil() {
-        return mapper.listPerfilEntityToListPerfilResponse(this.iPerfilRepository.findAll());
+        return this.mapper.listPerfilEntityToListPerfilResponse(this.iPerfilRepository.findAll());
     }
 
     @Override
     public List<PerfilResumidoResponse> getAllPerfilResumido() {
-        return mapper.listPerfilEntityToListPerfilResumidoResponse(this.iPerfilRepository.findAll());
+        return this.mapper.listPerfilEntityToListPerfilResumidoResponse(this.iPerfilRepository.findAll());
     }
 
     @Override
@@ -66,30 +82,31 @@ public class PerfilServiceImpl implements IPerfilService {
                 .nome(request.getNome())
                 .roles(voucherUtil.listRolesRequestToListRoleEntity(request.getRoles()))
                 .build();
-        return mapper.perfilEntityToPerfilResponse(this.iPerfilRepository.save(perfilEntity));
+        return this.mapper.perfilEntityToPerfilResponse(this.iPerfilRepository.save(perfilEntity));
     }
+
 
     @Override
     public PerfilResponse getPerfilNome(String nome) {
-        PerfilEntity entity = iPerfilRepository.findByNome(nome)
+        PerfilEntity entity = this.iPerfilRepository.findByNome(nome)
                 .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
-        return mapper.perfilEntityToPerfilResponse(entity);
+        return this.mapper.perfilEntityToPerfilResponse(entity);
     }
 
     @Override
     public PerfilResponse getPerfilGuid(String guid) {
 
-        PerfilEntity entity = iPerfilRepository.findByGuid(guid)
+        PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
                 .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
-        return mapper.perfilEntityToPerfilResponse(entity);
+        return this.mapper.perfilEntityToPerfilResponse(entity);
     }
 
     @Override
     public PerfilResponse alterarPerfil(String guid, PerfilRequest request) {
 
-        PerfilEntity entity = iPerfilRepository.findByGuid(guid)
+        PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
                 .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
         if (this.voucherUtil.checkDataNullAndEmpty(request.getNome())) {
@@ -98,10 +115,10 @@ public class PerfilServiceImpl implements IPerfilService {
 
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             entity.getRoles().clear();
-            entity.getRoles().addAll(voucherUtil.listRolesRequestToListRoleEntity(request.getRoles()));
+            entity.getRoles().addAll(this.voucherUtil.listRolesRequestToListRoleEntity(request.getRoles()));
         }
 
-        return mapper.perfilEntityToPerfilResponse(iPerfilRepository.save(entity));
+        return this.mapper.perfilEntityToPerfilResponse(iPerfilRepository.save(entity));
     }
 
     @Override
@@ -116,6 +133,7 @@ public class PerfilServiceImpl implements IPerfilService {
         this.iPerfilRepository.delete(entity);
 
     }
+
 
 
 }

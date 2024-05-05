@@ -40,6 +40,16 @@ public class PerfilController implements PerfilApi{
                 this.perfilService.buscandoListaResumidoPerfil(), HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<PerfilApiResponse> buscandoPerfilPeloGUID(String guid) {
+        return new ResponseEntity<PerfilApiResponse>(this.perfilService.buscandoPerfilPeloGUID(guid), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PerfilApiResponse> buscandoPerfilPeloNome(String nome) {
+        return new ResponseEntity<PerfilApiResponse>(this.perfilService.buscandoPerfilPeloNome(nome), HttpStatus.OK);
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResponse>> getAllPerfil(){
         return new ResponseEntity<>(this.perfilService.getAllPerfil(), HttpStatus.OK);

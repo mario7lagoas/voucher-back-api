@@ -201,8 +201,10 @@ public class VoucherUtil {
 
         Optional<LojaEntity> lojaEntity = this.iLojaReposity.findByCnpj(this.apenasNumerosNaString(cnpj));
         if (lojaEntity.isPresent()) {
+            log.debug("Retornado nome da loja {} ", lojaEntity.get().getNome());
             return lojaEntity.get().getNome();
         }
+        log.debug("Retornado nome da loja {} ", cnpj);
         return cnpj;
     }
 
@@ -211,8 +213,10 @@ public class VoucherUtil {
         if (promocaoRequest.getValorMaximoDesconto() != null &&
                 promocaoRequest.getTipoDesconto().equals(TipoDescontoEnum.PERCENTUAL.name()) &&
                 promocaoRequest.getValorMaximoDesconto().compareTo(BigDecimal.ZERO) > 0) {
+            log.debug("Retornado valor Maximo desconto {} ", promocaoRequest.getValorMaximoDesconto());
             return promocaoRequest.getValorMaximoDesconto();
         }
+        log.debug("Retornado valor Maximo desconto {} ", BigDecimal.ZERO);
         return BigDecimal.ZERO;
     }
 
