@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.utils;
 
 
+import com.rematec.voucher.models.RoleApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
@@ -14,6 +15,7 @@ import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
+import com.rematec.voucher.voucherbackapi.models.enums.PermissaoEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
@@ -106,6 +108,13 @@ public class VoucherUtil {
         return listPerfils;
     }
 
+    public List<RoleEntity> listRoleApiResponseToListRoleEntity(List<RoleApiResponse> roles) {
+        return roles
+                .stream()
+                .map(roleRequest -> iRoleRepository.findByNome(PermissaoEnum.valueOf(roleRequest.getNome())))
+                .collect(Collectors.toList());
+
+    }
 
     public List<RoleEntity> listRolesRequestToListRoleEntity(List<RoleRequest> roles) {
 
@@ -221,5 +230,6 @@ public class VoucherUtil {
         log.debug("Retornado valor Maximo desconto {} ", BigDecimal.ZERO);
         return BigDecimal.ZERO;
     }
+
 
 }

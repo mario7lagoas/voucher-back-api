@@ -224,7 +224,7 @@ public class ExceptionsHandlers {
     public ResponseEntity<ErrorResponse> oResourceFoundHandle(NoResourceFoundException ex) {
 
         Map<String, String> response = new HashMap<>();
-        response.put("codigo", "ENDPOINT_NAO_ENCONTRADO");
+        response.put("codigo", ErrosEnum.ENDPOINT_NAO_ENCONTRADO.toString());
         response.put("mensagem", ex.getBody().toString());
 
         ErrorResponse errorresponse = ErrorResponse.builder()
@@ -239,7 +239,7 @@ public class ExceptionsHandlers {
     public ResponseEntity<ErrorResponse> methodValidationexceptionHandle(HandlerMethodValidationException ex) {
 
         Map<String, String> response = new HashMap<>();
-        response.put("codigo", "PAYLOAD_INVALIDO");
+        response.put("codigo", ErrosEnum.PAYLOAD_INVALIDO.toString());
         response.put("mensagem", ex.getBody().toString());
 
         ErrorResponse errorresponse = ErrorResponse.builder()

@@ -12,9 +12,6 @@ import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilReposit
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.services.IPerfilService;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
-import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +37,17 @@ public class PerfilServiceImpl implements IPerfilService {
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
 
-
+    @Override
     public List<PerfilApiResponse> buscandoListaPerfil() {
         return this.mapper.listPerfilEntityToListPerfilApiResponse(this.iPerfilRepository.findAll());
     }
 
+    @Override
     public List<PerfilResumidoApiResponse> buscandoListaResumidoPerfil() {
         return this.mapper.listPerfilEntityToListPerfilResumidoApiResponse(this.iPerfilRepository.findAll());
     }
 
+    @Override
     public PerfilApiResponse buscandoPerfilPeloGUID(String guid) {
 
         PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
@@ -57,6 +56,7 @@ public class PerfilServiceImpl implements IPerfilService {
         return this.mapper.perfilEntityToPerfilApiResponse(entity);
     }
 
+    @Override
     public PerfilApiResponse buscandoPerfilPeloNome(String nome) {
 
         PerfilEntity entity = this.iPerfilRepository.findByNome(nome)
@@ -65,95 +65,54 @@ public class PerfilServiceImpl implements IPerfilService {
         return this.mapper.perfilEntityToPerfilApiResponse(entity);
     }
 
+    @Override
     public PerfilApiResponse criandoPerfil(PerfilApiRequest perfilApiRequest) {
 
         if (!this.voucherUtil.checkDataNullAndEmpty(perfilApiRequest.getNome())) {
             throw new BadRequestException("Nome do perfil não pode ser nulo.");
         }
 
+        if (perfilApiRequest.getRoles() == null || perfilApiRequest.getRoles().isEmpty()) {
+            throw new BadRequestException("Permissão do Perfil é Obrigatorio.");
+        }
+
         if (this.iPerfilRepository.findByNome(perfilApiRequest.getNome()).isPresent()) {
             throw new PerfilCadastradoException("Já existe um Perfil com este nome.");
         }
 
-
-        /*
         PerfilEntity perfilEntity = PerfilEntity.builder()
                 .guid(UUID.randomUUID().toString())
                 .nome(perfilApiRequest.getNome())
-                .roles(voucherUtil.listRolesRequestToListRoleEntity(perfilRequest.getRoles()))
+                .roles(this.voucherUtil.listRoleApiResponseToListRoleEntity(perfilApiRequest.getRoles()))
                 .build();
         return this.mapper.perfilEntityToPerfilApiResponse(this.iPerfilRepository.save(perfilEntity));
 
-         */
-        return new PerfilApiResponse();
-    }
-
-
-    @Override
-    public List<PerfilResponse> getAllPerfil() {
-        return this.mapper.listPerfilEntityToListPerfilResponse(this.iPerfilRepository.findAll());
     }
 
     @Override
-    public List<PerfilResumidoResponse> getAllPerfilResumido() {
-        return this.mapper.listPerfilEntityToListPerfilResumidoResponse(this.iPerfilRepository.findAll());
-    }
-
-    @Override
-    public PerfilResponse addPerfil(PerfilRequest request) {
-
-        if (this.iPerfilRepository.findByNome(request.getNome()).isPresent()) {
-            throw new PerfilCadastradoException("Já existe um Perfil com este nome.");
-        }
-        PerfilEntity perfilEntity = PerfilEntity.builder()
-                .guid(UUID.randomUUID().toString())
-                .nome(request.getNome())
-                .roles(voucherUtil.listRolesRequestToListRoleEntity(request.getRoles()))
-                .build();
-        return this.mapper.perfilEntityToPerfilResponse(this.iPerfilRepository.save(perfilEntity));
-    }
-
-
-    @Override
-    public PerfilResponse getPerfilNome(String nome) {
-        PerfilEntity entity = this.iPerfilRepository.findByNome(nome)
-                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
-
-        return this.mapper.perfilEntityToPerfilResponse(entity);
-    }
-
-    @Override
-    public PerfilResponse getPerfilGuid(String guid) {
+    public PerfilApiResponse alterandoPerfil(String guid, PerfilApiRequest perfilApiRequest) {
 
         PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
                 .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
-        return this.mapper.perfilEntityToPerfilResponse(entity);
-    }
-
-    @Override
-    public PerfilResponse alterarPerfil(String guid, PerfilRequest request) {
-
-        PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
-                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
-
-        if (this.voucherUtil.checkDataNullAndEmpty(request.getNome())) {
-            entity.setNome(request.getNome());
+        if (this.voucherUtil.checkDataNullAndEmpty(perfilApiRequest.getNome())) {
+            entity.setNome(perfilApiRequest.getNome());
         }
 
-        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+        if (perfilApiRequest.getRoles() != null && !perfilApiRequest.getRoles().isEmpty()) {
             entity.getRoles().clear();
-            entity.getRoles().addAll(this.voucherUtil.listRolesRequestToListRoleEntity(request.getRoles()));
+            entity.getRoles().addAll(this.voucherUtil.listRoleApiResponseToListRoleEntity(perfilApiRequest.getRoles()));
         }
 
-        return this.mapper.perfilEntityToPerfilResponse(iPerfilRepository.save(entity));
+        return this.mapper.perfilEntityToPerfilApiResponse(this.iPerfilRepository.save(entity));
+
     }
 
     @Override
-    public void apagarPerfil(String guid) {
+    public void apagandoPerfil(String guid) {
 
         PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
-                .orElseThrow(() -> new RuntimeException("Perfil não encontrado."));
+                .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));
 
         if (this.iUsuarioRepository.findTop1ByPerfisGuid(guid).isPresent()) {
             throw new NaoPermitidoExcluirPerfilException("Não permitido Excluir. Perfil associado a algum Usuario.");
@@ -161,6 +120,5 @@ public class PerfilServiceImpl implements IPerfilService {
         this.iPerfilRepository.delete(entity);
 
     }
-
 
 }

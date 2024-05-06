@@ -1,19 +1,21 @@
 package com.rematec.voucher.voucherbackapi.interfaces.services;
 
-import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
+
+
+import com.rematec.voucher.models.PerfilApiRequest;
+import com.rematec.voucher.models.PerfilApiResponse;
+import com.rematec.voucher.models.PerfilResumidoApiResponse;
 
 import java.util.List;
 
 public interface IPerfilService {
 
-    List<PerfilResponse> getAllPerfil();
-    List<PerfilResumidoResponse> getAllPerfilResumido();
-    PerfilResponse addPerfil(PerfilRequest request);
-    PerfilResponse getPerfilNome(String nome);
-    PerfilResponse getPerfilGuid(String guid);
-    PerfilResponse alterarPerfil(String guid, PerfilRequest request);
-    void apagarPerfil(String guid);
+    List<PerfilApiResponse> buscandoListaPerfil();
+    List<PerfilResumidoApiResponse> buscandoListaResumidoPerfil();
+    PerfilApiResponse buscandoPerfilPeloGUID(String guid);
+    PerfilApiResponse buscandoPerfilPeloNome(String nome);
+    PerfilApiResponse criandoPerfil(PerfilApiRequest perfilApiRequest);
+    PerfilApiResponse alterandoPerfil(String guid, PerfilApiRequest perfilApiRequest);
+    void apagandoPerfil(String guid);
 
 }

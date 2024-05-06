@@ -19,6 +19,6 @@ public class PerfilRequest {
 
     @NotBlank(message = "Nome do Perfil é Obrigatorio")
     private String nome;
-    @NotNull(message = "Roles do Perfil é Obrigatorio")
+    @NotNull(message = "Permissões do Perfil é Obrigatorio")
     private List<RoleRequest> roles;
 }

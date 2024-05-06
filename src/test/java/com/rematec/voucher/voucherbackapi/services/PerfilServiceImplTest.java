@@ -1,18 +1,18 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
+import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
+import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.PermissaoEnum;
-import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.RoleRequest;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
+import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 
 import org.aspectj.lang.annotation.Before;
@@ -27,12 +27,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.rematec.voucher.voucherbackapi.builders.PerfilApiRequestBuilder.umPerfilApiRequest;
+import static com.rematec.voucher.voucherbackapi.builders.PerfilEntityBuilder.umPerfilEntity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
@@ -47,6 +47,10 @@ public class PerfilServiceImplTest {
 
     @Mock
     private IPerfilRepository iPerfilRepository;
+
+    @Mock
+    private IUsuarioRepository iUsuarioRepository;
+
     @Spy
     private VouckBackMapper mapper;
     @Spy
@@ -57,35 +61,9 @@ public class PerfilServiceImplTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    private PerfilEntity getPerfilEntity() {
-
-        return PerfilEntity.builder()
-                .id(1L)
-                .nome("My Perfil")
-                .dataAtualizacao(LocalDateTime.now())
-                .dataCadastro(LocalDateTime.now())
-                .guid("123456")
-                .roles(Arrays.asList(RoleEntity.builder().id(1L).nome(PermissaoEnum.MENU_LOJA).build(),
-                        RoleEntity.builder().id(2L).nome(PermissaoEnum.MENU_USUARIO).build()))
-                .build();
-    }
-
     @Test
-    @DisplayName("Should Return A List PerfilResponse Successfully")
-    public void getAllPerfilCase1() {
-        //having
-        when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
-
-        //when
-        List<PerfilResponse> perfilResponseList = this.perfilService.getAllPerfil();
-
-        //then
-        Assertions.assertNotNull(perfilResponseList);
-    }
-
-    @Test
-    @DisplayName("Should Return A List PerfilResponse Successfully")
-    public void getAllPerfilCase2() {
+    @DisplayName("Should Return A List PerfilApiResponse Successfully")
+    public void buscandoListaPerfilCase1() {
         //having
         when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
 
@@ -97,22 +75,8 @@ public class PerfilServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Return A List PerfilResumidoResponse Successfully")
-    public void getAllPerfilResumidoCase1() {
-        //having
-        when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
-
-        //when
-        List<PerfilApiResponse> perfilResponseList = this.perfilService.buscandoListaPerfil();
-
-        //then
-        Assertions.assertNotNull(perfilResponseList);
-    }
-
-
-    @Test
-    @DisplayName("Should Return A List PerfilResumidoResponse Successfully")
-    public void getAllPerfilResumidoCase2() {
+    @DisplayName("Should Return A List PerfilResumidoApiResponse Successfully")
+    public void buscandoListaResumidoPerfilCase1() {
         //having
         when(this.iPerfilRepository.findAll()).thenReturn(new CollisionCheckStack<PerfilEntity>());
 
@@ -124,27 +88,21 @@ public class PerfilServiceImplTest {
     }
 
 
-
     @Test
     @DisplayName("Should Create a Perfil Successfully")
-    public void addPerfilCase1() {
+    public void criandoPerfilCase1() {
 
         //having
-        PerfilRequest request = PerfilRequest.builder()
-                .nome("Any Description")
-                .roles(Arrays.asList(RoleRequest.builder().nome(PermissaoEnum.MENU_LOJA).build(),
-                        RoleRequest.builder().nome(PermissaoEnum.MENU_USUARIO).build()))
-                .build();
+        PerfilApiRequest request = umPerfilApiRequest().comRoles().agora();
 
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
-        when(this.voucherUtil.listRolesRequestToListRoleEntity(anyList()))
+        when(this.voucherUtil.listRoleApiResponseToListRoleEntity(anyList()))
                 .thenReturn(new CollisionCheckStack<RoleEntity>());
-        when(mapper.perfilEntityToPerfilResponse(any(PerfilEntity.class)))
-                .thenReturn(new PerfilResponse());
+        when(mapper.perfilEntityToPerfilApiResponse(any(PerfilEntity.class))).thenReturn(new PerfilApiResponse());
 
 
         //when
-        PerfilResponse perfilResponse = this.perfilService.addPerfil(request);
+        PerfilApiResponse perfilResponse = this.perfilService.criandoPerfil(request);
 
         //then
 
@@ -158,42 +116,102 @@ public class PerfilServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Perfil Exist")
-    public void addPerfilCase2() {
+    public void criandoPerfilCase2() {
 
         //having
+        PerfilApiRequest request = umPerfilApiRequest().comRoles().agora();
 
-        PerfilRequest request = PerfilRequest.builder()
-                .nome("Any Description")
-                .roles(Arrays.asList(RoleRequest.builder().nome(PermissaoEnum.MENU_LOJA).build(),
-                        RoleRequest.builder().nome(PermissaoEnum.MENU_USUARIO).build()))
-                .build();
-
-        PerfilEntity perfilEntity = getPerfilEntity();
+        PerfilEntity perfilEntity = umPerfilEntity().agora();
 
         when(this.iPerfilRepository.findByNome(anyString())).thenReturn(Optional.of(perfilEntity));
 
         //then
         Assertions.assertNotNull(request);
         Exception exception = Assertions.assertThrows(PerfilCadastradoException.class,
-                () -> this.perfilService.addPerfil(request));
+                () -> this.perfilService.criandoPerfil(request));
 
         assertThat(exception.getMessage(), is("Já existe um Perfil com este nome."));
 
     }
 
     @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Perfil Nome Is Null")
+    public void criandoPerfilCase3() {
+
+        //having
+        PerfilApiRequest request = umPerfilApiRequest().nomeNull().comRoles().agora();
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.perfilService.criandoPerfil(request));
+
+        assertThat(exception.getMessage(), is("Nome do perfil não pode ser nulo."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Perfil Nome Is Empty")
+    public void criandoPerfilCase4() {
+
+        //having
+        PerfilApiRequest request = umPerfilApiRequest().nomeEmpty().comRoles().agora();
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.perfilService.criandoPerfil(request));
+
+        assertThat(exception.getMessage(), is("Nome do perfil não pode ser nulo."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Perfil Roles Is Blank")
+    public void criandoPerfilCase5() {
+
+        //having
+        PerfilApiRequest request = umPerfilApiRequest().agora();
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.perfilService.criandoPerfil(request));
+
+        assertThat(exception.getMessage(), is("Permissão do Perfil é Obrigatorio."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Perfil Roles Is Null")
+    public void criandoPerfilCase6() {
+
+        //having
+        PerfilApiRequest request = umPerfilApiRequest().rolesNull().agora();
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.perfilService.criandoPerfil(request));
+
+        assertThat(exception.getMessage(), is("Permissão do Perfil é Obrigatorio."));
+
+    }
+
+
+    @Test
     @DisplayName("Should Return A Perfil By Guid Successfully")
-    public void getPerfilGuidCase1() {
+    public void buscandoPerfilPeloCase1() {
         //having
         String guid = UUID.randomUUID().toString();
 
-        PerfilEntity entity = getPerfilEntity();
+        PerfilEntity entity = umPerfilEntity().agora();
 
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));
-        when(this.mapper.perfilEntityToPerfilResponse(any(PerfilEntity.class))).thenReturn(new PerfilResponse());
+        when(this.mapper.perfilEntityToPerfilApiResponse(any(PerfilEntity.class))).thenReturn(new PerfilApiResponse());
 
         //when
-        PerfilResponse perfilResponse = this.perfilService.getPerfilGuid(guid);
+        PerfilApiResponse perfilResponse = this.perfilService.buscandoPerfilPeloGUID(guid);
 
         //then
         Assertions.assertNotNull(perfilResponse);
@@ -201,7 +219,7 @@ public class PerfilServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Get Perfil by Guid")
-    public void getPerfilGuidCase2() {
+    public void buscandoPerfilPeloCase2() {
         //having
         String guid = UUID.randomUUID().toString();
 
@@ -211,14 +229,14 @@ public class PerfilServiceImplTest {
 
         //then
         Exception exception = Assertions.assertThrows(PerfilNaoEncontradoException.class,
-                () -> this.perfilService.getPerfilGuid(guid));
+                () -> this.perfilService.buscandoPerfilPeloGUID(guid));
 
         assertThat(exception.getMessage(), is("Perfil não encontrado."));
     }
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Find By Perfil At GUID And Name IsNull Or Empty")
-    public void getPerfilGuidCase3() {
+    public void buscandoPerfilPeloCase3() {
         //having
 
 
@@ -226,24 +244,24 @@ public class PerfilServiceImplTest {
 
         //then
         Exception exception = Assertions.assertThrows(PerfilNaoEncontradoException.class,
-                () -> this.perfilService.getPerfilGuid(null));
+                () -> this.perfilService.buscandoPerfilPeloGUID(null));
 
         assertThat(exception.getMessage(), is("Perfil não encontrado."));
     }
 
     @Test
     @DisplayName("Should Return A Perfil By Nome Successfully")
-    public void getPerfilNomeCase1() {
+    public void buscandoPerfilPeloNomeCase1() {
         //having
         String perfil = "My Perfil";
 
-        PerfilEntity entity = getPerfilEntity();
+        PerfilEntity entity = umPerfilEntity().agora();
 
         when(this.iPerfilRepository.findByNome(perfil)).thenReturn(Optional.of(entity));
-        when(this.mapper.perfilEntityToPerfilResponse(any(PerfilEntity.class))).thenReturn(new PerfilResponse());
+        when(this.mapper.perfilEntityToPerfilApiResponse(entity)).thenReturn(new PerfilApiResponse());
 
         //when
-        PerfilResponse perfilResponse = this.perfilService.getPerfilNome(perfil);
+        PerfilApiResponse perfilResponse = this.perfilService.buscandoPerfilPeloNome(perfil);
 
         //then
         Assertions.assertNotNull(perfilResponse);
@@ -251,7 +269,7 @@ public class PerfilServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Get Perfil by Nome")
-    public void getPerfilNomeCase2() {
+    public void buscandoPerfilPeloNomeCase2() {
         //having
         String perfil = "My Perfil";
 
@@ -261,14 +279,14 @@ public class PerfilServiceImplTest {
 
         //then
         Exception exception = Assertions.assertThrows(PerfilNaoEncontradoException.class,
-                () -> this.perfilService.getPerfilNome(perfil));
+                () -> this.perfilService.buscandoPerfilPeloNome(perfil));
 
         assertThat(exception.getMessage(), is("Perfil não encontrado."));
     }
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Find By Perfil At Nome And Name IsNull Or Empty")
-    public void getPerfilNomeCase3() {
+    public void buscandoPerfilPeloNomeCase3() {
         //having
 
 
@@ -276,30 +294,26 @@ public class PerfilServiceImplTest {
 
         //then
         Exception exception = Assertions.assertThrows(PerfilNaoEncontradoException.class,
-                () -> this.perfilService.getPerfilNome(null));
+                () -> this.perfilService.buscandoPerfilPeloNome(null));
 
         assertThat(exception.getMessage(), is("Perfil não encontrado."));
     }
 
     @Test
     @DisplayName("Should Update a Perfil status Successfully")
-    public void alterarPerfilCase1() {
+    public void alterandoPerfilCase1() {
         //having
-        PerfilEntity entity = getPerfilEntity();
+        PerfilEntity entity = umPerfilEntity().agora();
         String guid = entity.getGuid();
-        String nameAltered = "Other";
 
-        PerfilRequest request = PerfilRequest.builder()
-                .nome(nameAltered)
-                .roles(null)
-                .build();
+        PerfilApiRequest request = umPerfilApiRequest().setNome("Other").agora();
 
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));
-        when(this.mapper.perfilEntityToPerfilResponse(any(PerfilEntity.class))).thenReturn(new PerfilResponse());
+        when(this.mapper.perfilEntityToPerfilApiResponse(any(PerfilEntity.class))).thenReturn(new PerfilApiResponse());
 
         //when
-        PerfilResponse perfilResponse = this.perfilService.alterarPerfil(guid, request);
+        PerfilApiResponse perfilResponse = this.perfilService.alterandoPerfil(guid, request);
 
         //then
         Assertions.assertNotNull(perfilResponse);
@@ -317,11 +331,7 @@ public class PerfilServiceImplTest {
         //having
         String guid = UUID.randomUUID().toString();
 
-        PerfilRequest request = PerfilRequest.builder()
-                .nome("Any Description")
-                .roles(null)
-                .build();
-
+        PerfilApiRequest request = umPerfilApiRequest().agora();
 
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.empty());
 
@@ -332,9 +342,72 @@ public class PerfilServiceImplTest {
         Assertions.assertNotNull(guid);
 
         Exception exception = Assertions.assertThrows(PerfilNaoEncontradoException.class,
-                () -> this.perfilService.alterarPerfil(guid, request));
+                () -> this.perfilService.alterandoPerfil(guid, request));
 
         assertThat(exception.getMessage(), is("Perfil não encontrado."));
+
+    }
+
+    @Test
+    @DisplayName("Should Delete A Perfil Successfully")
+    public void apagandoPerfilCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        PerfilEntity entity = umPerfilEntity().setGuid(guid).setNome("Perfil Delete").agora();
+
+        when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));
+        when(this.iUsuarioRepository.findTop1ByPerfisGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+        this.perfilService.apagandoPerfil(guid);
+
+        //then
+        verify(this.iPerfilRepository, times(1)).delete(
+                argThat(perfilEntity -> perfilEntity.getNome().equals("Perfil Delete")
+                        && perfilEntity.getGuid().equals(guid))
+        );
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Delete Perfil And It Does Not Exist")
+    public void apagandoPerfilCase2() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Exception exception = Assertions.assertThrows(PerfilNaoEncontradoException.class,
+                () -> this.perfilService.apagandoPerfil(guid));
+
+        assertThat(exception.getMessage(), is("Perfil não encontrado."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Delete Perfil And It Does In use")
+    public void apagandoPerfilCase3() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        PerfilEntity entity = umPerfilEntity().setGuid(guid).setNome("Perfil In Use").agora();
+
+        when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));
+        when(this.iUsuarioRepository.findTop1ByPerfisGuid(guid)).thenReturn(Optional.of(new UsuarioEntity()));
+
+        //when
+
+        //then
+        Exception exception = Assertions.assertThrows(NaoPermitidoExcluirPerfilException.class,
+                () -> this.perfilService.apagandoPerfil(guid));
+
+        assertThat(exception.getMessage(), is("Não permitido Excluir. Perfil associado a algum Usuario."));
 
     }
 

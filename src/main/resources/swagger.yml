@@ -59,6 +59,23 @@ paths:
                 $ref: '#/components/schemas/PerfilApiResponse'
         '422':
           description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 422 UNPROCESSABLE_ENTITY
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Perfil já cadastrado.
+                        mensagem:
+                          type: string
+                          example: Já existe um Perfil com este nome.
   /perfil/resumido:
     get:
       tags:
@@ -98,6 +115,123 @@ paths:
                 $ref: '#/components/schemas/PerfilApiResponse'
         '404':
           description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: Perfil não encontrado.
+    put:
+      tags:
+        - Perfil
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Alterando um Perfil
+      description: Alterando um Perfil na Plataforma
+      operationId: alterandoPerfil
+      requestBody:
+        description: Alterando Perfil Existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerfilApiRequest'
+        required: true
+      responses:
+        '202':
+          description: Accepted successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerfilApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: Perfil não encontrado.
+    delete:
+      tags:
+        - Perfil
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Apagando um Perfil
+      description: Apagando um Perfil na Plataforma
+      operationId: apagandoPerfil
+      responses:
+        '204':
+          description: No Content successful operation
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: Perfil não encontrado.
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 422 UNPROCESSABLE_ENTITY
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não permitido Excluir.
+                        mensagem:
+                          type: string
+                          example: Não permitido Excluir. Perfil associado a algum Usuario.
   /perfil/{nome}/nome:
     get:
       tags:
@@ -121,6 +255,23 @@ paths:
                 $ref: '#/components/schemas/PerfilApiResponse'
         '404':
           description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: Perfil não encontrado.
 components:
   schemas:
     PerfilApiRequest:
@@ -133,7 +284,6 @@ components:
           type: string
           description: Nome do Perfil
           example: Moderator
-          x-constraints: "NotBlank(message = 'Nome do Perfil é Obrigatorio')"
         roles:
           type: array
           items:

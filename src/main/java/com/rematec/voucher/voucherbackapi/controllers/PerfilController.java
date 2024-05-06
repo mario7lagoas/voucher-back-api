@@ -3,28 +3,20 @@ package com.rematec.voucher.voucherbackapi.controllers;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
-import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
 import com.rematec.voucher.voucherbackapi.services.PerfilServiceImpl;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/perfil")
+//@RequestMapping("/perfil")
 public class PerfilController  implements PerfilApi{
 
 
@@ -59,9 +51,19 @@ public class PerfilController  implements PerfilApi{
         return new ResponseEntity<PerfilApiResponse>(this.perfilService.criandoPerfil( perfilApiRequest ), HttpStatus.CREATED);
     }
 
+    @Override
+    public ResponseEntity<PerfilApiResponse> alterandoPerfil(String guid, PerfilApiRequest perfilApiRequest) {
+        return new ResponseEntity<PerfilApiResponse>(
+                this.perfilService.alterandoPerfil(guid, perfilApiRequest), HttpStatus.ACCEPTED);
 
+    }
 
-
+    @Override
+    public ResponseEntity<Void> apagandoPerfil(String guid) {
+        this.perfilService.apagandoPerfil(guid);
+        return ResponseEntity.noContent().build();
+    }
+/*
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PerfilResponse>> getAllPerfil() {
         return new ResponseEntity<>(this.perfilService.getAllPerfil(), HttpStatus.OK);
@@ -102,6 +104,6 @@ public class PerfilController  implements PerfilApi{
         this.perfilService.apagarPerfil(guid);
         return ResponseEntity.noContent().build();
     }
-
+*/
 
 }

@@ -3,7 +3,6 @@ package com.rematec.voucher.voucherbackapi.models.enums;
 import lombok.Getter;
 
 @Getter
-
 public enum ErrosEnum {
     NAO_PERMITIDO_EXCLUIR("Não permitido Excluir."),
     NAO_ENCONTRADO("Não encontrado."),
@@ -16,7 +15,9 @@ public enum ErrosEnum {
     EM_USO("Em uso no momento."),
     UTILIZADO("Já utilizado."),
     NAO_PERMITIDO("Não permitido."),
-    ENDPOINT_NAO_ENCONTRADO("Endpoint não encontrado.");
+    ENDPOINT_NAO_ENCONTRADO("Endpoint não encontrado."),
+    PAYLOAD_INVALIDO("Payload Invalido"),
+    CAMPO_OBRIGATORIO("Campo obrigatorio");
 
     private String nome;
 
