@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.controllers;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
+import com.rematec.voucher.models.PerfilUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.services.PerfilServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class PerfilController implements PerfilApi {
     }
 
     @Override
-    public ResponseEntity<PerfilApiResponse> alterandoPerfil(String guid, PerfilApiRequest perfilApiRequest) {
+    public ResponseEntity<PerfilApiResponse> alterandoPerfil(String guid, PerfilUpdateApiRequest perfilApiRequest) {
         return new ResponseEntity<PerfilApiResponse>(
                 this.perfilService.alterandoPerfil(guid, perfilApiRequest), HttpStatus.ACCEPTED);
 

@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.services;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
+import com.rematec.voucher.models.PerfilUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
@@ -68,12 +69,13 @@ public class PerfilServiceImpl implements IPerfilService {
     @Override
     public PerfilApiResponse criandoPerfil(PerfilApiRequest perfilApiRequest) {
 
+
         if (!this.voucherUtil.checkDataNullAndEmpty(perfilApiRequest.getNome())) {
-            throw new BadRequestException("Nome do perfil não pode ser nulo.");
+            throw new BadRequestException("Nome do perfil obrigatório.");
         }
 
         if (perfilApiRequest.getRoles() == null || perfilApiRequest.getRoles().isEmpty()) {
-            throw new BadRequestException("Permissão do Perfil é Obrigatorio.");
+            throw new BadRequestException("Permissão do Perfil é Obrigatório.");
         }
 
         if (this.iPerfilRepository.findByNome(perfilApiRequest.getNome()).isPresent()) {
@@ -90,7 +92,7 @@ public class PerfilServiceImpl implements IPerfilService {
     }
 
     @Override
-    public PerfilApiResponse alterandoPerfil(String guid, PerfilApiRequest perfilApiRequest) {
+    public PerfilApiResponse alterandoPerfil(String guid, PerfilUpdateApiRequest perfilApiRequest) {
 
         PerfilEntity entity = this.iPerfilRepository.findByGuid(guid)
                 .orElseThrow(() -> new PerfilNaoEncontradoException("Perfil não encontrado."));

@@ -3,6 +3,8 @@ package com.rematec.voucher.voucherbackapi.services;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
+import com.rematec.voucher.models.PerfilUpdateApiRequest;
+import com.rematec.voucher.voucherbackapi.builders.PerfilUpdateApiRequestBuilder;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
@@ -33,6 +35,7 @@ import java.util.UUID;
 
 import static com.rematec.voucher.voucherbackapi.builders.PerfilApiRequestBuilder.umPerfilApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PerfilEntityBuilder.umPerfilEntity;
+import static com.rematec.voucher.voucherbackapi.builders.PerfilUpdateApiRequestBuilder.umPerfilUpdateApiRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
@@ -146,7 +149,7 @@ public class PerfilServiceImplTest {
         Exception exception = Assertions.assertThrows(BadRequestException.class,
                 () -> this.perfilService.criandoPerfil(request));
 
-        assertThat(exception.getMessage(), is("Nome do perfil não pode ser nulo."));
+        assertThat(exception.getMessage(), is("Nome do perfil obrigatório."));
 
     }
 
@@ -162,7 +165,7 @@ public class PerfilServiceImplTest {
         Exception exception = Assertions.assertThrows(BadRequestException.class,
                 () -> this.perfilService.criandoPerfil(request));
 
-        assertThat(exception.getMessage(), is("Nome do perfil não pode ser nulo."));
+        assertThat(exception.getMessage(), is("Nome do perfil obrigatório."));
 
     }
 
@@ -178,7 +181,7 @@ public class PerfilServiceImplTest {
         Exception exception = Assertions.assertThrows(BadRequestException.class,
                 () -> this.perfilService.criandoPerfil(request));
 
-        assertThat(exception.getMessage(), is("Permissão do Perfil é Obrigatorio."));
+        assertThat(exception.getMessage(), is("Permissão do Perfil é Obrigatório."));
 
     }
 
@@ -194,10 +197,9 @@ public class PerfilServiceImplTest {
         Exception exception = Assertions.assertThrows(BadRequestException.class,
                 () -> this.perfilService.criandoPerfil(request));
 
-        assertThat(exception.getMessage(), is("Permissão do Perfil é Obrigatorio."));
+        assertThat(exception.getMessage(), is("Permissão do Perfil é Obrigatório."));
 
     }
-
 
     @Test
     @DisplayName("Should Return A Perfil By Guid Successfully")
@@ -306,7 +308,7 @@ public class PerfilServiceImplTest {
         PerfilEntity entity = umPerfilEntity().agora();
         String guid = entity.getGuid();
 
-        PerfilApiRequest request = umPerfilApiRequest().setNome("Other").agora();
+        PerfilUpdateApiRequest request = umPerfilUpdateApiRequest().setNome("Other").agora();
 
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));
@@ -331,7 +333,7 @@ public class PerfilServiceImplTest {
         //having
         String guid = UUID.randomUUID().toString();
 
-        PerfilApiRequest request = umPerfilApiRequest().agora();
+        PerfilUpdateApiRequest request = umPerfilUpdateApiRequest().agora();
 
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.empty());
 

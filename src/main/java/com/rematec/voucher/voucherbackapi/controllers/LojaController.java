@@ -1,7 +1,9 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
+import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
+import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
@@ -59,6 +61,17 @@ public class LojaController  implements LojaApi{
     @Override
     public ResponseEntity<LojaApiResponse> buscandoLojaPeloGUID(String guid) {
         return new ResponseEntity<LojaApiResponse>(this.lojaService.buscandoLojaPeloGUID(guid), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<LojaApiResponse> criandoLoja(LojaApiRequest lojaApiRequest) {
+        return new ResponseEntity<LojaApiResponse>(this.lojaService.criandoLoja(lojaApiRequest), HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<LojaApiResponse> alterandoLoja(String guid, LojaUpdateApiRequest lojaApiRequest) {
+        return new ResponseEntity<LojaApiResponse>(
+                this.lojaService.alterandoLoja(guid, lojaApiRequest), HttpStatus.ACCEPTED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

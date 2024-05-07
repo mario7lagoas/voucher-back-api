@@ -1,7 +1,10 @@
 package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
+import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
+import com.rematec.voucher.models.LojaUpdateApiRequest;
+import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirLojaException;
@@ -62,6 +65,54 @@ public class LojaServiceImpl implements ILojaService {
         return this.mapper.lojaEntityToLojaApiResponse(lojaEntity);
     }
 
+    public LojaApiResponse criandoLoja(LojaApiRequest lojaApiRequest) {
+
+        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getNome())) {
+            throw new BadRequestException("CNPJ da loja obrigatório.");
+        }
+
+        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getNome())) {
+            throw new BadRequestException("Nome da loja obrigatório.");
+        }
+
+        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getNome())) {
+            throw new BadRequestException("Identificação da loja obrigatório.");
+        }
+
+        if (iLojaReposity.findByCnpj(lojaApiRequest.getCnpj()).isPresent()) {
+            throw new LojaCadastradaException("CNPJ Já cadastrado.");
+        }
+
+        LojaEntity lojaEntity = LojaEntity.builder()
+                .guid(UUID.randomUUID().toString())
+                .nome(lojaApiRequest.getNome())
+                .status(lojaApiRequest.getStatus())
+                .cnpj(this.voucherUtil.apenasNumerosNaString(lojaApiRequest.getCnpj()))
+                .identificacao(lojaApiRequest.getIdentificacao())
+                .build();
+
+        return mapper.lojaEntityToLojaApiResponse(iLojaReposity.save(lojaEntity));
+
+    }
+
+    public LojaApiResponse alterandoLoja(String guid, LojaUpdateApiRequest lojaApiRequest) {
+        LojaEntity lojaEntity = iLojaReposity.findByGuid(guid)
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+
+        if (!lojaApiRequest.getCnpj().isEmpty())
+            lojaEntity.setCnpj(lojaApiRequest.getCnpj());
+
+        if (!lojaApiRequest.getIdentificacao().isEmpty())
+            lojaEntity.setIdentificacao(lojaApiRequest.getIdentificacao());
+        if (!lojaApiRequest.getNome().isEmpty())
+            lojaEntity.setNome(lojaApiRequest.getNome());
+
+        if (lojaApiRequest.getStatus() != null)
+            lojaEntity.setStatus(lojaApiRequest.getStatus());
+
+        return mapper.lojaEntityToLojaApiResponse(iLojaReposity.save(lojaEntity));
+
+    }
 
     @Override
     public List<LojaResponse> getAll() {
