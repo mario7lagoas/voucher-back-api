@@ -22,8 +22,7 @@ public class PerfilEntityBuilder {
         builder.perfilEntity.setNome("My Perfil");
         builder.perfilEntity.setDataCadastro(LocalDateTime.now());
         builder.perfilEntity.setDataAtualizacao(LocalDateTime.now());
-        builder.perfilEntity.setRoles(Arrays.asList(RoleEntity.builder().id(1L).nome(PermissaoEnum.MENU_LOJA).build(),
-                RoleEntity.builder().id(2L).nome(PermissaoEnum.MENU_USUARIO).build()));
+
         return builder;
 
     }
@@ -37,8 +36,9 @@ public class PerfilEntityBuilder {
         return this;
     }
 
-    public PerfilEntityBuilder semRoles(){
-        perfilEntity.setRoles(null);
+    public PerfilEntityBuilder comRoles(){
+        perfilEntity.setRoles(Arrays.asList(RoleEntity.builder().id(1L).nome(PermissaoEnum.MENU_LOJA).build(),
+                RoleEntity.builder().id(2L).nome(PermissaoEnum.MENU_USUARIO).build()));
         return this;
     }
 

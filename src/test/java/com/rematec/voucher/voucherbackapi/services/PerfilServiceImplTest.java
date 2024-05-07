@@ -205,7 +205,7 @@ public class PerfilServiceImplTest {
         //having
         String guid = UUID.randomUUID().toString();
 
-        PerfilEntity entity = umPerfilEntity().agora();
+        PerfilEntity entity = umPerfilEntity().comRoles().agora();
 
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));
         when(this.mapper.perfilEntityToPerfilApiResponse(any(PerfilEntity.class))).thenReturn(new PerfilApiResponse());

@@ -18,9 +18,27 @@ servers:
 
 
 tags:
+  - name: Loja
+    description: Operações sobre Loja
   - name: Perfil
     description: Operações sobre Perfil de Usuario
 paths:
+  /loja:
+    get:
+      tags:
+        - Loja
+      summary: Buscando Lista deLoja
+      description: Buscando Lista de Loja na Plataforma
+      operationId: buscandoListaLoja
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LojaApiResponse'
   /perfil:
     get:
       tags:
@@ -274,6 +292,26 @@ paths:
                           example: Perfil não encontrado.
 components:
   schemas:
+    LojaApiResponse:
+      properties:
+        guid:
+          type: string
+          example: aaaa-bbbb-cccc-dddd-eeeee
+        nome:
+          type: string
+          example: "Loja 001"
+        cnpj:
+          type: string
+          example: "11111111111111"
+        identificacao:
+          type: string
+          example: "0001"
+        status:
+          type: boolean
+          example: true
+        dataCadastro:
+          type: string
+          example: "2024-05-07 11:48:11"
     PerfilApiRequest:
       required:
         - nome
@@ -297,7 +335,6 @@ components:
         nome:
           type: string
           example: Moderator
-
     PerfilApiResponse:
       properties:
         guid:

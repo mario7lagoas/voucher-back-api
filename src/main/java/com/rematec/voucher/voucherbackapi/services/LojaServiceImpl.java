@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirLojaException;
@@ -37,6 +38,15 @@ public class LojaServiceImpl implements ILojaService {
     @Autowired
     private VoucherUtil voucherUtil;
 
+    public List<LojaApiResponse> buscandoListaLoja() {
+        return mapper.listLojaEntityToListLojaApiResponse(iLojaReposity.findAll());
+    }
+
+    @Override
+    public List<LojaResponse> getAll() {
+        return mapper.listLojaEntityToListLojaResponse(iLojaReposity.findAll());
+    }
+
     @Override
     public LojaResponse addLoja(LojaRequest lojaRequest) {
         if (iLojaReposity.findByCnpj(lojaRequest.getCnpj()).isPresent()) {
@@ -54,12 +64,6 @@ public class LojaServiceImpl implements ILojaService {
         return mapper.lojaEntityToLojaResponse(iLojaReposity.save(lojaEntity));
 
     }
-
-    @Override
-    public List<LojaResponse> getAll() {
-        return mapper.listLojaEntityToListLojaResponse(iLojaReposity.findAll());
-    }
-
     @Override
     public LojaResponse updateLoja(String guid, LojaRequest lojaRequest) {
         LojaEntity lojaEntity = iLojaReposity.findByGuid(guid)
@@ -124,5 +128,7 @@ public class LojaServiceImpl implements ILojaService {
                         PageRequest.of(page, size))
         );
     }
+
+
 
 }

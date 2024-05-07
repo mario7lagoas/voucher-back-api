@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
@@ -28,18 +29,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/loja")
-public class LojaController {
+public class LojaController  implements LojaApi{
 
     @Autowired
     private LojaServiceImpl lojaService;
+
     @Autowired
     private VoucherUtil voucherUtil;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LojaResponse> addLoja(@RequestBody @Valid LojaRequest lojaRequest){
-
-        return new ResponseEntity<LojaResponse>(this.lojaService.addLoja(lojaRequest), HttpStatus.CREATED);
-
+    @Override
+    public ResponseEntity<List<LojaApiResponse>> buscandoListaLoja() {
+        return new ResponseEntity<List<LojaApiResponse>>(lojaService.buscandoListaLoja(), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -62,6 +62,13 @@ public class LojaController {
     @GetMapping(value = "{guid}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LojaResponse> buscarLojaByGuid(@PathVariable("guid") String guid){
         return new ResponseEntity<LojaResponse>(this.lojaService.buscarLojaByGuid(guid), HttpStatus.OK);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LojaResponse> addLoja(@RequestBody @Valid LojaRequest lojaRequest){
+
+        return new ResponseEntity<LojaResponse>(this.lojaService.addLoja(lojaRequest), HttpStatus.CREATED);
+
     }
 
     @PutMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

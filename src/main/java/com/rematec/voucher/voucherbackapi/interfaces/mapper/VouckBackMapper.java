@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.interfaces.mapper;
 
+import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
@@ -99,13 +100,13 @@ public interface VouckBackMapper {
     PerfilApiResponse perfilEntityToPerfilApiResponse(PerfilEntity perfilEntity);
 
     List<PerfilResumidoApiResponse> listPerfilEntityToListPerfilResumidoApiResponse(List<PerfilEntity> all);
+
     PerfilResumidoApiResponse perfilEntityToPerfilResumidoApiResponse(PerfilEntity perfilEntity);
 
-    PerfilRequest perfilApiRequestToPerfilRequest(PerfilApiRequest perfilApiRequest);
-
-
-    List<RoleEntity> listRoleApiResponseToListRoleEntity(List<RoleApiResponse> roles);
-
     RoleEntity roleApiResponseToRoleEntity(RoleApiResponse role);
+
+    List<LojaApiResponse> listLojaEntityToListLojaApiResponse(List<LojaEntity> all);
+
+    LojaApiResponse lojaEntityToLojaApiResponse(LojaEntity lojaEntity);
 }
 
