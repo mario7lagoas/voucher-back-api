@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
@@ -42,10 +43,32 @@ public class LojaServiceImpl implements ILojaService {
         return mapper.listLojaEntityToListLojaApiResponse(iLojaReposity.findAll());
     }
 
+    public BuscandoListaPaginadaLoja200Response buscandoListaPaginadaLoja(String cnpj, Integer page, Integer size) {
+
+        return this.mapper.pageLojasEntityToLojasPaginadaApiResponse(
+                this.iLojaReposity.findByCnpjContaining(this.voucherUtil.apenasNumerosNaString(cnpj),
+                        PageRequest.of(page, size))
+        );
+    }
+
+    public List<LojaApiResponse> buscandoListaLojaAtiva() {
+        return this.mapper.listLojaEntityToListLojaApiResponse(iLojaReposity.findByStatusTrue());
+    }
+
+    public LojaApiResponse buscandoLojaPeloGUID(String guid) {
+        LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+
+        return this.mapper.lojaEntityToLojaApiResponse(lojaEntity);
+    }
+
+
     @Override
     public List<LojaResponse> getAll() {
         return mapper.listLojaEntityToListLojaResponse(iLojaReposity.findAll());
     }
+
+
 
     @Override
     public LojaResponse addLoja(LojaRequest lojaRequest) {

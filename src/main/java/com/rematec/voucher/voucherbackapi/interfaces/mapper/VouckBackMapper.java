@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.interfaces.mapper;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
@@ -53,9 +54,7 @@ public interface VouckBackMapper {
 
     PerfilResponse perfilEntityToPerfilResponse(PerfilEntity perfil);
 
-    List<PerfilResumidoResponse> listPerfilEntityToListPerfilResumidoResponse(List<PerfilEntity> perfisEnyityes);
-
-    PerfilResumidoResponse perfilEntityToperfilResumidoResponse(PerfilEntity perfilEntity);
+     PerfilResumidoResponse perfilEntityToperfilResumidoResponse(PerfilEntity perfilEntity);
 
     @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
     PromocoesPaginadaResponse pagePromocoesEntityToPromocoesPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);
@@ -103,10 +102,11 @@ public interface VouckBackMapper {
 
     PerfilResumidoApiResponse perfilEntityToPerfilResumidoApiResponse(PerfilEntity perfilEntity);
 
-    RoleEntity roleApiResponseToRoleEntity(RoleApiResponse role);
-
     List<LojaApiResponse> listLojaEntityToListLojaApiResponse(List<LojaEntity> all);
 
     LojaApiResponse lojaEntityToLojaApiResponse(LojaEntity lojaEntity);
+
+    @Mapping(source = "lojaEntityPage.content", target = "lojas")
+    BuscandoListaPaginadaLoja200Response pageLojasEntityToLojasPaginadaApiResponse(Page<LojaEntity> lojaEntityPage);
 }
 

@@ -27,9 +27,103 @@ paths:
     get:
       tags:
         - Loja
-      summary: Buscando Lista deLoja
+      summary: Buscando Lista de Loja
       description: Buscando Lista de Loja na Plataforma
       operationId: buscandoListaLoja
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LojaApiResponse'
+  /loja/{guid}:
+    get:
+      tags:
+        - Loja
+      summary: Buscando Loja Pelo GUID
+      description: Buscando Loja Pelo GUID na Plataforma
+      operationId: buscandoLojaPeloGUID
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LojaApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Loja não encontrada"
+  /loja/paginada:
+    get:
+      tags:
+        - Loja
+      summary: Buscando Lista de Loja Pagina
+      description: Buscando Lista de Loja pagina na Plataforma
+      operationId: buscandoListaPaginadaLoja
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: cnpj
+          in: query
+          schema:
+            type: string
+            default: ""
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+
+                allOf:
+                  - $ref: '#/components/schemas/PaginacaoApiResponse'
+                  - type: object
+                    properties:
+                      lojas:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LojaApiResponse'
+  /loja/ativa:
+    get:
+      tags:
+        - Loja
+      summary: Buscando Lista de Loja Ativa
+      description: Buscando Lista de Loja Ativa na Plataforma
+      operationId: buscandoListaLojaAtiva
       responses:
         '200':
           description: successful operation
@@ -292,6 +386,17 @@ paths:
                           example: Perfil não encontrado.
 components:
   schemas:
+    PaginacaoApiResponse:
+      properties:
+        number:
+          type: integer
+          example: 0
+        totalPages:
+          type: integer
+          example: 1
+        totalElements:
+          type: integer
+          example: 1
     LojaApiResponse:
       properties:
         guid:
