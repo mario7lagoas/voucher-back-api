@@ -4,6 +4,7 @@ import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
+import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
@@ -60,7 +61,7 @@ public class LojaServiceImpl implements ILojaService {
 
     public LojaApiResponse buscandoLojaPeloGUID(String guid) {
         LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
-                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
         return this.mapper.lojaEntityToLojaApiResponse(lojaEntity);
     }
@@ -97,7 +98,7 @@ public class LojaServiceImpl implements ILojaService {
 
     public LojaApiResponse alterandoLoja(String guid, LojaUpdateApiRequest lojaApiRequest) {
         LojaEntity lojaEntity = iLojaReposity.findByGuid(guid)
-                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
         if (!lojaApiRequest.getCnpj().isEmpty())
             lojaEntity.setCnpj(lojaApiRequest.getCnpj());
@@ -114,12 +115,30 @@ public class LojaServiceImpl implements ILojaService {
 
     }
 
+    public void pagandoLoja(String guid) {
+        LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
+
+        if (!this.iLojaReposity.findByPromocoesLojasGuid(guid).isEmpty())
+            throw new NaoPermitidoExcluirLojaException("Loja não pode ser Excluida. Pois está associada a alguma promoção.");
+
+        this.iLojaReposity.delete(lojaEntity);
+    }
+
+    public void alterandoStatusLoja(String guid, UpdateStatusApiRequest updateStatusApiRequest) {
+        LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
+
+        lojaEntity.setStatus(updateStatusApiRequest.getStatus());
+        log.info("Atualizando status da loja [{}]", lojaEntity.getNome());
+
+         this.iLojaReposity.save(lojaEntity);
+    }
+
     @Override
     public List<LojaResponse> getAll() {
         return mapper.listLojaEntityToListLojaResponse(iLojaReposity.findAll());
     }
-
-
 
     @Override
     public LojaResponse addLoja(LojaRequest lojaRequest) {
@@ -141,7 +160,7 @@ public class LojaServiceImpl implements ILojaService {
     @Override
     public LojaResponse updateLoja(String guid, LojaRequest lojaRequest) {
         LojaEntity lojaEntity = iLojaReposity.findByGuid(guid)
-                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
         if (!lojaRequest.getCnpj().isEmpty())
             lojaEntity.setCnpj(lojaRequest.getCnpj());
@@ -160,10 +179,10 @@ public class LojaServiceImpl implements ILojaService {
     @Override
     public void apagarLoja(String guid) {
         LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
-                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
         if (!this.iLojaReposity.findByPromocoesLojasGuid(guid).isEmpty())
-            throw new NaoPermitidoExcluirLojaException("Loja não pode ser Excluida. Pois está associada a alguma promoção");
+            throw new NaoPermitidoExcluirLojaException("Loja não pode ser Excluida. Pois está associada a alguma promoção.");
 
         this.iLojaReposity.delete(lojaEntity);
     }
@@ -171,7 +190,7 @@ public class LojaServiceImpl implements ILojaService {
     @Override
     public LojaResponse buscarLojaByGuid(String guid) {
         LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
-                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
         return mapper.lojaEntityToLojaResponse(lojaEntity);
     }
@@ -180,7 +199,7 @@ public class LojaServiceImpl implements ILojaService {
     public LojaResponse updateStatus(String guid, UpdateStatusResquest statusResquest) {
 
         LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
-                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada"));
+                .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
         lojaEntity.setStatus(statusResquest.getStatus());
         log.info("Atualizando status da loja [{}]", lojaEntity.getNome());

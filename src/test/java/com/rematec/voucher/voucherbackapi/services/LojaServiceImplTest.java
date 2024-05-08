@@ -1,5 +1,7 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.LojaApiResponse;
+import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
@@ -44,12 +46,12 @@ public class LojaServiceImplTest {
 
     @Test
     @DisplayName("Should Return A List LojaResponse Successfully")
-    public void getAllCase1() {
+    public void buscandoListaLoja() {
         //having
         when(this.iLojaReposity.findAll()).thenReturn(new CollisionCheckStack<LojaEntity>());
 
         //when
-        List<LojaResponse> lojaResponses = this.lojaService.getAll();
+        List<LojaApiResponse> lojaResponses = this.lojaService.buscandoListaLoja();
 
         //then
         Assertions.assertNotNull(lojaResponses);

@@ -136,7 +136,7 @@ paths:
                           example: Não encontrado.
                         mensagem:
                           type: string
-                          example: "Loja não encontrada"
+                          example: "Loja não encontrada."
     put:
       tags:
         - Loja
@@ -182,7 +182,103 @@ paths:
                           example: Não encontrado.
                         mensagem:
                           type: string
-                          example: "Loja não encontrada"
+                          example: "Loja não encontrada."
+    delete:
+      tags:
+        - Loja
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Apagando uma Loja
+      description: Apagando uma Loja na Plataforma
+      operationId: apagandoLoja
+      responses:
+        '204':
+          description: No Content successful operation
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Loja não encontrada."
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 422 UNPROCESSABLE_ENTITY
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não permitido Excluir.
+                        mensagem:
+                          type: string
+                          example: "Loja não pode ser Excluida. Pois está associada a alguma promoção."
+    patch:
+      tags:
+        - Loja
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Alterando Status de uma Loja
+      description: Alterando Status de uma Loja na Plataforma
+      operationId: alterandoStatusLoja
+      requestBody:
+        description: Alterando Loja Existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusApiRequest'
+        required: true
+      responses:
+        '202':
+          description: Accepted successful operation
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Loja não encontrada."
   /loja/paginada:
     get:
       tags:
@@ -212,7 +308,6 @@ paths:
           content:
             application/json:
               schema:
-
                 allOf:
                   - $ref: '#/components/schemas/PaginacaoApiResponse'
                   - type: object
@@ -237,6 +332,30 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LojaApiResponse'
+  /loja/print:
+    post:
+      tags:
+        - Loja
+      summary: Relatorio de Loja
+      description: Relatorio de Loja na Plataforma
+      operationId: relatorioLoja
+      requestBody:
+        description: Imprimindo um relatorio de  Loja
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/LojaApiResponse'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "data:application/pdf;base64,JVBERi0xLjUKJeLjz9MKMyAwIG9iago8PC9Db2xvclNwYWNlL0RldmljZVJHQi9TdWJ0eXBlL0ltYWdlL0hlaWdodCAzNTQvRmlsdGVyL0RDVERlY29kZS9UeXBlL1hPYmplY3QvV2lkdGggMjQ4MC9CaXRzUGVyQ29tcG9uZW50IDgvTGVuZ3RoIDM2ODg5Pj5zdHJlYW0K/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAACgAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAFBAQGRIZJxcXJzImHyYyLiYmJiYuPjU1NTU1PkRBQUFBQUFERERERERERERERERERERERERERERERERERERERAEVGRkgHCAmGBgmNiYgJjZENisrNkREREI1QkRERERERERERERERERERERERERERERERERERERERERERERERERE/8AAEQgBYgmwAwEiAAIRAQMRAf/..."
   /perfil:
     get:
       tags:
@@ -520,6 +639,15 @@ components:
         totalElements:
           type: integer
           example: 1
+    UpdateStatusApiRequest:
+      required:
+        - status
+      type: object
+      properties:
+        status:
+          type: boolean
+          description: "Status [true/false]"
+          example: true
     LojaApiRequest:
       required:
         - nome

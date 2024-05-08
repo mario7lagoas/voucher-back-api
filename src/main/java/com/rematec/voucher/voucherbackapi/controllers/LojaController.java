@@ -4,6 +4,7 @@ import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
+import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
@@ -72,6 +73,24 @@ public class LojaController  implements LojaApi{
     public ResponseEntity<LojaApiResponse> alterandoLoja(String guid, LojaUpdateApiRequest lojaApiRequest) {
         return new ResponseEntity<LojaApiResponse>(
                 this.lojaService.alterandoLoja(guid, lojaApiRequest), HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<Void> apagandoLoja(String guid) {
+        this.lojaService.pagandoLoja(guid);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<Void> alterandoStatusLoja(String guid, UpdateStatusApiRequest updateStatusApiRequest) {
+        this.lojaService.alterandoStatusLoja(guid, updateStatusApiRequest);
+        return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<String> relatorioLoja(List<@Valid LojaApiResponse> lojaApiResponse) {
+        return new ResponseEntity<String>(this.voucherUtil.print(new JRBeanCollectionDataSource(lojaApiResponse), "lojas")
+                , HttpStatus.OK );
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
