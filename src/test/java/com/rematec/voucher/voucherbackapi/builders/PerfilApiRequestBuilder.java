@@ -1,7 +1,6 @@
 package com.rematec.voucher.voucherbackapi.builders;
 
 import com.rematec.voucher.models.PerfilApiRequest;
-import com.rematec.voucher.models.RoleApiResponse;
 
 import java.util.Arrays;
 

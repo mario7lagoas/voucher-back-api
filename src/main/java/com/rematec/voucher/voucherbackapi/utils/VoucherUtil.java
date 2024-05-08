@@ -23,7 +23,6 @@ import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.RoleRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -116,14 +115,6 @@ public class VoucherUtil {
 
     }
 
-    public List<RoleEntity> listRolesRequestToListRoleEntity(List<RoleRequest> roles) {
-
-        return roles
-                .stream()
-                .map(roleRequest -> iRoleRepository.findByNome(roleRequest.getNome()))
-                .collect(Collectors.toList());
-    }
-
     @Async("threadPollverificarPromocoesVencidasExecutor")
     public void verificarPromocoesVencidas() {
         log.warn("Verificando Promoções vencidas.");
@@ -140,8 +131,6 @@ public class VoucherUtil {
     }
 
     public String gerarCodigoVoucher(String pdv) {
-
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
         String voucher;
         StringBuffer thebuffer;

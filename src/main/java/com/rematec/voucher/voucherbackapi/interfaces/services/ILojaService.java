@@ -1,21 +1,28 @@
 package com.rematec.voucher.voucherbackapi.interfaces.services;
 
-import com.rematec.voucher.voucherbackapi.models.requests.LojaRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
-import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
-import com.rematec.voucher.voucherbackapi.models.response.LojasPaginadaResponse;
+import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
+import com.rematec.voucher.models.LojaApiRequest;
+import com.rematec.voucher.models.LojaApiResponse;
+import com.rematec.voucher.models.LojaUpdateApiRequest;
+import com.rematec.voucher.models.UpdateStatusApiRequest;
 
 import java.util.List;
 
 public interface ILojaService {
 
-    LojaResponse addLoja(LojaRequest lojaRequest);
-    List<LojaResponse> getAll();
-    LojaResponse updateLoja(String guid, LojaRequest lojaRequest);
-    void apagarLoja(String guid);
-    LojaResponse buscarLojaByGuid(String guid);
-    LojaResponse updateStatus(String guid, UpdateStatusResquest statusResquest);
-    List<LojaResponse> getLojasAtivas();
-    LojasPaginadaResponse obterLojasPaginadas(String nome, int page, int size);
+    List<LojaApiResponse> buscandoListaLoja();
 
+    BuscandoListaPaginadaLoja200Response buscandoListaPaginadaLoja(String cnpj, Integer page, Integer size);
+
+    List<LojaApiResponse> buscandoListaLojaAtiva();
+
+    LojaApiResponse buscandoLojaPeloGUID(String guid);
+
+    LojaApiResponse criandoLoja(LojaApiRequest lojaApiRequest);
+
+    LojaApiResponse alterandoLoja(String guid, LojaUpdateApiRequest lojaApiRequest);
+
+    void pagandoLoja(String guid);
+
+    void alterandoStatusLoja(String guid, UpdateStatusApiRequest updateStatusApiRequest);
 }

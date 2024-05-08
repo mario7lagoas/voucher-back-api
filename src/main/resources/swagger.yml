@@ -347,7 +347,6 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/LojaApiResponse'
-        required: true
       responses:
         '200':
           description: successful operation

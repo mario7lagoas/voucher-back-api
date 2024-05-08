@@ -2,25 +2,18 @@ package com.rematec.voucher.voucherbackapi.interfaces.mapper;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.LojaApiResponse;
-import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
-import com.rematec.voucher.models.RoleApiResponse;
+
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
-import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
-import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.RoleRequest;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
-import com.rematec.voucher.voucherbackapi.models.response.LojasPaginadaResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PerfisPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
@@ -50,23 +43,13 @@ public interface VouckBackMapper {
 
     PromocaoResponse promocaoEntityTopromocaoResponse(PromocaoEntity promocao);
 
-    List<PerfilResponse> listPerfilEntityToListPerfilResponse(List<PerfilEntity> perfils);
-
-    PerfilResponse perfilEntityToPerfilResponse(PerfilEntity perfil);
-
-     PerfilResumidoResponse perfilEntityToperfilResumidoResponse(PerfilEntity perfilEntity);
+    PerfilResumidoResponse perfilEntityToperfilResumidoResponse(PerfilEntity perfilEntity);
 
     @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
     PromocoesPaginadaResponse pagePromocoesEntityToPromocoesPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);
 
     @Mapping(source = "usuarioEntityPage.content", target = "usuarios")
     UsuariosPaginadaResponse pageUsuariosEntityToUsuariosPaginadaResponse(Page<UsuarioEntity> usuarioEntityPage);
-
-    @Mapping(source = "perfilEntityPage.content", target = "perfis")
-    PerfisPaginadaResponse pagePerfisEntityToPerfisPaginadaResponse(Page<PerfilEntity> perfilEntityPage);
-
-    @Mapping(source = "lojaEntityPage.content", target = "lojas")
-    LojasPaginadaResponse pageLojasEntityToLojasPaginadaResponse(Page<LojaEntity> lojaEntityPage);
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
