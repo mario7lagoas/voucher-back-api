@@ -22,7 +22,7 @@ public interface ILojaService {
 
     LojaApiResponse alterandoLoja(String guid, LojaUpdateApiRequest lojaApiRequest);
 
-    void pagandoLoja(String guid);
+    void apagandoLoja(String guid);
 
     void alterandoStatusLoja(String guid, UpdateStatusApiRequest updateStatusApiRequest);
 }

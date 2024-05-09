@@ -60,7 +60,7 @@ public class LojaController  implements LojaApi{
 
     @Override
     public ResponseEntity<Void> apagandoLoja(String guid) {
-        this.lojaService.pagandoLoja(guid);
+        this.lojaService.apagandoLoja(guid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

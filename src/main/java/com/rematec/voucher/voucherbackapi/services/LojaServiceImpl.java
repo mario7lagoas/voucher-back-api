@@ -69,7 +69,7 @@ public class LojaServiceImpl implements ILojaService {
     @Override
     public LojaApiResponse criandoLoja(LojaApiRequest lojaApiRequest) {
 
-        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getNome())) {
+        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getCnpj())) {
             throw new BadRequestException("CNPJ da loja obrigatório.");
         }
 
@@ -77,7 +77,7 @@ public class LojaServiceImpl implements ILojaService {
             throw new BadRequestException("Nome da loja obrigatório.");
         }
 
-        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getNome())) {
+        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getIdentificacao())) {
             throw new BadRequestException("Identificação da loja obrigatório.");
         }
 
@@ -118,7 +118,7 @@ public class LojaServiceImpl implements ILojaService {
     }
 
     @Override
-    public void pagandoLoja(String guid) {
+    public void apagandoLoja(String guid) {
         LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
                 .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 

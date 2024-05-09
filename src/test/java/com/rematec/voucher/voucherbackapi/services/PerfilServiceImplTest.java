@@ -90,7 +90,6 @@ public class PerfilServiceImplTest {
         Assertions.assertNotNull(perfilResponseList);
     }
 
-
     @Test
     @DisplayName("Should Create a Perfil Successfully")
     public void criandoPerfilCase1() {
@@ -123,7 +122,6 @@ public class PerfilServiceImplTest {
 
         //having
         PerfilApiRequest request = umPerfilApiRequest().comRoles().agora();
-
         PerfilEntity perfilEntity = umPerfilEntity().agora();
 
         when(this.iPerfilRepository.findByNome(anyString())).thenReturn(Optional.of(perfilEntity));
@@ -203,7 +201,7 @@ public class PerfilServiceImplTest {
 
     @Test
     @DisplayName("Should Return A Perfil By Guid Successfully")
-    public void buscandoPerfilPeloCase1() {
+    public void buscandoPerfilPeloGUIDCase1() {
         //having
         String guid = UUID.randomUUID().toString();
 
@@ -221,7 +219,7 @@ public class PerfilServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Get Perfil by Guid")
-    public void buscandoPerfilPeloCase2() {
+    public void buscandoPerfilPeloGUIDCase2() {
         //having
         String guid = UUID.randomUUID().toString();
 
@@ -238,9 +236,8 @@ public class PerfilServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Find By Perfil At GUID And Name IsNull Or Empty")
-    public void buscandoPerfilPeloCase3() {
+    public void buscandoPerfilPeloGUIDCase3() {
         //having
-
 
         //when
 
@@ -259,7 +256,7 @@ public class PerfilServiceImplTest {
 
         PerfilEntity entity = umPerfilEntity().agora();
 
-        when(this.iPerfilRepository.findByNome(perfil)).thenReturn(Optional.of(entity));
+        when(this.iPerfilRepository.findByNome(anyString())).thenReturn(Optional.of(entity));
         when(this.mapper.perfilEntityToPerfilApiResponse(entity)).thenReturn(new PerfilApiResponse());
 
         //when
@@ -290,7 +287,6 @@ public class PerfilServiceImplTest {
     @DisplayName("Should Thrown An Exception When Try To Find By Perfil At Nome And Name IsNull Or Empty")
     public void buscandoPerfilPeloNomeCase3() {
         //having
-
 
         //when
 
