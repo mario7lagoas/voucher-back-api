@@ -1,5 +1,7 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
@@ -38,6 +40,15 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Autowired
     private VoucherUtil voucherUtil;
+
+    public List<UsuarioApiResponse> buscandoListaUsuario() {
+        return this.mapper.listUsuarioEntityTolistUsuarioApiResponse(this.iUsuarioRepository.findAll());
+    }
+
+    public BuscandoListaPaginadaUsuario200Response buscandoListaPaginadaUsuario(String nome, Integer page, Integer size) {
+        return this.mapper.pageUsuariosEntityToUsuariosApiPaginadaResponse(
+                this.iUsuarioRepository.findByUserNameContaining(nome, PageRequest.of(page, size)));
+    }
 
     @Override
     public List<UsuarioResponse> getAllUsuarios() {
@@ -130,5 +141,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         return mapper.pageUsuariosEntityToUsuariosPaginadaResponse(
                 this.iUsuarioRepository.findByUserNameContaining(nome, PageRequest.of(page, size)));
     }
+
+
 
 }

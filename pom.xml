@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.2</version>
+		<version>3.2.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.rematec.voucher</groupId>
@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-		<jasperreports.version>6.21.3</jasperreports.version>
+		<jasperreports.version>6.20.6</jasperreports.version>
 		<jasperreports-functions.version>6.21.3</jasperreports-functions.version>
 		<jasperreports-fonts.version>6.21.3</jasperreports-fonts.version>
 	</properties>
@@ -163,62 +163,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!--
-
-                        <plugin>
-                            <groupId>io.swagger</groupId>
-                            <artifactId>swagger-codegen-maven-plugin</artifactId>
-                            <version>2.3.1</version>
-                            <executions>
-                                <execution>
-                                    <id>api-call</id>
-                                    <phase>generate-sources</phase>
-                                    <goals>
-                                        <goal>generate</goal>
-                                    </goals>
-                                    <configuration>
-                                        <inputSpec>${project.basedir}/src/main/resources/swagger.yml</inputSpec>
-                                        <ignoreFileOverride>${project.basedir}/src/main/resources/.swagger-codegen-ignore
-                                        </ignoreFileOverride>
-                                        <language>spring</language>
-                                        <addCompileSourceRoot>false</addCompileSourceRoot>
-                                        <generateApis>true</generateApis>
-                                        <generateSupportingFiles>false</generateSupportingFiles>
-                                        <configOptions>
-                                            <dateLibrary>java17</dateLibrary>
-                                            <serializableModel>true</serializableModel>
-                                            <interfaceOnly>true</interfaceOnly>
-                                        </configOptions>
-                                        <output>${project.build.directory}/generated/swagger</output>
-                                        <modelPackage>com.rematec.voucher.models</modelPackage>
-                                        <apiPackage>com.rematec.voucher.voucherbackapi.controllers</apiPackage>
-                                        <generateModelDocumentation>false</generateModelDocumentation>
-                                        <skip>false</skip>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>build-helper-maven-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>add-source</id>
-                                    <phase>generate-sources</phase>
-                                    <goals>
-                                        <goal>add-source</goal>
-                                    </goals>
-                                    <configuration>
-                                        <sources>
-                                            <source>${project.build.directory}/generated/swagger/src/main/java</source>
-                                        </sources>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-            -->
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

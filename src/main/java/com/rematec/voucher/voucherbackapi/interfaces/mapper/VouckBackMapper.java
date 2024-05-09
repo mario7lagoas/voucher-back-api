@@ -1,10 +1,12 @@
 package com.rematec.voucher.voucherbackapi.interfaces.mapper;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
+import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 
+import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
@@ -31,6 +33,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {})
 public interface VouckBackMapper {
+
+    List<UsuarioApiResponse> listUsuarioEntityTolistUsuarioApiResponse(List<UsuarioEntity> all);
+
+    UsuarioApiResponse usuarioEntityToUsuarioApiResponse(UsuarioEntity usuarioEntity);
+
     List<UsuarioResponse> listUsuarioEntityTolistUsuarioResponse(List<UsuarioEntity> usuarios);
 
     UsuarioResponse usuarioEntityToUsuarioResponse(UsuarioEntity usuario);
@@ -91,5 +98,8 @@ public interface VouckBackMapper {
 
     @Mapping(source = "lojaEntityPage.content", target = "lojas")
     BuscandoListaPaginadaLoja200Response pageLojasEntityToLojasPaginadaApiResponse(Page<LojaEntity> lojaEntityPage);
+
+    @Mapping(source = "usuarioEntityPage.content", target = "usuarios")
+    BuscandoListaPaginadaUsuario200Response pageUsuariosEntityToUsuariosApiPaginadaResponse(Page<UsuarioEntity> usuarioEntityPage);
 }
 

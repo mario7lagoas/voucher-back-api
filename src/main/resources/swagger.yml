@@ -22,6 +22,8 @@ tags:
     description: Operações sobre Loja
   - name: Perfil
     description: Operações sobre Perfil de Usuario
+  - name: Usuario
+    description: Operações sobre Usuario
 paths:
   /loja:
     get:
@@ -288,16 +290,19 @@ paths:
       operationId: buscandoListaPaginadaLoja
       parameters:
         - name: page
+          description: "Numero da pagina atual"
           in: query
           schema:
             type: integer
             default: 0
         - name: size
+          description: "Quantidade de registro por pagina"
           in: query
           schema:
             type: integer
             default: 10
         - name: cnpj
+          description: "CNPJ da Loja"
           in: query
           schema:
             type: string
@@ -625,6 +630,62 @@ paths:
                         mensagem:
                           type: string
                           example: Perfil não encontrado.
+  /usuario:
+    get:
+      tags:
+        - Usuario
+      summary: Buscando Lista de Usuario
+      description: Buscando Lista de Usuario na Plataforma
+      operationId: buscandoListaUsuario
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsuarioApiResponse'
+  /usuario/paginada:
+    get:
+      tags:
+        - Usuario
+      summary: Buscando Lista de Usuario Pagina
+      description: Buscando Lista de Usuario pagina na Plataforma
+      operationId: buscandoListaPaginadaUsuario
+      parameters:
+        - name: page
+          description: "Numero da pagina atual"
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          description: "Quantidade de registro por pagina"
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: nome
+          description: "Nome do Usuario"
+          in: query
+          schema:
+            type: string
+            default: ""
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginacaoApiResponse'
+                  - type: object
+                    properties:
+                      usuarios:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/UsuarioApiResponse'
 components:
   schemas:
     PaginacaoApiResponse:
@@ -762,3 +823,32 @@ components:
         nome:
           type: string
           example: MENU_LOJA
+    UsuarioApiResponse:
+      properties:
+        guid:
+          type: string
+          example: aaaa-bbbb-cccc-dddd-eeeee
+        userName:
+          type: string
+          description: Nome do Usuario
+          example: "Mario Dias"
+        email:
+          type: string
+          description: E-mail do Usuario
+          example: "mario7lagoas@gmail.com"
+        status:
+          type: boolean
+          description: Status do Usuario
+          example: true
+        dataCadastro:
+          type: string
+          description: Data do Cadastro do Usuario
+          example: "2024-01-01 12:00:00"
+        dataAtualizacao:
+          type: string
+          description: Data do Atualização do Usuario
+          example: "2024-01-01 13:20:00"
+        perfis:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerfilResumidoApiResponse'
