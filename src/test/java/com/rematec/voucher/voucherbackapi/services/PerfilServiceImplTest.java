@@ -4,7 +4,6 @@ import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.models.PerfilUpdateApiRequest;
-import com.rematec.voucher.voucherbackapi.builders.PerfilUpdateApiRequestBuilder;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
@@ -125,6 +124,8 @@ public class PerfilServiceImplTest {
         PerfilEntity perfilEntity = umPerfilEntity().agora();
 
         when(this.iPerfilRepository.findByNome(anyString())).thenReturn(Optional.of(perfilEntity));
+
+        //when
 
         //then
         Assertions.assertNotNull(request);

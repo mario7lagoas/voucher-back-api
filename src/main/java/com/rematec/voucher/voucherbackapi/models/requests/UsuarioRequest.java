@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -36,6 +34,5 @@ public class UsuarioRequest {
     @NotNull(message = "Status do  Usuario é Obrigatorio")
     private Boolean status;
 
-   // @NotNull(message = "Perfil do  Usuario é Obrigatorio")
-    private List<RoleRequest> roles;
+
 }

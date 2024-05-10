@@ -1,6 +1,5 @@
 package com.rematec.voucher.voucherbackapi.builders;
 
-import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 
 import java.time.LocalDateTime;

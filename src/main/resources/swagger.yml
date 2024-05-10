@@ -646,6 +646,104 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsuarioApiResponse'
+    post:
+      tags:
+        - Usuario
+      summary: Criando Um Usuario
+      description: Criando Um Usuario na Plataforma
+      operationId: criandoUsuario
+      requestBody:
+        description: Criando novo Usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioApiRequest'
+        required: true
+      responses:
+        '201':
+          description: created successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioApiResponse'
+        '400':
+          description: bad request operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 400 BAD_REQUEST
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        mensagem:
+                          type: string
+                          example: "não deve ser nulo"
+                        campo:
+                          type: string
+                          example: "email"
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 422 UNPROCESSABLE_ENTITY
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: "Usuario já Cadastrado."
+                        mensagem:
+                          type: string
+                          example: "E-mail já cadastrado."
+  /usuario/{guid}:
+    get:
+      tags:
+        - Usuario
+      summary: Buscando Usuario Pelo GUID
+      description: Buscando Usuario Pelo GUID na Plataforma
+      operationId: buscandoUsuarioPeloGUID
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Usuario não encontrado."
   /usuario/paginada:
     get:
       tags:
@@ -852,3 +950,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PerfilResumidoApiResponse'
+    UsuarioPerfilApiRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: Moderator
+    UsuarioApiRequest:
+      required:
+        - userName
+        - email
+        - status
+        - password
+        - perfis
+      type: object
+      properties:
+        userName:
+          type: string
+          description: Nome do Usuario
+          example: "Mario Dias"
+        email:
+          type: string
+          description: E-mail do Usuario
+          example: "mario7lagoas@gmail.com"
+        password:
+          type: string
+          description: Senha do Usuario
+          example: "123456"
+        status:
+          type: boolean
+          description: Status do Usuario
+          example: true
+        perfis:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsuarioPerfilApiRequest'

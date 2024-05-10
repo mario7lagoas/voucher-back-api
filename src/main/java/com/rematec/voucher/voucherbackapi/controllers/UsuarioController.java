@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.voucherbackapi.models.requests.UsuarioPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.UsuarioRequest;
@@ -49,6 +50,17 @@ public class UsuarioController implements UsuarioApi {
 
         return new ResponseEntity<BuscandoListaPaginadaUsuario200Response>(
                 this.usuarioService.buscandoListaPaginadaUsuario(nome, page, size), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<UsuarioApiResponse> buscandoUsuarioPeloGUID(String guid) {
+        return new ResponseEntity<UsuarioApiResponse>(this.usuarioService.buscandoUsuarioPeloGUID(guid), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<UsuarioApiResponse> criandoUsuario(UsuarioApiRequest usuarioApiRequest) {
+        return new ResponseEntity<UsuarioApiResponse>(
+                this.usuarioService.criandoUsuario(usuarioApiRequest), HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

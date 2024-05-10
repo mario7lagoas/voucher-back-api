@@ -120,20 +120,22 @@ public class LojaServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Return A List LojaApiResponse By GUID Successfully")
+    @DisplayName("Should Return A LojaApiResponse By GUID Successfully")
     public void buscandoLojaPeloGUIDCase1() {
 
         //having
+        String guid = UUID.randomUUID().toString();
         LojaEntity lojaEntity = umaLojaEntity().agora();
 
         when(this.iLojaReposity.findByGuid(anyString())).thenReturn(Optional.of(lojaEntity));
         when(this.mapper.lojaEntityToLojaApiResponse(lojaEntity)).thenReturn(new LojaApiResponse());
 
         //when
-        LojaApiResponse lojaApiResponse = this.lojaService.buscandoLojaPeloGUID(anyString());
+        LojaApiResponse response = this.lojaService.buscandoLojaPeloGUID(guid);
 
         //then
-        Assertions.assertNotNull(lojaApiResponse);
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
     }
 
     @Test

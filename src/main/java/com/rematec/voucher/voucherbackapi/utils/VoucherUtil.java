@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.utils;
 
 
 import com.rematec.voucher.models.RoleApiResponse;
+import com.rematec.voucher.models.UsuarioPerfilApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
@@ -69,7 +70,7 @@ public class VoucherUtil {
     public List<LojaEntity> getListGuidLojasToListLojasEntity(List<Guid> lojas) {
 
         return lojas != null ? lojas.stream()
-                .map(loja -> iLojaReposity.findByGuid(loja.getGuid()).get())
+                .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
                 .toList() : null;
     }
 
@@ -101,16 +102,24 @@ public class VoucherUtil {
 
         Set<PerfilEntity> listPerfils = perfis
                 .stream()
-                .map(p -> iPerfilRepository.findByNome(p.getNome()).get())
+                .map(p -> this.iPerfilRepository.findByNome(p.getNome()).get())
                 .collect(Collectors.toSet());
 
+        return listPerfils;
+    }
+
+    public Set<PerfilEntity> listUsuarioPerfilApiRequestToListPerfilEntity(List<UsuarioPerfilApiRequest> perfis) {
+        Set<PerfilEntity> listPerfils = perfis
+                .stream()
+                .map(p -> this.iPerfilRepository.findByNome(p.getNome()).get())
+                .collect(Collectors.toSet());
         return listPerfils;
     }
 
     public List<RoleEntity> listRoleApiResponseToListRoleEntity(List<RoleApiResponse> roles) {
         return roles
                 .stream()
-                .map(roleRequest -> iRoleRepository.findByNome(PermissaoEnum.valueOf(roleRequest.getNome())))
+                .map(roleRequest -> this.iRoleRepository.findByNome(PermissaoEnum.valueOf(roleRequest.getNome())))
                 .collect(Collectors.toList());
 
     }
@@ -219,6 +228,7 @@ public class VoucherUtil {
         log.debug("Retornado valor Maximo desconto {} ", BigDecimal.ZERO);
         return BigDecimal.ZERO;
     }
+
 
 
 }

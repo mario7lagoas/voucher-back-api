@@ -1,7 +1,11 @@
 package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
+import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.UsuarioCadastradoException;
+import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
@@ -21,12 +25,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import static com.rematec.voucher.voucherbackapi.builders.UsuarioApiRequestBuilder.umUsuarioApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioEntityBuilder.umUsuarioEntity;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UsuarioServiceImplTest {
@@ -42,6 +56,9 @@ public class UsuarioServiceImplTest {
 
     @Spy
     private VoucherUtil voucherUtil;
+
+    @Spy
+    private PasswordEncoder passwordEncoder;
 
     @Before("")
     public void setUp() {
@@ -87,4 +104,207 @@ public class UsuarioServiceImplTest {
         Assertions.assertNotNull(responses);
 
     }
+
+    @Test
+    @DisplayName("Should Return A UsuarioApiResponse By GUID Successfully")
+    public void buscandoUsuarioPeloGUIDCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        UsuarioEntity entity = umUsuarioEntity().agora();
+
+        when(this.iUsuarioRepository.findByGuid(anyString())).thenReturn(Optional.of(entity));
+        when(this.mapper.usuarioEntityToUsuarioApiResponse(entity)).thenReturn(new UsuarioApiResponse());
+
+        //when
+        UsuarioApiResponse response = this.usuarioService.buscandoUsuarioPeloGUID(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Get LojaApiResponse By GUID")
+    public void buscandoUsuarioPeloGUIDCase2() {
+
+        //having
+        when(this.iUsuarioRepository.findByGuid(anyString())).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Exception exception = Assertions.assertThrows(UsuarioNaoEncontradoException.class,
+                () -> this.usuarioService.buscandoUsuarioPeloGUID(anyString()));
+
+        assertThat(exception.getMessage(), is("Usuario não encontrado."));
+
+    }
+
+    @Test
+    @DisplayName("Should Create a Usuario Successfully")
+    public void criandoLojaCase1() {
+
+        //having
+
+        UsuarioApiRequest request = umUsuarioApiRequest().userName("New User").agora();
+
+        when(this.iUsuarioRepository.save(any(UsuarioEntity.class))).thenReturn(new UsuarioEntity());
+        when(this.voucherUtil.listUsuarioPerfilApiRequestToListPerfilEntity(anyList())).thenReturn(new HashSet<>());
+        when(this.mapper.usuarioEntityToUsuarioApiResponse(any(UsuarioEntity.class))).thenReturn(new UsuarioApiResponse());
+
+        //when
+        UsuarioApiResponse response = this.usuarioService.criandoUsuario(request);
+
+        //then
+        Assertions.assertNotNull(response);
+
+        verify(this.iUsuarioRepository, times(1)).save(
+                argThat(usuarioArg -> usuarioArg.getUserName().equals("New User")
+                        && usuarioArg.getGuid() != null)
+        );
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario Exist")
+    public void criandoLojaCase2() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().userName("New User").agora();
+        UsuarioEntity entity = umUsuarioEntity().agora();
+
+        when(this.iUsuarioRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(entity));
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(UsuarioCadastradoException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("E-mail já cadastrado."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario Email Is Null")
+    public void criandoLojaCase3() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().email(null).agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("E-mail do usuário obrigatório."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario Password Is Null")
+    public void criandoLojaCase4() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().password(null).agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("Senha do usuário obrigatório."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario UserName Is Null")
+    public void criandoLojaCase5() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().userName(null).agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("Nome do usuário obrigatório."));
+
+    }
+
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario Email Is Empty")
+    public void criandoLojaCase6() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().email("").agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("E-mail do usuário obrigatório."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario Password Is Empty")
+    public void criandoLojaCase7() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().password("").agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("Senha do usuário obrigatório."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario UserName Is Empty")
+    public void criandoLojaCase8() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().userName("").agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("Nome do usuário obrigatório."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario Status Is Null")
+    public void criandoLojaCase9() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().status(null).agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("Status do usuário obrigatório."));
+
+    }
+
+
 }
