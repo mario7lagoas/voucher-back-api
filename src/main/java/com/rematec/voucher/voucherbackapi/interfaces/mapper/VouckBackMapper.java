@@ -19,7 +19,6 @@ import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
-import com.rematec.voucher.voucherbackapi.models.response.UsuariosPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import org.mapstruct.Mapper;
@@ -55,30 +54,6 @@ public interface VouckBackMapper {
     @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
     PromocoesPaginadaResponse pagePromocoesEntityToPromocoesPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);
 
-    @Mapping(source = "usuarioEntityPage.content", target = "usuarios")
-    UsuariosPaginadaResponse pageUsuariosEntityToUsuariosPaginadaResponse(Page<UsuarioEntity> usuarioEntityPage);
-
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "dataCadastro", ignore = true),
-            @Mapping(target = "dataAtualizacao", ignore = true),
-            @Mapping(source = "voucherStatus", target = "voucherStatus"),
-            @Mapping(source = "promocaoStatus", target = "promocaoStatus"),
-            @Mapping(source = "codigo", target = "codigo"),
-            @Mapping(source = "guid", target = "guid"),
-            @Mapping(source = "clienteCpf", target = "clienteCpf"),
-            @Mapping(source = "filialCnpj", target = "filialCnpj"),
-            @Mapping(source = "valorDesc", target = "valorDesconto"),
-            @Mapping(source = "promocao.guid", target = "promocaoGuid"),
-            @Mapping(source = "pdv", target = "pdv"),
-            @Mapping(source = "fimResgate", target = "fimResgate"),
-            @Mapping(source = "cupom", target = "cupom"),
-    })
-    VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum voucherStatus,
-                                                VoucherPromocaoStatusEnum promocaoStatus, String guid, String codigo,
-                                                String clienteCpf, String filialCnpj, BigDecimal valorDesc, String pdv,
-                                                LocalDateTime fimResgate, String cupom);
-
     VoucherResponse voucherEntityToVoucherResponse(VoucherEntity voucherEntity);
 
     @Mapping(source = "voucherEntities.content", target = "transacoes")
@@ -101,5 +76,27 @@ public interface VouckBackMapper {
 
     @Mapping(source = "usuarioEntityPage.content", target = "usuarios")
     BuscandoListaPaginadaUsuario200Response pageUsuariosEntityToUsuariosApiPaginadaResponse(Page<UsuarioEntity> usuarioEntityPage);
+
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "dataCadastro", ignore = true),
+            @Mapping(target = "dataAtualizacao", ignore = true),
+            @Mapping(source = "voucherStatus", target = "voucherStatus"),
+            @Mapping(source = "promocaoStatus", target = "promocaoStatus"),
+            @Mapping(source = "codigo", target = "codigo"),
+            @Mapping(source = "guid", target = "guid"),
+            @Mapping(source = "clienteCpf", target = "clienteCpf"),
+            @Mapping(source = "filialCnpj", target = "filialCnpj"),
+            @Mapping(source = "valorDesc", target = "valorDesconto"),
+            @Mapping(source = "promocao.guid", target = "promocaoGuid"),
+            @Mapping(source = "pdv", target = "pdv"),
+            @Mapping(source = "fimResgate", target = "fimResgate"),
+            @Mapping(source = "cupom", target = "cupom"),
+    })
+    VoucherEntity promocaoEntityToVoucherEntity(PromocaoEntity promocao, VoucherStatusEnum voucherStatus,
+                                                VoucherPromocaoStatusEnum promocaoStatus, String guid, String codigo,
+                                                String clienteCpf, String filialCnpj, BigDecimal valorDesc, String pdv,
+                                                LocalDateTime fimResgate, String cupom);
+
 }
 

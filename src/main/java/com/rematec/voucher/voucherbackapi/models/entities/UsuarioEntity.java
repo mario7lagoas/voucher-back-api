@@ -23,12 +23,12 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@SuperBuilder
 @Entity(name= "usuario")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Table(indexes = { @Index(name = "IDX_GUID_USU" , columnList = "guid")})
 public class UsuarioEntity extends BaseEntity implements Serializable {
 

@@ -1,29 +1,25 @@
 package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
+import com.rematec.voucher.models.UsuarioUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.services.IUsuarioService;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
-import com.rematec.voucher.voucherbackapi.models.requests.UsuarioRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
-import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
-import com.rematec.voucher.voucherbackapi.models.response.UsuariosPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 import java.util.UUID;
 
 @Service
@@ -42,21 +38,25 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Autowired
     private VoucherUtil voucherUtil;
 
+    @Override
     public List<UsuarioApiResponse> buscandoListaUsuario() {
         return this.mapper.listUsuarioEntityTolistUsuarioApiResponse(this.iUsuarioRepository.findAll());
     }
 
+    @Override
     public BuscandoListaPaginadaUsuario200Response buscandoListaPaginadaUsuario(String nome, Integer page, Integer size) {
         return this.mapper.pageUsuariosEntityToUsuariosApiPaginadaResponse(
                 this.iUsuarioRepository.findByUserNameContaining(nome, PageRequest.of(page, size)));
     }
 
+    @Override
     public UsuarioApiResponse buscandoUsuarioPeloGUID(String guid) {
         UsuarioEntity usuario = this.iUsuarioRepository.findByGuid(guid)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado."));
         return this.mapper.usuarioEntityToUsuarioApiResponse(usuario);
     }
 
+    @Override
     public UsuarioApiResponse criandoUsuario(UsuarioApiRequest usuarioApiRequest) {
 
         if (!this.voucherUtil.checkDataNullAndEmpty(usuarioApiRequest.getEmail())) {
@@ -70,17 +70,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
         if (this.iUsuarioRepository.findByEmail(usuarioApiRequest.getEmail()).isPresent()) {
             throw new UsuarioCadastradoException("E-mail já cadastrado.");
         }
-
-        if (!this.voucherUtil.checkDataNullAndEmpty(usuarioApiRequest.getUserName())) {
-            throw new BadRequestException("Nome do usuário obrigatório.");
-        }
-
         if (usuarioApiRequest.getStatus() == null) {
             throw new BadRequestException("Status do usuário obrigatório.");
         }
 
         if (usuarioApiRequest.getPerfis() == null || usuarioApiRequest.getPerfis().isEmpty()) {
             throw new BadRequestException("Perfil do usuário obrigatório.");
+        }
+
+        if (!this.voucherUtil.checkDataNullAndEmpty(usuarioApiRequest.getUserName())) {
+            throw new BadRequestException("Nome do usuário obrigatório.");
         }
 
         UsuarioEntity usuarioEntity = UsuarioEntity.builder()
@@ -96,63 +95,41 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
-    public List<UsuarioResponse> getAllUsuarios() {
-        List<UsuarioEntity> entities = this.iUsuarioRepository.findAll();
-        return mapper.listUsuarioEntityTolistUsuarioResponse(entities);
-    }
+    public UsuarioApiResponse alterandoUsuario(String guid, UsuarioUpdateApiRequest usuarioUpdateApiRequest) {
 
-    @Override
-    public UsuarioResponse addUsuario(UsuarioRequest usuarioRequest) {
-        if (this.iUsuarioRepository.findByEmail(usuarioRequest.getEmail()).isPresent()) {
-            throw new UsuarioCadastradoException("E-mail já cadastrado.");
-        }
-
-        UsuarioEntity usuarioEntity = UsuarioEntity.builder()
-                .guid(UUID.randomUUID().toString())
-                .userName(usuarioRequest.getUserName())
-                .email(usuarioRequest.getEmail())
-                .perfis(this.voucherUtil.listPerfisRequestToListPerfilEntity(usuarioRequest.getPerfis()))
-                .status(usuarioRequest.getStatus())
-                .password(passwordEncoder.encode(usuarioRequest.getPassword()))
-                .build();
-
-        return mapper.usuarioEntityToUsuarioResponse(this.iUsuarioRepository.save(usuarioEntity));
-    }
-
-    @Override
-    public UsuarioResponse updateUsuario(String guid, UsuarioRequest usuarioRequest) {
-        UsuarioEntity usuario = this.iUsuarioRepository.findByGuid(guid)
-                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario nao Encontrado"));
-
-        if (this.voucherUtil.checkDataNullAndEmpty(usuarioRequest.getUserName()))
-            usuario.setUserName(usuarioRequest.getUserName());
-
-        if (this.voucherUtil.checkDataNullAndEmpty(usuarioRequest.getPassword()))
-            usuario.setPassword(passwordEncoder.encode(usuarioRequest.getPassword()));
-
-        if (this.voucherUtil.checkDataNullAndEmpty(usuarioRequest.getEmail()))
-            usuario.setEmail(usuarioRequest.getEmail());
-
-        if (usuarioRequest.getPerfis() != null && !usuarioRequest.getPerfis().isEmpty()) {
-            usuario.setPerfis(this.voucherUtil.listPerfisRequestToListPerfilEntity(usuarioRequest.getPerfis()));
-        }
-        if (usuarioRequest.getStatus() != null) {
-            usuario.setStatus(usuarioRequest.getStatus());
-        }
-
-        return mapper.usuarioEntityToUsuarioResponse(this.iUsuarioRepository.save(usuario));
-    }
-
-    @Override
-    public UsuarioResponse buscarUsuarioByGuid(String guid) {
         UsuarioEntity usuario = this.iUsuarioRepository.findByGuid(guid)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado."));
 
-        return mapper.usuarioEntityToUsuarioResponse(usuario);
+        if (this.voucherUtil.checkDataNullAndEmpty(usuarioUpdateApiRequest.getUserName()))
+            usuario.setUserName(usuarioUpdateApiRequest.getUserName());
+
+        if (this.voucherUtil.checkDataNullAndEmpty(usuarioUpdateApiRequest.getPassword()))
+            usuario.setPassword(passwordEncoder.encode(usuarioUpdateApiRequest.getPassword()));
+
+        if (this.voucherUtil.checkDataNullAndEmpty(usuarioUpdateApiRequest.getEmail())) {
+
+            if (this.iUsuarioRepository.findByEmail(usuarioUpdateApiRequest.getEmail()).isPresent()) {
+                if (!guid.equals(this.iUsuarioRepository.findByEmail(usuarioUpdateApiRequest.getEmail()).get().getGuid()))
+                    throw new UsuarioCadastradoException("E-mail já cadastrado.");
+            }
+            usuario.setEmail(usuarioUpdateApiRequest.getEmail());
+        }
+
+        if (usuarioUpdateApiRequest.getStatus() != null)
+            usuario.setStatus(usuarioUpdateApiRequest.getStatus());
+
+        if (usuarioUpdateApiRequest.getPerfis() != null && !usuarioUpdateApiRequest.getPerfis().isEmpty()) {
+            usuario.setPerfis(
+                    this.voucherUtil.listUsuarioPerfilApiRequestToListPerfilEntity(usuarioUpdateApiRequest.getPerfis())
+            );
+        }
+
+        return this.mapper.usuarioEntityToUsuarioApiResponse(this.iUsuarioRepository.save(usuario));
+
     }
 
     @Override
-    public void apagarUsuario(String guid) {
+    public void apagandoUsuario(String guid) {
         UsuarioEntity usuario = this.iUsuarioRepository.findByGuid(guid)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado."));
 
@@ -160,22 +137,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
-    public UsuarioResponse updateStatus(String guid, UpdateStatusResquest statusResquest) {
-
+    public void alterandoStatusUsuario(String guid, UpdateStatusApiRequest updateStatusApiRequest) {
         UsuarioEntity usuario = this.iUsuarioRepository.findByGuid(guid)
                 .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado."));
 
-        usuario.setStatus(statusResquest.getStatus());
+        usuario.setStatus(updateStatusApiRequest.getStatus());
 
-        return mapper.usuarioEntityToUsuarioResponse(this.iUsuarioRepository.save(usuario));
+        this.mapper.usuarioEntityToUsuarioApiResponse(this.iUsuarioRepository.save(usuario));
     }
-
-    @Override
-    public UsuariosPaginadaResponse obterUsuarioPaginadas(String nome, int page, int size) {
-
-        return mapper.pageUsuariosEntityToUsuariosPaginadaResponse(
-                this.iUsuarioRepository.findByUserNameContaining(nome, PageRequest.of(page, size)));
-    }
-
-
 }

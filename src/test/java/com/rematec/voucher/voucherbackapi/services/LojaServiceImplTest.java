@@ -162,7 +162,7 @@ public class LojaServiceImplTest {
         LojaApiRequest request = umaLojaApiRequest().agora();
 
         when(this.iLojaReposity.save(any(LojaEntity.class))).thenReturn(new LojaEntity());
-        when(mapper.lojaEntityToLojaApiResponse(any(LojaEntity.class))).thenReturn(new LojaApiResponse());
+        when(this.mapper.lojaEntityToLojaApiResponse(any(LojaEntity.class))).thenReturn(new LojaApiResponse());
 
         //when
         LojaApiResponse lojaResponse = this.lojaService.criandoLoja(request);
@@ -299,7 +299,7 @@ public class LojaServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Update a Loja status Successfully")
+    @DisplayName("Should Update a Loja Successfully")
     public void alterandoLojaCase1() {
         //having
         LojaEntity lojaEntity = umaLojaEntity().agora();
@@ -317,7 +317,7 @@ public class LojaServiceImplTest {
         //then
         Assertions.assertNotNull(lojaResponse);
 
-        verify(iLojaReposity, times(1)).save(
+        verify(this.iLojaReposity, times(1)).save(
                 argThat(lojaArg -> lojaArg.getNome().equals("Other")
                         && lojaArg.getGuid().equals(guid)
                 )
@@ -346,6 +346,28 @@ public class LojaServiceImplTest {
     }
 
     @Test
+    @DisplayName("Should Thrown An Exception When Try To Update Loja And It Does Not Exist")
+    public void alterandoLojaCase3() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        LojaEntity lojaEntity = umaLojaEntity().agora();
+        LojaUpdateApiRequest request = umaLojaUpdateApiRequest().nome("Other").agora();
+
+        when(this.iLojaReposity.findByGuid(guid)).thenReturn(Optional.of(new LojaEntity()));
+        when(this.iLojaReposity.findByCnpj(request.getCnpj())).thenReturn(Optional.of(lojaEntity));
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(LojaCadastradaException.class,
+                () -> this.lojaService.alterandoLoja(guid, request));
+
+        assertThat(exception.getMessage(), is("CNPJ Já cadastrado."));
+    }
+
+    @Test
     @DisplayName("Should Delete A Loja Successfully")
     public void apagandoLojaCase1() {
         //having
@@ -358,7 +380,9 @@ public class LojaServiceImplTest {
          this.lojaService.apagandoLoja(guid);
 
         //then
-        verify(iLojaReposity, times(1)).delete(
+        Assertions.assertNotNull(guid);
+
+        verify(this.iLojaReposity, times(1)).delete(
                 argThat(lojaArg -> lojaArg.getNome().equals("Loja Delete")
                         && lojaArg.getGuid().equals(guid)
                 )
@@ -410,7 +434,6 @@ public class LojaServiceImplTest {
         //having
         LojaEntity lojaEntity = umaLojaEntity().agora();
         String guid = lojaEntity.getGuid();
-
         UpdateStatusApiRequest request = umUpdateStatusApiRequest().status(false).agora();
 
         when(this.iLojaReposity.save(any(LojaEntity.class))).thenReturn(new LojaEntity());

@@ -39,6 +39,11 @@ public class UsuarioEntityBuilder {
         return this;
     }
 
+    public UsuarioEntityBuilder status(Boolean status){
+        usuarioEntity.setStatus(status);
+        return this;
+    }
+
     public UsuarioEntity agora(){
         return usuarioEntity;
     }

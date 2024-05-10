@@ -1,8 +1,10 @@
 package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
+import com.rematec.voucher.models.UsuarioUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoException;
@@ -33,8 +35,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.rematec.voucher.voucherbackapi.builders.UpdateStatusApiRequestBuilder.umUpdateStatusApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioApiRequestBuilder.umUsuarioApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioEntityBuilder.umUsuarioEntity;
+import static com.rematec.voucher.voucherbackapi.builders.UsuarioUpdateApiRequestBuilder.umUsuarioUpdateApiRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -147,7 +151,7 @@ public class UsuarioServiceImplTest {
 
         //having
 
-        UsuarioApiRequest request = umUsuarioApiRequest().userName("New User").agora();
+        UsuarioApiRequest request = umUsuarioApiRequest().userName("New User").comPerfis().agora();
 
         when(this.iUsuarioRepository.save(any(UsuarioEntity.class))).thenReturn(new UsuarioEntity());
         when(this.voucherUtil.listUsuarioPerfilApiRequestToListPerfilEntity(anyList())).thenReturn(new HashSet<>());
@@ -225,7 +229,7 @@ public class UsuarioServiceImplTest {
     public void criandoLojaCase5() {
 
         //having
-        UsuarioApiRequest request = umUsuarioApiRequest().userName(null).agora();
+        UsuarioApiRequest request = umUsuarioApiRequest().userName(null).comPerfis().agora();
         //when
 
         //then
@@ -277,7 +281,7 @@ public class UsuarioServiceImplTest {
     public void criandoLojaCase8() {
 
         //having
-        UsuarioApiRequest request = umUsuarioApiRequest().userName("").agora();
+        UsuarioApiRequest request = umUsuarioApiRequest().userName("").comPerfis().agora();
         //when
 
         //then
@@ -306,5 +310,174 @@ public class UsuarioServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Add Usuario Perfis Is Null")
+    public void criandoLojaCase10() {
+
+        //having
+        UsuarioApiRequest request = umUsuarioApiRequest().agora();
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.usuarioService.criandoUsuario(request));
+
+        assertThat(exception.getMessage(), is("Perfil do usuário obrigatório."));
+
+    }
+
+    @Test
+    @DisplayName("Should Update a Loja Successfully")
+    public void alterandoUsuarioCase1() {
+        //having
+        UsuarioEntity usuario = umUsuarioEntity().agora();
+        String guid = usuario.getGuid();
+
+        UsuarioUpdateApiRequest request = umUsuarioUpdateApiRequest().userName("Other").comPerfis().agora();
+
+        when(this.iUsuarioRepository.save(any(UsuarioEntity.class))).thenReturn(new UsuarioEntity());
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.of(usuario));
+        when(this.voucherUtil.listUsuarioPerfilApiRequestToListPerfilEntity(anyList())).thenReturn(new HashSet<>());
+        when(this.mapper.usuarioEntityToUsuarioApiResponse(any(UsuarioEntity.class))).thenReturn(new UsuarioApiResponse());
+
+        //when
+        UsuarioApiResponse response = this.usuarioService.alterandoUsuario(guid, request);
+
+        //then
+        Assertions.assertNotNull(response);
+
+        verify(this.iUsuarioRepository, times(1)).save(
+                argThat(usuarioArg -> usuarioArg.getUserName().equals("Other")
+                        && usuarioArg.getGuid().equals(guid)
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Update Usuario And It Does Not Exist")
+    public void alterandoUsuarioCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        UsuarioUpdateApiRequest request = umUsuarioUpdateApiRequest().agora();
+
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(UsuarioNaoEncontradoException.class,
+                () -> this.usuarioService.alterandoUsuario(guid, request));
+
+        assertThat(exception.getMessage(), is("Usuario não encontrado."));
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Update Usuario And It Does Not Exist")
+    public void alterandoUsuarioCase3() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        UsuarioEntity usuarioEntity = umUsuarioEntity().agora();
+        UsuarioUpdateApiRequest request = umUsuarioUpdateApiRequest().userName("Other Name").agora();
+
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.of(new UsuarioEntity()));
+        when(this.iUsuarioRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(usuarioEntity));
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(UsuarioCadastradoException.class,
+                () -> this.usuarioService.alterandoUsuario(guid, request));
+
+        assertThat(exception.getMessage(), is("E-mail já cadastrado."));
+    }
+
+    @Test
+    @DisplayName("Should Delete A Usuario Successfully")
+    public void apagandoUsuarioCase1() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        UsuarioEntity usuarioEntity = umUsuarioEntity().guid(guid).userName("User Delete").agora();
+
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.of(usuarioEntity));
+
+        //when
+        this.usuarioService.apagandoUsuario(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+
+        verify(this.iUsuarioRepository, times(1)).delete(
+                argThat(usuarioArg -> usuarioArg.getUserName().equals("User Delete")
+                        && usuarioArg.getGuid().equals(guid)
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Delete Usuario And It Does Not Exist")
+    public void apagandoUsuarioCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+        Exception exception = Assertions.assertThrows(UsuarioNaoEncontradoException.class,
+                () -> this.usuarioService.apagandoUsuario(guid));
+
+        assertThat(exception.getMessage(), is("Usuario não encontrado."));
+    }
+
+    @Test
+    @DisplayName("Should Update Status A Usuario Successfully")
+    public void alterandoStatusUsuarioCase1() {
+        //having
+        UsuarioEntity usuarioEntity = umUsuarioEntity().agora();
+        String guid = usuarioEntity.getGuid();
+        UpdateStatusApiRequest request = umUpdateStatusApiRequest().status(false).agora();
+
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.of(usuarioEntity));
+        when(this.iUsuarioRepository.save(any(UsuarioEntity.class))).thenReturn(new UsuarioEntity());
+        //when
+        this.usuarioService.alterandoStatusUsuario(guid, request);
+
+        //then
+        Assertions.assertNotNull(guid);
+
+        verify(this.iUsuarioRepository, times(1)).save(
+                argThat(usuarioArg -> usuarioArg.getStatus().equals(false)
+                        && usuarioArg.getGuid().equals(guid)
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Update Status a Usuario And It Does Not Exist")
+    public void alterandoStatusUsuarioCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        UpdateStatusApiRequest request = umUpdateStatusApiRequest().status(false).agora();
+
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+        Exception exception = Assertions.assertThrows(UsuarioNaoEncontradoException.class,
+                () -> this.usuarioService.alterandoStatusUsuario(guid, request));
+
+        assertThat(exception.getMessage(), is("Usuario não encontrado."));
+    }
 
 }

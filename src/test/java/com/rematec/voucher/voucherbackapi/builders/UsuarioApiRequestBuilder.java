@@ -22,7 +22,6 @@ public class UsuarioApiRequestBuilder {
         builder.usuarioApiRequest.setPassword("123456");
         builder.usuarioApiRequest.setEmail("anyemail@email.com");
         builder.usuarioApiRequest.setStatus(true);
-        builder.usuarioApiRequest.setPerfis(Arrays.asList(umUsuarioPerfilApiRequest().agora()));
         return builder;
     }
 
@@ -46,10 +45,11 @@ public class UsuarioApiRequestBuilder {
         return this;
     }
 
-    public UsuarioApiRequestBuilder perfis(UsuarioPerfilApiRequest perfil) {
-        usuarioApiRequest.setPerfis(Arrays.asList(perfil));
+    public UsuarioApiRequestBuilder comPerfis() {
+        usuarioApiRequest.setPerfis(Arrays.asList(umUsuarioPerfilApiRequest().agora()));
         return this;
     }
+
 
     public UsuarioApiRequest agora() {
         return usuarioApiRequest;

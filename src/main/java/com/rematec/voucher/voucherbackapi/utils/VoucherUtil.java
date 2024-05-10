@@ -22,7 +22,6 @@ import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
-import com.rematec.voucher.voucherbackapi.models.requests.PerfilRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -96,16 +95,6 @@ public class VoucherUtil {
             return true;
 
         return false;
-    }
-
-    public Set<PerfilEntity> listPerfisRequestToListPerfilEntity(Set<PerfilRequest> perfis) {
-
-        Set<PerfilEntity> listPerfils = perfis
-                .stream()
-                .map(p -> this.iPerfilRepository.findByNome(p.getNome()).get())
-                .collect(Collectors.toSet());
-
-        return listPerfils;
     }
 
     public Set<PerfilEntity> listUsuarioPerfilApiRequestToListPerfilEntity(List<UsuarioPerfilApiRequest> perfis) {
@@ -228,7 +217,5 @@ public class VoucherUtil {
         log.debug("Retornado valor Maximo desconto {} ", BigDecimal.ZERO);
         return BigDecimal.ZERO;
     }
-
-
 
 }

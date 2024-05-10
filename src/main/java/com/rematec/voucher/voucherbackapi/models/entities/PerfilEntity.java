@@ -21,12 +21,12 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "perfil")
-@Table(indexes = {@Index(name = "IDX_GUID_PERFIL", columnList = "guid")})
-@SuperBuilder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
+@Table(indexes = {@Index(name = "IDX_GUID_PERFIL", columnList = "guid")})
 public class PerfilEntity extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

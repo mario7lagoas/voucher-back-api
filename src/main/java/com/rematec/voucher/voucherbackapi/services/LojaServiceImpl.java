@@ -93,20 +93,26 @@ public class LojaServiceImpl implements ILojaService {
                 .identificacao(lojaApiRequest.getIdentificacao())
                 .build();
 
-        return mapper.lojaEntityToLojaApiResponse(iLojaReposity.save(lojaEntity));
+        return mapper.lojaEntityToLojaApiResponse(this.iLojaReposity.save(lojaEntity));
 
     }
 
     @Override
     public LojaApiResponse alterandoLoja(String guid, LojaUpdateApiRequest lojaApiRequest) {
-        LojaEntity lojaEntity = iLojaReposity.findByGuid(guid)
+        LojaEntity lojaEntity = this.iLojaReposity.findByGuid(guid)
                 .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
-        if (!lojaApiRequest.getCnpj().isEmpty())
+        if (!lojaApiRequest.getCnpj().isEmpty()) {
+            if (this.iLojaReposity.findByCnpj(lojaApiRequest.getCnpj()).isPresent()) {
+                if (!guid.equals(this.iLojaReposity.findByCnpj(lojaApiRequest.getCnpj()).get().getGuid()))
+                    throw new LojaCadastradaException("CNPJ Já cadastrado.");
+            }
             lojaEntity.setCnpj(lojaApiRequest.getCnpj());
+        }
 
         if (!lojaApiRequest.getIdentificacao().isEmpty())
             lojaEntity.setIdentificacao(lojaApiRequest.getIdentificacao());
+
         if (!lojaApiRequest.getNome().isEmpty())
             lojaEntity.setNome(lojaApiRequest.getNome());
 

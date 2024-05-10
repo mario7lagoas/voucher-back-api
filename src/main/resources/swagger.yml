@@ -150,7 +150,7 @@ paths:
           required: true
           schema:
             type: string
-      summary: Alterando uma Lojal
+      summary: Alterando uma Loja
       description: Alterando uma Loja na Plataforma
       operationId: alterandoLoja
       requestBody:
@@ -744,6 +744,129 @@ paths:
                         mensagem:
                           type: string
                           example: "Usuario não encontrado."
+    put:
+      tags:
+        - Usuario
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          example: aaaa-bbbb-cccc-dddd-eeeee
+          required: true
+          schema:
+            type: string
+      summary: Alterando um Usuario
+      description: Alterando um LUsuario na Plataforma
+      operationId: alterandoUsuario
+      requestBody:
+        description: Alterando Usuario Existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioUpdateApiRequest'
+      responses:
+        '202':
+          description: Accepted successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Usuario não encontrado."
+    delete:
+      tags:
+        - Usuario
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Apagando um Usuario
+      description: Apagando um Usuario na Plataforma
+      operationId: apagandoUsuario
+      responses:
+        '204':
+          description: No Content successful operation
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Usuario não encontrado."
+    patch:
+      tags:
+        - Usuario
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Alterando Status de um Usuario
+      description: Alterando Status de um Usuario na Plataforma
+      operationId: alterandoStatusUsuario
+      requestBody:
+        description: Alterando Usuario Existente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusApiRequest'
+        required: true
+      responses:
+        '202':
+          description: Accepted successful operation
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Usuario não encontrado."
   /usuario/paginada:
     get:
       tags:
@@ -784,6 +907,29 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/UsuarioApiResponse'
+  /usuario/print:
+    post:
+      tags:
+        - Usuario
+      summary: Relatorio de Usuario
+      description: Relatorio de Usuario na Plataforma
+      operationId: relatorioUsuario
+      requestBody:
+        description: Imprimindo um relatorio de Usuario
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UsuarioApiResponse'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "data:application/pdf;base64,JVBERi0xLjUKJeLjz9MKMyAwIG9iago8PC9Db2xvclNwYWNlL0RldmljZVJHQi9TdWJ0eXBlL0ltYWdlL0hlaWdodCAzNTQvRmlsdGVyL0RDVERlY29kZS9UeXBlL1hPYmplY3QvV2lkdGggMjQ4MC9CaXRzUGVyQ29tcG9uZW50IDgvTGVuZ3RoIDM2ODg5Pj5zdHJlYW0K/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAACgAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAFBAQGRIZJxcXJzImHyYyLiYmJiYuPjU1NTU1PkRBQUFBQUFERERERERERERERERERERERERERERERERERERERAEVGRkgHCAmGBgmNiYgJjZENisrNkREREI1QkRERERERERERERERERERERERERERERERERERERERERERERERERE/8AAEQgBYgmwAwEiAAIRAQMRAf/..."
 components:
   schemas:
     PaginacaoApiResponse:
@@ -963,6 +1109,29 @@ components:
         - status
         - password
         - perfis
+      type: object
+      properties:
+        userName:
+          type: string
+          description: Nome do Usuario
+          example: "Mario Dias"
+        email:
+          type: string
+          description: E-mail do Usuario
+          example: "mario7lagoas@gmail.com"
+        password:
+          type: string
+          description: Senha do Usuario
+          example: "123456"
+        status:
+          type: boolean
+          description: Status do Usuario
+          example: true
+        perfis:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsuarioPerfilApiRequest'
+    UsuarioUpdateApiRequest:
       type: object
       properties:
         userName:

@@ -40,6 +40,11 @@ public class LojaEntityBuilder {
         return this;
     }
 
+    public LojaEntityBuilder cnpj(String nome){
+        lojaEntity.setCnpj(nome);
+        return this;
+    }
+
 
     public LojaEntity agora(){
         return lojaEntity;

@@ -1,19 +1,27 @@
 package com.rematec.voucher.voucherbackapi.interfaces.services;
 
-import com.rematec.voucher.voucherbackapi.models.requests.UsuarioRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.UpdateStatusResquest;
-import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
-import com.rematec.voucher.voucherbackapi.models.response.UsuariosPaginadaResponse;
+import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.UpdateStatusApiRequest;
+import com.rematec.voucher.models.UsuarioApiRequest;
+import com.rematec.voucher.models.UsuarioApiResponse;
+import com.rematec.voucher.models.UsuarioUpdateApiRequest;
 
 import java.util.List;
 
 public interface IUsuarioService {
-    List<UsuarioResponse> getAllUsuarios();
-    UsuarioResponse addUsuario(UsuarioRequest usuarioRequest);
-    UsuarioResponse updateUsuario(String guid, UsuarioRequest usuarioRequest);
-    UsuarioResponse buscarUsuarioByGuid(String guid);
-    void apagarUsuario(String guid);
-    UsuarioResponse updateStatus(String guid, UpdateStatusResquest statusResquest);
-    UsuariosPaginadaResponse obterUsuarioPaginadas(String nome, int page, int size);
+
+    List<UsuarioApiResponse> buscandoListaUsuario();
+
+    BuscandoListaPaginadaUsuario200Response buscandoListaPaginadaUsuario(String nome, Integer page, Integer size);
+
+    UsuarioApiResponse buscandoUsuarioPeloGUID(String guid);
+
+    UsuarioApiResponse criandoUsuario(UsuarioApiRequest usuarioApiRequest);
+
+    UsuarioApiResponse alterandoUsuario(String guid, UsuarioUpdateApiRequest usuarioUpdateApiRequest);
+
+    void apagandoUsuario(String guid);
+
+    void alterandoStatusUsuario(String guid, UpdateStatusApiRequest updateStatusApiRequest);
 
 }
