@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services;
+package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
@@ -11,20 +11,19 @@ import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPerfilRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
-import com.rematec.voucher.voucherbackapi.interfaces.services.IPerfilService;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
+import com.rematec.voucher.voucherbackapi.services.PerfilService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @Transactional
-public class PerfilServiceImpl implements IPerfilService {
+public class PerfilServiceImpl extends PerfilService {
 
     @Autowired
     private IPerfilRepository iPerfilRepository;

@@ -4,7 +4,7 @@ import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.models.PerfilUpdateApiRequest;
-import com.rematec.voucher.voucherbackapi.services.PerfilServiceImpl;
+import com.rematec.voucher.voucherbackapi.services.PerfilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.List;
 public class PerfilController implements PerfilApi {
 
     @Autowired
-    private PerfilServiceImpl perfilService;
+    private PerfilService perfilService;
 
     @Override
     public ResponseEntity<List<PerfilApiResponse>> buscandoListaPerfil() {

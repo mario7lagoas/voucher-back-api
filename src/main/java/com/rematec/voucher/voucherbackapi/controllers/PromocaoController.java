@@ -6,7 +6,7 @@ import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
-import com.rematec.voucher.voucherbackapi.services.PromocaoServiceImpl;
+import com.rematec.voucher.voucherbackapi.services.PromocaoService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -33,7 +33,7 @@ import java.util.List;
 public class PromocaoController {
 
     @Autowired
-    private PromocaoServiceImpl promocaoService;
+    private PromocaoService promocaoService;
     @Autowired
     private VoucherUtil voucherUtil;
 

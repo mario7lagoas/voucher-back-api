@@ -14,6 +14,7 @@ import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioReposi
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
+import com.rematec.voucher.voucherbackapi.services.impl.PerfilServiceImpl;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 
 import org.aspectj.lang.annotation.Before;

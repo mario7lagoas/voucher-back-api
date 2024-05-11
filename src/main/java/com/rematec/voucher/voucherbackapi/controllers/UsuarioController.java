@@ -5,7 +5,7 @@ import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.UsuarioUpdateApiRequest;
-import com.rematec.voucher.voucherbackapi.services.UsuarioServiceImpl;
+import com.rematec.voucher.voucherbackapi.services.UsuarioService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 public class UsuarioController implements UsuarioApi {
 
     @Autowired
-    private UsuarioServiceImpl usuarioService;
+    private UsuarioService usuarioService;
     @Autowired
     private VoucherUtil voucherUtil;
 

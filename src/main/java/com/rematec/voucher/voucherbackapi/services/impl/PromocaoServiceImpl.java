@@ -1,11 +1,9 @@
-package com.rematec.voucher.voucherbackapi.services;
+package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
-import com.rematec.voucher.voucherbackapi.interfaces.services.IPromocaoService;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
@@ -14,6 +12,7 @@ import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
+import com.rematec.voucher.voucherbackapi.services.PromocaoService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class PromocaoServiceImpl implements IPromocaoService {
+public class PromocaoServiceImpl extends PromocaoService {
 
     @Autowired
     private IPromocaoRepository iPromocaoRepository;

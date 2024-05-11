@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services;
+package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoPermitidoException;
@@ -6,7 +6,6 @@ import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
-import com.rematec.voucher.voucherbackapi.interfaces.services.IVoucherService;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
@@ -21,6 +20,7 @@ import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherRespons
 import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
+import com.rematec.voucher.voucherbackapi.services.VoucherService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @Slf4j
-public class VoucherServiceImpl implements IVoucherService {
+public class VoucherServiceImpl extends VoucherService {
 
     @Autowired
     private IPromocaoRepository iPromocaoRepository;

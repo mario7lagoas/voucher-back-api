@@ -5,7 +5,7 @@ import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
-import com.rematec.voucher.voucherbackapi.services.LojaServiceImpl;
+import com.rematec.voucher.voucherbackapi.services.LojaService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.List;
 public class LojaController  implements LojaApi{
 
     @Autowired
-    private LojaServiceImpl lojaService;
+    private LojaService lojaService;
 
     @Autowired
     private VoucherUtil voucherUtil;

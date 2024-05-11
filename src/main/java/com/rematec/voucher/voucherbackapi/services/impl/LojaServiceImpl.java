@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services;
+package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.LojaApiRequest;
@@ -11,8 +11,8 @@ import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirLojaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
-import com.rematec.voucher.voucherbackapi.interfaces.services.ILojaService;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
+import com.rematec.voucher.voucherbackapi.services.LojaService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +24,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-
 @Service
 @Transactional
 @Slf4j
-public class LojaServiceImpl implements ILojaService {
+public class LojaServiceImpl extends LojaService {
 
     @Autowired
     private ILojaRepository iLojaReposity;

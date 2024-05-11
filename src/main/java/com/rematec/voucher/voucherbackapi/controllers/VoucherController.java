@@ -8,7 +8,7 @@ import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoResponse;
-import com.rematec.voucher.voucherbackapi.services.VoucherServiceImpl;
+import com.rematec.voucher.voucherbackapi.services.VoucherService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -31,7 +31,7 @@ import java.util.List;
 public class VoucherController {
 
     @Autowired
-    private VoucherServiceImpl voucherService;
+    private VoucherService voucherService;
 
     @Autowired
     private VoucherUtil voucherUtil;

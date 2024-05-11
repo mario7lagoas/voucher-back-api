@@ -2,7 +2,7 @@ package com.rematec.voucher.voucherbackapi.controlles;
 
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.voucherbackapi.controllers.PerfilController;
-import com.rematec.voucher.voucherbackapi.services.PerfilServiceImpl;
+import com.rematec.voucher.voucherbackapi.services.PerfilService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class PerfilControllerTest {
     private PerfilController perfilController;
 
     @Mock
-    private PerfilServiceImpl perfilService;
+    private PerfilService perfilService;
 
     @Test
     @DisplayName("Should Call Get All Perfis And Return Code 200")

@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services;
+package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
@@ -9,9 +9,10 @@ import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
-import com.rematec.voucher.voucherbackapi.interfaces.services.IUsuarioService;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
+import com.rematec.voucher.voucherbackapi.services.PerfilService;
+import com.rematec.voucher.voucherbackapi.services.UsuarioService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class UsuarioServiceImpl implements IUsuarioService {
+public class UsuarioServiceImpl extends UsuarioService {
 
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
