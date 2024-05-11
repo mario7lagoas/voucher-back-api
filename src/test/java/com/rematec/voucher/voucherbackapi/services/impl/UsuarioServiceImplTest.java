@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services;
+package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
@@ -11,7 +11,6 @@ import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoExceptio
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
-import com.rematec.voucher.voucherbackapi.services.impl.UsuarioServiceImpl;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
