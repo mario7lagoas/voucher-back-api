@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.factory;
+package com.rematec.voucher.voucherbackapi.factories;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

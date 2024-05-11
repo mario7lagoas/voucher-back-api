@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.models.requests.AutorRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoPrintRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
@@ -7,7 +8,6 @@ import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.services.PromocaoService;
-import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,6 @@ public class PromocaoController {
 
     @Autowired
     private PromocaoService promocaoService;
-    @Autowired
-    private VoucherUtil voucherUtil;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PromocaoResponse>> getAll() {
@@ -91,9 +89,8 @@ public class PromocaoController {
     @PostMapping(value = "/print", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> printPromocoes(@RequestBody List<PromocaoPrintRequest> prints) {
 
-        return new ResponseEntity<String>(this.voucherUtil.print(
-                new JRBeanCollectionDataSource(prints), "promocoes"),
-                HttpStatus.OK);
+        return new ResponseEntity<String>(
+                ReportFactory.report(new JRBeanCollectionDataSource(prints), "promocoes"), HttpStatus.OK);
     }
 
     @PatchMapping(value = "{guid}", consumes = MediaType.APPLICATION_JSON_VALUE)

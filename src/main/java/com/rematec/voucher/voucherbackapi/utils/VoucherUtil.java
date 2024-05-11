@@ -1,6 +1,5 @@
 package com.rematec.voucher.voucherbackapi.utils;
 
-
 import com.rematec.voucher.models.RoleApiResponse;
 import com.rematec.voucher.models.UsuarioPerfilApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
@@ -25,25 +24,15 @@ import com.rematec.voucher.voucherbackapi.models.requests.Guid;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -64,29 +53,12 @@ public class VoucherUtil {
     @Autowired
     private IVoucherRepository iVoucherRepository;
 
-    private static String DATA_BASE64 = "data:application/pdf;base64,";
 
     public List<LojaEntity> getListGuidLojasToListLojasEntity(List<Guid> lojas) {
 
         return lojas != null ? lojas.stream()
                 .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
                 .toList() : null;
-    }
-
-    public String print(JRBeanCollectionDataSource prints, String relatorio) {
-        try {
-            Map<String, Object> parametros = new HashMap<>();
-            parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
-            parametros.put("logo", this.getClass().getResourceAsStream("/static/img/".concat(relatorio).concat(".jpg")));
-            InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/relatorio-de-".concat(relatorio).concat(".jasper"));
-
-            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros, prints);
-            return DATA_BASE64.concat(Base64.encodeBase64String(JasperExportManager.exportReportToPdf(jasperPrint)));
-
-        } catch (JRException e) {
-            throw new RuntimeException("Erro em gerar o PDF " + e);
-
-        }
     }
 
     public boolean checkDataNullAndEmpty(String data) {

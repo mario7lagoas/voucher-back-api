@@ -5,8 +5,8 @@ import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
+import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.services.LojaService;
-import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class LojaController  implements LojaApi{
+public class LojaController implements LojaApi {
 
     @Autowired
     private LojaService lojaService;
-
-    @Autowired
-    private VoucherUtil voucherUtil;
 
     @Override
     public ResponseEntity<List<LojaApiResponse>> buscandoListaLoja() {
@@ -33,7 +30,7 @@ public class LojaController  implements LojaApi{
     public ResponseEntity<BuscandoListaPaginadaLoja200Response> buscandoListaPaginadaLoja(Integer page, Integer size,
                                                                                           String cnpj) {
         return new ResponseEntity<BuscandoListaPaginadaLoja200Response>(
-                this.lojaService.buscandoListaPaginadaLoja(cnpj, page,size), HttpStatus.OK);
+                this.lojaService.buscandoListaPaginadaLoja(cnpj, page, size), HttpStatus.OK);
 
     }
 
@@ -73,8 +70,8 @@ public class LojaController  implements LojaApi{
 
     @Override
     public ResponseEntity<String> relatorioLoja(List<LojaApiResponse> lojaApiResponse) {
-        return new ResponseEntity<String>(this.voucherUtil.print(new JRBeanCollectionDataSource(lojaApiResponse), "lojas")
-                , HttpStatus.OK );
+        return new ResponseEntity<String>(
+                ReportFactory.report(new JRBeanCollectionDataSource(lojaApiResponse), "lojas"), HttpStatus.OK);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherFinalizeRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherPrintRequest;
@@ -9,7 +10,6 @@ import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherRespons
 import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoResponse;
 import com.rematec.voucher.voucherbackapi.services.VoucherService;
-import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.validation.Valid;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,6 @@ public class VoucherController {
 
     @Autowired
     private VoucherService voucherService;
-
-    @Autowired
-    private VoucherUtil voucherUtil;
 
     @PostMapping(value = "/consulta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConsultaVoucherResponse> consultarPromocao(@RequestBody @Valid ConsultaVoucherRequest consulta) {
@@ -97,12 +94,11 @@ public class VoucherController {
                         inicio, fim, voucherStatus, filialCnpj, tipoDesconto), HttpStatus.OK);
 
     }
-    @PostMapping(value =  "/print", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> printPromocoes(@RequestBody List<VoucherPrintRequest> prints){
-        return new ResponseEntity<String>(this.voucherUtil.print(
-                new JRBeanCollectionDataSource(prints), "vouchers"),
-                HttpStatus.OK);
 
+    @PostMapping(value = "/print", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> printPromocoes(@RequestBody List<VoucherPrintRequest> prints) {
+        return new ResponseEntity<String>(
+                ReportFactory.report(new JRBeanCollectionDataSource(prints), "vouchers"), HttpStatus.OK);
     }
 
 }

@@ -5,8 +5,8 @@ import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.UsuarioUpdateApiRequest;
+import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.services.UsuarioService;
-import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +20,6 @@ public class UsuarioController implements UsuarioApi {
 
     @Autowired
     private UsuarioService usuarioService;
-    @Autowired
-    private VoucherUtil voucherUtil;
 
     @Override
     public ResponseEntity<List<UsuarioApiResponse>> buscandoListaUsuario() {
@@ -69,7 +67,7 @@ public class UsuarioController implements UsuarioApi {
     @Override
     public ResponseEntity<String> relatorioUsuario(List<UsuarioApiResponse> usuarioApiResponse) {
         return new ResponseEntity<String>(
-                this.voucherUtil.print(new JRBeanCollectionDataSource(usuarioApiResponse), "usuarios"),
+                ReportFactory.report(new JRBeanCollectionDataSource(usuarioApiResponse), "usuarios"),
                 HttpStatus.OK);
     }
 }
