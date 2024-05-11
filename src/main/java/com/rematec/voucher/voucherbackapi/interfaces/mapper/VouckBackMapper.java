@@ -15,10 +15,8 @@ import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PerfilResumidoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
-import com.rematec.voucher.voucherbackapi.models.response.UsuarioResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import org.mapstruct.Mapper;
@@ -37,10 +35,6 @@ public interface VouckBackMapper {
 
     UsuarioApiResponse usuarioEntityToUsuarioApiResponse(UsuarioEntity usuarioEntity);
 
-    List<UsuarioResponse> listUsuarioEntityTolistUsuarioResponse(List<UsuarioEntity> usuarios);
-
-    UsuarioResponse usuarioEntityToUsuarioResponse(UsuarioEntity usuario);
-
     List<LojaResponse> listLojaEntityToListLojaResponse(List<LojaEntity> lojas);
 
     LojaResponse lojaEntityToLojaResponse(LojaEntity loja);
@@ -48,8 +42,6 @@ public interface VouckBackMapper {
     List<PromocaoResponse> listPromocaoEntityToListPromocaoResponse(List<PromocaoEntity> promocoes);
 
     PromocaoResponse promocaoEntityTopromocaoResponse(PromocaoEntity promocao);
-
-    PerfilResumidoResponse perfilEntityToperfilResumidoResponse(PerfilEntity perfilEntity);
 
     @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
     PromocoesPaginadaResponse pagePromocoesEntityToPromocoesPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);
