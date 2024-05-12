@@ -43,31 +43,41 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     private String codigo;
     private String clienteCpf;
     private String filialCnpj;
-    private String promocaoGuid;
     private String descricao;
     private String pdv;
     private String cupom;
-    private String pdvResgate;
-    private String filialCnpjResgate;
-    private String cupomResgate;
-    private BigDecimal valorPagamento;
-    private BigDecimal valorMaximoDesconto;
-    private BigDecimal valorPago;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fimResgate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dataResgate;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime inicio;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fim;
-    @Enumerated(EnumType.STRING)
-    private TipoDescontoEnum tipoDesconto;
+    private BigDecimal valorDesconto;
     @Enumerated(EnumType.STRING)
     private VoucherStatusEnum voucherStatus;
     @Enumerated(EnumType.STRING)
     private VoucherPromocaoStatusEnum promocaoStatus;
-    private BigDecimal valorDesconto;
+    private String promocaoGuid;
+    @Enumerated(EnumType.STRING)
+    private TipoDescontoEnum tipoDesconto;
     private Integer diasValidadeVoucher;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime fimResgate;
+    private BigDecimal valorMaximoDesconto;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime inicio;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime fim;
+
+
+    private String pdvResgate;
+    private String filialCnpjResgate;
+    private String cupomResgate;
+    private BigDecimal valorPagamento;
+    private BigDecimal valorPago;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataResgate;
+
+
+
+
+
+
+
+
 
 }

@@ -80,6 +80,7 @@ public class VoucherServiceImpl extends VoucherService {
                         this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
                         VoucherStatusEnum.CANCELADO).isPresent()) {
 
+                 /*
                     VoucherEntity voucherEntity = this.mapper.promocaoEntityToVoucherEntity(promocaoEntity,
                             VoucherStatusEnum.DISPONIBILIZADO,
                             VoucherPromocaoStatusEnum.DISPONIVEL,
@@ -91,6 +92,29 @@ public class VoucherServiceImpl extends VoucherService {
                             consulta.getPdvFilial(), promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher()),
                             consulta.getCupom()
                     );
+
+                  */
+
+
+                    VoucherEntity voucherEntity = VoucherEntity.builder()
+                            .guid(UUID.randomUUID().toString())
+                            .codigo(this.voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()))
+                            .clienteCpf(this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()))
+                            .filialCnpj(this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()))
+                            .pdv(consulta.getPdvFilial())
+                            .cupom(consulta.getCupom())
+                            .valorDesconto(promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDescontoValor() : promocaoEntity.getDescontoPercentual())
+                            .voucherStatus(VoucherStatusEnum.DISPONIBILIZADO)
+                            .promocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL)
+                            .diasValidadeVoucher(promocaoEntity.getDiasValidadeVoucher())
+                            .fimResgate(promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher()))
+                            .promocaoGuid(promocaoEntity.getGuid())
+                            .valorMaximoDesconto(promocaoEntity.getValorMaximoDesconto())
+                            .tipoDesconto(promocaoEntity.getTipoDesconto())
+                            .inicio(promocaoEntity.getInicio())
+                            .fim(promocaoEntity.getFim())
+                            .build();
+
 
                     VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
                             this.iVoucherRepository.save(voucherEntity));

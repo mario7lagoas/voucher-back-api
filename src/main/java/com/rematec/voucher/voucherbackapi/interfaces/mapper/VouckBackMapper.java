@@ -14,8 +14,6 @@ import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
-import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.response.LojaResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
@@ -23,11 +21,8 @@ import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
 import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.springframework.data.domain.Page;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {})
@@ -70,7 +65,7 @@ public interface VouckBackMapper {
 
     @Mapping(source = "usuarioEntityPage.content", target = "usuarios")
     BuscandoListaPaginadaUsuario200Response pageUsuariosEntityToUsuariosApiPaginadaResponse(Page<UsuarioEntity> usuarioEntityPage);
-
+/*
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "dataCadastro", ignore = true),
@@ -91,6 +86,8 @@ public interface VouckBackMapper {
                                                 VoucherPromocaoStatusEnum promocaoStatus, String guid, String codigo,
                                                 String clienteCpf, String filialCnpj, BigDecimal valorDesc, String pdv,
                                                 LocalDateTime fimResgate, String cupom);
+
+ */
 
     List<PromocaoApiResponse> listPromocaoEntityToListPromocaoApiResponse(List<PromocaoEntity> all);
     PromocaoApiResponse promocaoEntityToPromocaoApiResponse(PromocaoEntity all);
