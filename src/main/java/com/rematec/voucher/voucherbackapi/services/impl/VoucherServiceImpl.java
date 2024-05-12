@@ -80,12 +80,14 @@ public class VoucherServiceImpl extends VoucherService {
                         this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
                         VoucherStatusEnum.CANCELADO).isPresent()) {
 
-                    VoucherEntity voucherEntity = mapper.promocaoEntityToVoucherEntity(promocaoEntity,
-                            VoucherStatusEnum.DISPONIBILIZADO, VoucherPromocaoStatusEnum.DISPONIVEL,
-                            UUID.randomUUID().toString(), this.voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
+                    VoucherEntity voucherEntity = this.mapper.promocaoEntityToVoucherEntity(promocaoEntity,
+                            VoucherStatusEnum.DISPONIBILIZADO,
+                            VoucherPromocaoStatusEnum.DISPONIVEL,
+                            UUID.randomUUID().toString(),
+                            this.voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
                             this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()),
                             this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()),
-                            promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDiscontoValor() : promocaoEntity.getDiscontoPercentual(),
+                            promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDescontoValor() : promocaoEntity.getDescontoPercentual(),
                             consulta.getPdvFilial(), promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher()),
                             consulta.getCupom()
                     );

@@ -1,5 +1,7 @@
 package com.rematec.voucher.voucherbackapi.interfaces.services;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
+import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
@@ -10,6 +12,10 @@ import java.util.List;
 
 public interface IPromocaoService {
 
+    List<PromocaoApiResponse> buscandoListaPromocao();
+    BuscandoListaPaginadaPromocao200Response buscandoListaPaginadaPromocao(String descricao, Integer page, Integer size);
+
+
     List<PromocaoResponse> getAllPromocoes();
     PromocaoResponse addPromocao(PromocaoRequest promocaoRequest);
     PromocaoResponse alterarPromocao(String guid, PromocaoUpdateRequest promocaoUpdateRequest);
@@ -19,5 +25,6 @@ public interface IPromocaoService {
     PromocoesPaginadaResponse promocaoFiltro(String descricao, String tipoDesconto, String promocaoStatus, LocalDate inicio,
                                              LocalDate fim, int page, int size);
     void ativarPromocao(String guid, String nomeAutorizador);
+
 
 }

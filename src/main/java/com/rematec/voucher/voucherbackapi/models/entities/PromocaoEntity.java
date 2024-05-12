@@ -56,8 +56,8 @@ public class PromocaoEntity extends BaseEntity implements Serializable {
     private BigDecimal valorMinimoParaDisparo;
     private BigDecimal valorMaximoDesconto;
     private Integer diasValidadeVoucher;
-    private BigDecimal discontoValor;
-    private BigDecimal discontoPercentual;
+    private BigDecimal descontoValor;
+    private BigDecimal descontoPercentual;
     private String autorAlteracao;
 
     @ManyToMany(fetch = FetchType.LAZY)

@@ -79,7 +79,7 @@ public class LojaServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Return A List LojaApiResponse paginator Successfully")
+    @DisplayName("Should Return A List LojaApiResponse Paginator Successfully")
     public void buscandoListaPaginadaLojaCase1() {
 
         //having

@@ -27,8 +27,8 @@ public class PromocaoResponse {
     private String promocaoStatus;
     private BigDecimal valorMinimoParaDisparo;
     private Integer diasValidadeVoucher;
-    private BigDecimal discontoValor;
-    private BigDecimal discontoPercentual;
+    private BigDecimal descontoValor;
+    private BigDecimal descontoPercentual;
     private String autorAlteracao;
     private BigDecimal valorMaximoDesconto;
 

@@ -38,8 +38,8 @@ public class PromocaoRequest {
     private Integer diasValidadeVoucher;
     @NotBlank(message = "Autor da operação não pode ser nulo ou vazio.")
     private String autorAlteracao;
-    private BigDecimal discontoValor;
-    private BigDecimal discontoPercentual;
+    private BigDecimal descontoValor;
+    private BigDecimal descontoPercentual;
     private BigDecimal valorMaximoDesconto;
     private List<Guid> lojas;
 

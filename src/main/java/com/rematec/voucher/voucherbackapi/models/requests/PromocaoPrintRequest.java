@@ -21,8 +21,8 @@ public class PromocaoPrintRequest {
     private BigDecimal valorMinimoParaDisparo;
     private BigDecimal valorMaximoDesconto;
     private Integer diasValidadeVoucher;
-    private BigDecimal discontoValor;
-    private Integer discontoPercentual;
+    private BigDecimal descontoValor;
+    private Integer descontoPercentual;
     private String autorAlteracao;
     private List<LojaResponse> lojas;
 

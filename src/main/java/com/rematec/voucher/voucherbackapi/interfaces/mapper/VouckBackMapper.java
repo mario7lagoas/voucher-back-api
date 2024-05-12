@@ -1,11 +1,13 @@
 package com.rematec.voucher.voucherbackapi.interfaces.mapper;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
+import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 
+import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
@@ -90,5 +92,10 @@ public interface VouckBackMapper {
                                                 String clienteCpf, String filialCnpj, BigDecimal valorDesc, String pdv,
                                                 LocalDateTime fimResgate, String cupom);
 
+    List<PromocaoApiResponse> listPromocaoEntityToListPromocaoApiResponse(List<PromocaoEntity> all);
+    PromocaoApiResponse promocaoEntityToPromocaoApiResponse(PromocaoEntity all);
+
+    @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
+    BuscandoListaPaginadaPromocao200Response pagePromocoesEntityToPromocoesApiPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);
 }
 

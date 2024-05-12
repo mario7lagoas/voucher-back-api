@@ -1,5 +1,7 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
+import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.models.requests.AutorRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoPrintRequest;
@@ -30,10 +32,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/promocao")
-public class PromocaoController {
+public class PromocaoController implements PromocaoApi{
 
     @Autowired
     private PromocaoService promocaoService;
+
+    @Override
+    public ResponseEntity<List<PromocaoApiResponse>> buscandoListaPromocao() {
+        return new ResponseEntity<List<PromocaoApiResponse>>(
+                this.promocaoService.buscandoListaPromocao(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<BuscandoListaPaginadaPromocao200Response> buscandoListaPaginadaPromocao(Integer page,
+                                                                                                  Integer size,
+                                                                                                  String descricao) {
+        return new ResponseEntity<BuscandoListaPaginadaPromocao200Response>(
+                this.promocaoService.buscandoListaPaginadaPromocao(descricao, page, size), HttpStatus.OK);
+    }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PromocaoResponse>> getAll() {

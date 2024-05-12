@@ -1,5 +1,7 @@
 package com.rematec.voucher.voucherbackapi.services.impl;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
+import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
@@ -36,6 +38,18 @@ public class PromocaoServiceImpl extends PromocaoService {
     private VoucherUtil voucherUtil;
 
     @Override
+    public List<PromocaoApiResponse> buscandoListaPromocao() {
+        return this.mapper.listPromocaoEntityToListPromocaoApiResponse(this.iPromocaoRepository.findAll());
+    }
+
+    public BuscandoListaPaginadaPromocao200Response buscandoListaPaginadaPromocao(String descricao, Integer page,
+                                                                                  Integer size) {
+        return this.mapper.pagePromocoesEntityToPromocoesApiPaginadaResponse(
+                this.iPromocaoRepository.findByDescricaoContaining(descricao, PageRequest.of(page, size)));
+
+    }
+
+    @Override
     public List<PromocaoResponse> getAllPromocoes() {
         return this.mapper.listPromocaoEntityToListPromocaoResponse(this.iPromocaoRepository.findAll());
     }
@@ -50,10 +64,10 @@ public class PromocaoServiceImpl extends PromocaoService {
                 .fim(promocaoRequest.getFim())
                 .autorAlteracao(promocaoRequest.getAutorAlteracao())
                 .valorMinimoParaDisparo(promocaoRequest.getValorMinimoParaDisparo())
-                .discontoPercentual(promocaoRequest.getDiscontoPercentual() != null ?
-                        promocaoRequest.getDiscontoPercentual() : BigDecimal.ZERO)
-                .discontoValor(promocaoRequest.getDiscontoValor() != null ?
-                        promocaoRequest.getDiscontoValor() : BigDecimal.ZERO)
+                .descontoPercentual(promocaoRequest.getDescontoPercentual() != null ?
+                        promocaoRequest.getDescontoPercentual() : BigDecimal.ZERO)
+                .descontoValor(promocaoRequest.getDescontoValor() != null ?
+                        promocaoRequest.getDescontoValor() : BigDecimal.ZERO)
                 .valorMaximoDesconto(this.voucherUtil.getValorMaximoDesconto(promocaoRequest))
                 .diasValidadeVoucher(promocaoRequest.getDiasValidadeVoucher())
                 .tipoDesconto(TipoDescontoEnum.valueOf(promocaoRequest.getTipoDesconto()))
@@ -94,16 +108,16 @@ public class PromocaoServiceImpl extends PromocaoService {
         if (promocaoUpdateRequest.getValorMaximoDesconto() != null)
             promocaoEntity.setValorMaximoDesconto(this.voucherUtil.getValorMaximoDesconto(promocaoUpdateRequest));
 
-        if (promocaoUpdateRequest.getDiscontoValor() != null && promocaoUpdateRequest.getDiscontoValor()
+        if (promocaoUpdateRequest.getDescontoValor() != null && promocaoUpdateRequest.getDescontoValor()
                 .compareTo(BigDecimal.ZERO) > 0) {
-            promocaoEntity.setDiscontoValor(promocaoUpdateRequest.getDiscontoValor());
-            promocaoEntity.setDiscontoPercentual(BigDecimal.ZERO);
+            promocaoEntity.setDescontoValor(promocaoUpdateRequest.getDescontoValor());
+            promocaoEntity.setDescontoPercentual(BigDecimal.ZERO);
         }
 
-        if (promocaoUpdateRequest.getDiscontoPercentual() != null && promocaoUpdateRequest
-                .getDiscontoPercentual().compareTo(BigDecimal.ZERO) > 0) {
-            promocaoEntity.setDiscontoValor(BigDecimal.ZERO);
-            promocaoEntity.setDiscontoPercentual(promocaoUpdateRequest.getDiscontoPercentual());
+        if (promocaoUpdateRequest.getDescontoPercentual() != null && promocaoUpdateRequest
+                .getDescontoPercentual().compareTo(BigDecimal.ZERO) > 0) {
+            promocaoEntity.setDescontoValor(BigDecimal.ZERO);
+            promocaoEntity.setDescontoPercentual(promocaoUpdateRequest.getDescontoPercentual());
         }
 
         if (promocaoUpdateRequest.getFim() != null)
