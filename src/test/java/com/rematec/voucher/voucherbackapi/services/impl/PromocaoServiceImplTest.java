@@ -1,11 +1,12 @@
 package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
+import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
+import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
-import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
@@ -23,11 +24,18 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.rematec.voucher.voucherbackapi.builders.PromocaoApiRequestBuilder.umaPromocaoApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoEntityBuilder.umaPromocaoEntity;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PromocaoServiceImplTest {
@@ -40,6 +48,7 @@ public class PromocaoServiceImplTest {
 
     @Spy
     private VouckBackMapper mapper;
+
     @Spy
     private VoucherUtil voucherUtil;
 
@@ -75,32 +84,75 @@ public class PromocaoServiceImplTest {
         List<PromocaoEntity> entities = Arrays.asList(umaPromocaoEntity().agora());
         Page<PromocaoEntity> promocaoEntityPage = new PageImpl<>(entities, pageable, 1l);
 
-        when(this.iPromocaoRepository.findByDescricaoContaining(descricao, PageRequest.of(page, size)))
-                .thenReturn(promocaoEntityPage);
-        when(this.mapper.pagePromocoesEntityToPromocoesApiPaginadaResponse(promocaoEntityPage))
-                .thenReturn(new BuscandoListaPaginadaPromocao200Response());
+        when(this.iPromocaoRepository.findByDescricaoContaining(descricao, PageRequest.of(page, size))).thenReturn(promocaoEntityPage);
+        when(this.mapper.pagePromocoesEntityToPromocoesApiPaginadaResponse(promocaoEntityPage)).thenReturn(new BuscandoListaPaginadaPromocao200Response());
 
         //when
-        BuscandoListaPaginadaPromocao200Response responses =
-                this.promocaoService.buscandoListaPaginadaPromocao(descricao, page, size);
+        BuscandoListaPaginadaPromocao200Response responses = this.promocaoService.buscandoListaPaginadaPromocao(descricao, page, size);
 
         //then
         Assertions.assertNotNull(responses);
 
     }
 
-
     @Test
-    @DisplayName("Should Return A List PromocaoResponse Successfully")
-    public void getAllPromocoesCase1() {
+    @DisplayName("Should Create a Promoção Successfully")
+    public void criandoPromocaoCase1() {
         //having
-        when(this.iPromocaoRepository.findAll()).thenReturn(new CollisionCheckStack<PromocaoEntity>());
+        PromocaoApiRequest request = umaPromocaoApiRequest().agora();
+
+        when(this.iPromocaoRepository.save(any(PromocaoEntity.class))).thenReturn(new PromocaoEntity());
+        when(this.mapper.promocaoEntityToPromocaoApiResponse(any(PromocaoEntity.class))).thenReturn(new PromocaoApiResponse());
 
         //when
-        List<PromocaoResponse> promocaoResponses = this.promocaoService.getAllPromocoes();
+        PromocaoApiResponse responses = this.promocaoService.criandoPromocao(request);
 
         //then
-        Assertions.assertNotNull(promocaoResponses);
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(responses);
+
+        verify(this.iPromocaoRepository, times(1)).save(argThat(PromocaoArg -> PromocaoArg.getDescricao().equals("Promocao 01") && PromocaoArg.getGuid() != null));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Date Fim Is Less Than Current Date")
+    public void criandoPromocaoCase2() {
+        //having
+        PromocaoApiRequest request = umaPromocaoApiRequest()
+                .inicio(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
+                .fim(LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
+                .agora();
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(NaoPermitidoException.class,
+                () -> this.promocaoService.criandoPromocao(request));
+
+        assertThat(exception.getMessage(), is("Fim da promoção menor que data atual"));
+
+    }
+
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Date Inicio Is Greater Than Date Fim")
+    public void criandoPromocaoCase3() {
+        //having
+        PromocaoApiRequest request = umaPromocaoApiRequest()
+                .inicio(LocalDateTime.now().plusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
+                .fim(LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
+                .agora();
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(NaoPermitidoException.class,
+                () -> this.promocaoService.criandoPromocao(request));
+
+        assertThat(exception.getMessage(), is("Data inicial maior que data final."));
 
     }
 

@@ -43,6 +43,83 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PromocaoApiResponse'
+    post:
+      tags:
+        - Promoção
+      summary: Criando Uma Promoção
+      description: Criando Uma Promoção na Plataforma
+      operationId: criandoPromocao
+      requestBody:
+        description: Criando nova Promoção
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromocaoApiRequest'
+        required: true
+      responses:
+        '201':
+          description: created successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromocaoApiResponse'
+        '400':
+          description: bad request operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 400 BAD_REQUEST
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        mensagem:
+                          type: string
+                          example: "não deve ser nulo"
+                        campo:
+                          type: string
+                          example: "descricao"
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: "Não encontrado."
+                        mensagem:
+                          type: string
+                          example: "Loja não encontrada."
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 422 UNPROCESSABLE_ENTITY
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: "Não permitido."
+                        mensagem:
+                          type: string
+                          example: "Data inicial maior que data final."
   /promocao/paginada:
     get:
       tags:
@@ -1005,6 +1082,15 @@ components:
           type: integer
           example: 1
           description: "Total de Items"
+    GuidApiRequest:
+      required:
+        - guid
+      type: object
+      properties:
+        guid:
+          type: string
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
+          description: "Identificador guid"
     UpdateStatusApiRequest:
       required:
         - status
@@ -1014,6 +1100,65 @@ components:
           type: boolean
           description: "Status [true/false]"
           example: true
+    PromocaoApiRequest:
+      required:
+        - descricao
+        - inicio
+        - fim
+        - tipoDesconto
+        - valorMinimoParaDisparo
+        - diasValidadeVoucher
+        - autorAlteracao
+      properties:
+        descricao:
+          type: string
+          example: "Promocao de Natal"
+          description: "Descrição da Promoção"
+        inicio:
+          type: string
+          example: "2024-05-12 09:56:13"
+          description: "Data e Hora inicio da Promoção"
+        fim:
+          type: string
+          example: "2024-05-31 09:56:16"
+          description: "Data e Hora fim da Promoção"
+        tipoDesconto:
+          type: string
+          example: "PERCENTUAL"
+          description: "Tipo de desconto"
+        promocaoStatus:
+          type: string
+          example: "ATIVA"
+          description: "Status Atual da promoção da Promoção"
+        descontoValor:
+          type: number
+          example: 0.00
+          description: "Desconto em valor"
+        descontoPercentual:
+          type: number
+          example: 5.00
+          description: "Desconto percentual"
+        valorMaximoDesconto:
+          type: number
+          example: 10.00
+          description: "Valor maximo de desconto concedido"
+        valorMinimoParaDisparo:
+          type: number
+          example: 50.00
+          description: "Valor minimo para ativação da promoção"
+        diasValidadeVoucher:
+          type: integer
+          example: 3
+          description: "Quantidade de dias para uso do voucher após data fim da promoção"
+        autorAlteracao:
+          type: string
+          example: "Mario Sergio"
+          description: "Responsávelpela ultima alteração"
+        lojas:
+          type: array
+          description: "Lojas associadas a promoção"
+          items:
+            $ref: '#/components/schemas/GuidApiRequest'
     PromocaoApiResponse:
       properties:
         guid:

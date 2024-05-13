@@ -38,7 +38,7 @@ public interface VouckBackMapper {
 
     List<PromocaoResponse> listPromocaoEntityToListPromocaoResponse(List<PromocaoEntity> promocoes);
 
-    PromocaoResponse promocaoEntityTopromocaoResponse(PromocaoEntity promocao);
+    PromocaoResponse promocaoEntityToPromocaoResponse(PromocaoEntity promocao);
 
     @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
     PromocoesPaginadaResponse pagePromocoesEntityToPromocoesPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);

@@ -1,8 +1,10 @@
 package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
+import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
+import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,6 +53,43 @@ public class PromocaoServiceImpl extends PromocaoService {
     }
 
     @Override
+    public PromocaoApiResponse criandoPromocao(PromocaoApiRequest promocaoApiRequest) {
+
+        LocalDateTime fim = this.voucherUtil.stringToLocalDateTime(promocaoApiRequest.getFim());
+
+        if (fim.isBefore(LocalDateTime.now())) {
+            throw new NaoPermitidoException("Fim da promoção menor que data atual");
+        }
+
+        LocalDateTime inicio = this.voucherUtil.stringToLocalDateTime(promocaoApiRequest.getInicio());
+
+        if (fim.isBefore(inicio)) {
+            throw new NaoPermitidoException("Data inicial maior que data final.");
+        }
+
+        PromocaoEntity promocaoEntity = PromocaoEntity.builder()
+                .guid(UUID.randomUUID().toString())
+                .descricao(promocaoApiRequest.getDescricao())
+                .promocaoStatus(PromocaoStatusEnum.PROGRESSO)
+                .inicio(inicio)
+                .fim(fim)
+                .autorAlteracao(promocaoApiRequest.getAutorAlteracao())
+                .valorMinimoParaDisparo(promocaoApiRequest.getValorMinimoParaDisparo())
+                .descontoPercentual(promocaoApiRequest.getDescontoPercentual() != null ?
+                        promocaoApiRequest.getDescontoPercentual() : BigDecimal.ZERO)
+                .descontoValor(promocaoApiRequest.getDescontoValor() != null ?
+                        promocaoApiRequest.getDescontoValor() : BigDecimal.ZERO)
+                .valorMaximoDesconto(this.voucherUtil.getPromocaoApiRequestValorMaximoDesconto(promocaoApiRequest))
+                .diasValidadeVoucher(promocaoApiRequest.getDiasValidadeVoucher())
+                .tipoDesconto(TipoDescontoEnum.valueOf(promocaoApiRequest.getTipoDesconto()))
+                .lojas(this.voucherUtil.getListGuidApiRequestToListLojasEntity(promocaoApiRequest.getLojas()))
+                .build();
+
+        return this.mapper.promocaoEntityToPromocaoApiResponse(this.iPromocaoRepository.save(promocaoEntity));
+
+    }
+
+    @Override
     public List<PromocaoResponse> getAllPromocoes() {
         return this.mapper.listPromocaoEntityToListPromocaoResponse(this.iPromocaoRepository.findAll());
     }
@@ -74,7 +114,7 @@ public class PromocaoServiceImpl extends PromocaoService {
                 .lojas(this.voucherUtil.getListGuidLojasToListLojasEntity(promocaoRequest.getLojas()))
                 .build();
 
-        return this.mapper.promocaoEntityTopromocaoResponse(this.iPromocaoRepository.save(promocaoEntity));
+        return this.mapper.promocaoEntityToPromocaoResponse(this.iPromocaoRepository.save(promocaoEntity));
     }
 
     @Override
@@ -131,7 +171,7 @@ public class PromocaoServiceImpl extends PromocaoService {
             promocaoEntity.setLojas(null);
         }
 
-        return this.mapper.promocaoEntityTopromocaoResponse(this.iPromocaoRepository.save(promocaoEntity));
+        return this.mapper.promocaoEntityToPromocaoResponse(this.iPromocaoRepository.save(promocaoEntity));
     }
 
     @Override
@@ -147,7 +187,7 @@ public class PromocaoServiceImpl extends PromocaoService {
         PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
 
-        return this.mapper.promocaoEntityTopromocaoResponse(promocaoEntity);
+        return this.mapper.promocaoEntityToPromocaoResponse(promocaoEntity);
     }
 
     @Override

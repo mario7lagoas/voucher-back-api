@@ -168,6 +168,7 @@ public class LojaServiceImplTest {
         LojaApiResponse lojaResponse = this.lojaService.criandoLoja(request);
 
         //then
+        Assertions.assertNotNull(request);
         Assertions.assertNotNull(lojaResponse);
 
         verify(this.iLojaReposity, times(1)).save(

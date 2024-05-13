@@ -1,7 +1,10 @@
 package com.rematec.voucher.voucherbackapi.utils;
 
+import com.rematec.voucher.models.GuidApiRequest;
+import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.RoleApiResponse;
 import com.rematec.voucher.models.UsuarioPerfilApiRequest;
+import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
@@ -59,6 +62,21 @@ public class VoucherUtil {
         return lojas != null ? lojas.stream()
                 .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
                 .toList() : null;
+    }
+
+    public List<LojaEntity> getListGuidApiRequestToListLojasEntity(List<GuidApiRequest> lojas) {
+
+        try {
+            if (lojas != null && !lojas.isEmpty()) {
+                return lojas.stream()
+                        .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
+                        .toList();
+            }
+        } catch (Exception e) {
+            throw new LojaNaoEncontradaException("Loja não encontrada.");
+        }
+
+        return null;
     }
 
     public boolean checkDataNullAndEmpty(String data) {
@@ -188,6 +206,28 @@ public class VoucherUtil {
         }
         log.debug("Retornado valor Maximo desconto {} ", BigDecimal.ZERO);
         return BigDecimal.ZERO;
+    }
+
+    public BigDecimal getPromocaoApiRequestValorMaximoDesconto(PromocaoApiRequest request) {
+
+        if (request.getValorMaximoDesconto() != null &&
+                request.getTipoDesconto().equals(TipoDescontoEnum.PERCENTUAL.name()) &&
+                request.getValorMaximoDesconto().compareTo(BigDecimal.ZERO) > 0) {
+            log.debug("Retornado valor Maximo desconto {} ", request.getValorMaximoDesconto());
+            return request.getValorMaximoDesconto();
+        }
+        log.debug("Retornado valor Maximo desconto {} ", BigDecimal.ZERO);
+        return BigDecimal.ZERO;
+    }
+
+    public LocalDateTime stringToLocalDateTime(String dateTime) {
+
+        if (checkDataNullAndEmpty(dateTime)) {
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            return LocalDateTime.parse(dateTime, formatter);
+        }
+        return null;
+
     }
 
 }

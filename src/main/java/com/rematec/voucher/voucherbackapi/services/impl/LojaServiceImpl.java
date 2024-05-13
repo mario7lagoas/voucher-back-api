@@ -102,11 +102,12 @@ public class LojaServiceImpl extends LojaService {
                 .orElseThrow(() -> new LojaNaoEncontradaException("Loja não encontrada."));
 
         if (!lojaApiRequest.getCnpj().isEmpty()) {
-            if (this.iLojaReposity.findByCnpj(lojaApiRequest.getCnpj()).isPresent()) {
-                if (!guid.equals(this.iLojaReposity.findByCnpj(lojaApiRequest.getCnpj()).get().getGuid()))
+            String cnpj = this.voucherUtil.apenasNumerosNaString(lojaApiRequest.getCnpj());
+            if (this.iLojaReposity.findByCnpj(cnpj).isPresent()) {
+                if (!guid.equals(this.iLojaReposity.findByCnpj(cnpj).get().getGuid()))
                     throw new LojaCadastradaException("CNPJ Já cadastrado.");
             }
-            lojaEntity.setCnpj(lojaApiRequest.getCnpj());
+            lojaEntity.setCnpj(cnpj);
         }
 
         if (!lojaApiRequest.getIdentificacao().isEmpty())

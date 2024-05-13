@@ -3,7 +3,6 @@ package com.rematec.voucher.voucherbackapi.services.impl;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
@@ -54,8 +53,6 @@ public class VoucherServiceImpl extends VoucherService {
     @Autowired
     private IVoucherRepository iVoucherRepository;
 
-    @Autowired
-    private ILojaRepository iLojaRepository;
 
     @Override
     public ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta) {
@@ -79,22 +76,6 @@ public class VoucherServiceImpl extends VoucherService {
                 if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatusNot(
                         this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
                         VoucherStatusEnum.CANCELADO).isPresent()) {
-
-                 /*
-                    VoucherEntity voucherEntity = this.mapper.promocaoEntityToVoucherEntity(promocaoEntity,
-                            VoucherStatusEnum.DISPONIBILIZADO,
-                            VoucherPromocaoStatusEnum.DISPONIVEL,
-                            UUID.randomUUID().toString(),
-                            this.voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()),
-                            this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()),
-                            this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()),
-                            promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDescontoValor() : promocaoEntity.getDescontoPercentual(),
-                            consulta.getPdvFilial(), promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher()),
-                            consulta.getCupom()
-                    );
-
-                  */
-
 
                     VoucherEntity voucherEntity = VoucherEntity.builder()
                             .guid(UUID.randomUUID().toString())

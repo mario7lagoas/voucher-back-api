@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
+import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.models.requests.AutorRequest;
@@ -49,6 +50,12 @@ public class PromocaoController implements PromocaoApi{
                                                                                                   String descricao) {
         return new ResponseEntity<BuscandoListaPaginadaPromocao200Response>(
                 this.promocaoService.buscandoListaPaginadaPromocao(descricao, page, size), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PromocaoApiResponse> criandoPromocao(PromocaoApiRequest promocaoApiRequest) {
+        return new ResponseEntity<PromocaoApiResponse>(
+                this.promocaoService.criandoPromocao(promocaoApiRequest), HttpStatus.CREATED);
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)

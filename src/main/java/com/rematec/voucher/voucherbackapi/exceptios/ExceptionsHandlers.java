@@ -82,7 +82,7 @@ public class ExceptionsHandlers {
     }
 
     @ExceptionHandler(UsuarioInativoException.class)
-    public ResponseEntity<ErrorResponse> lusuarioInativoExceptionHandler(UsuarioInativoException exception){
+    public ResponseEntity<ErrorResponse> usuarioInativoExceptionHandler(UsuarioInativoException exception){
         Map<String, String> response = new HashMap<>();
         response.put("codigo", ErrosEnum.USUARIO_INATIVADO.toString());
         response.put("mensagem", exception.getMessage());
@@ -138,7 +138,7 @@ public class ExceptionsHandlers {
     }
 
     @ExceptionHandler(NaoPermitidoExcluirLojaException.class)
-    public ResponseEntity<ErrorResponse> lojaPermitidoExcluirLojaExceptionHandler(NaoPermitidoExcluirLojaException exception){
+    public ResponseEntity<ErrorResponse> naoPermitidoExcluirLojaExceptionHandler(NaoPermitidoExcluirLojaException exception){
         Map<String, String> response = new HashMap<>();
         response.put("codigo", ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString());
         response.put("mensagem", exception.getMessage());
@@ -151,8 +151,22 @@ public class ExceptionsHandlers {
 
     }
 
+    @ExceptionHandler(NaoPermitidoException.class)
+    public ResponseEntity<ErrorResponse> naoPermitidoExceptionHandler(NaoPermitidoException exception){
+        Map<String, String> response = new HashMap<>();
+        response.put("codigo", ErrosEnum.NAO_PERMITIDO.toString());
+        response.put("mensagem", exception.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(response))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
+
     @ExceptionHandler(NaoPermitidoExcluirPerfilException.class)
-    public ResponseEntity<ErrorResponse> lojaPermitidoExcluirPerfilExceptionHandler(NaoPermitidoExcluirPerfilException exception){
+    public ResponseEntity<ErrorResponse> naoPermitidoExcluirPerfilExceptionHandler(NaoPermitidoExcluirPerfilException exception){
         Map<String, String> response = new HashMap<>();
         response.put("codigo", ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString());
         response.put("mensagem", exception.getMessage());
