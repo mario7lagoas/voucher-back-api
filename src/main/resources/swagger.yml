@@ -246,6 +246,75 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/PromocaoApiResponse'
+  /promocao/filter:
+    get:
+      tags:
+        - Promoção
+      summary: Buscando Lista de Promoção Por Filtros
+      description: Buscando Lista de Promoção Por Filtros na Plataforma
+      operationId: buscandoListaFiltroPromocao
+      parameters:
+        - name: page
+          description: "Numero da pagina atual"
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          description: "Quantidade de registro por pagina"
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: descricao
+          description: "Descrição da Promoção"
+          example: "Promocao de NataL"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: status
+          description: "Status da Promoção"
+          example: "ATIVA"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: tipo
+          description: "Tipo de desconto da Promoção"
+          example: "PERCENTUAL"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: inicio
+          description: "Inicio da Promoção"
+          example: "2024-05-12 09:56:13"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: fim
+          description: "Fim da Promoção"
+          example: "2029-05-31 09:56:16"
+          in: query
+          schema:
+            type: string
+            default: ""
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginacaoApiResponse'
+                  - type: object
+                    properties:
+                      promocoes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PromocaoApiResponse'
   /loja:
     get:
       tags:

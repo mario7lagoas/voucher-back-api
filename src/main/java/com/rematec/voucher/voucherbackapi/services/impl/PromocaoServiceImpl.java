@@ -175,6 +175,23 @@ public class PromocaoServiceImpl extends PromocaoService {
     }
 
     @Override
+    public BuscandoListaPaginadaPromocao200Response buscandoListaFiltroPromocao(String descricao, String tipo,
+                                                                                String status, String inicio, String fim,
+                                                                                Integer page, Integer size) {
+        this.voucherUtil.verificarPromocoesVencidas();
+
+        PromocaoFiltro filtro = PromocaoFiltro.builder()
+                .descricao(descricao)
+                .tipoDesconto(tipo)
+                .promocaoStatus(status)
+                .inicio(LocalDate.parse(inicio))
+                .fim(LocalDate.parse(fim))
+                .build();
+
+       // return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));
+    }
+
+    @Override
     public List<PromocaoResponse> getAllPromocoes() {
         return this.mapper.listPromocaoEntityToListPromocaoResponse(this.iPromocaoRepository.findAll());
     }

@@ -65,6 +65,20 @@ public class PromocaoController implements PromocaoApi{
                 this.promocaoService.alterandoPromocao(guid, promocaoUpdateApiRequest), HttpStatus.ACCEPTED);
     }
 
+    @Override
+    public ResponseEntity<BuscandoListaPaginadaPromocao200Response> buscandoListaFiltroPromocao(Integer page,
+                                                                                                Integer size,
+                                                                                                String descricao,
+                                                                                                String status,
+                                                                                                String tipo,
+                                                                                                String inicio,
+                                                                                                String fim) {
+        return new ResponseEntity<BuscandoListaPaginadaPromocao200Response>(
+                this.promocaoService.buscandoListaFiltroPromocao(descricao, tipo, status, inicio, fim, page, size),
+                HttpStatus.OK);
+
+    }
+
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PromocaoResponse>> getAll() {
         return new ResponseEntity<>(this.promocaoService.getAllPromocoes(), HttpStatus.OK);
