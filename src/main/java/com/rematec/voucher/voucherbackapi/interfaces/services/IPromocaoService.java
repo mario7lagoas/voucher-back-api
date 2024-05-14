@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.interfaces.services;
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
+import com.rematec.voucher.models.PromocaoUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
 import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
@@ -16,6 +17,7 @@ public interface IPromocaoService {
     List<PromocaoApiResponse> buscandoListaPromocao();
     BuscandoListaPaginadaPromocao200Response buscandoListaPaginadaPromocao(String descricao, Integer page, Integer size);
     PromocaoApiResponse criandoPromocao(PromocaoApiRequest promocaoApiRequest);
+    PromocaoApiResponse alterandoPromocao(String guid, PromocaoUpdateApiRequest promocaoUpdateApiRequest);
 
     List<PromocaoResponse> getAllPromocoes();
     PromocaoResponse addPromocao(PromocaoRequest promocaoRequest);

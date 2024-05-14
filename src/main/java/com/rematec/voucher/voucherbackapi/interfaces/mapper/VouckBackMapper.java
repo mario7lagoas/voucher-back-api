@@ -7,7 +7,9 @@ import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 
+import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
+import com.rematec.voucher.models.PromocaoUpdateApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
@@ -94,5 +96,7 @@ public interface VouckBackMapper {
 
     @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
     BuscandoListaPaginadaPromocao200Response pagePromocoesEntityToPromocoesApiPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);
+
+    PromocaoApiRequest promocaoUpdateApiRequestTopromocaoApiRequest(PromocaoUpdateApiRequest promocaoUpdateApiRequest);
 }
 

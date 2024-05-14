@@ -3,6 +3,8 @@ package com.rematec.voucher.voucherbackapi.services.impl;
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
+import com.rematec.voucher.models.PromocaoUpdateApiRequest;
+import com.rematec.voucher.voucherbackapi.builders.PromocaoRequestBuilder;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
@@ -87,6 +89,89 @@ public class PromocaoServiceImpl extends PromocaoService {
 
         return this.mapper.promocaoEntityToPromocaoApiResponse(this.iPromocaoRepository.save(promocaoEntity));
 
+    }
+
+    @Override
+    public PromocaoApiResponse alterandoPromocao(String guid, PromocaoUpdateApiRequest promocaoUpdateApiRequest) {
+        PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
+                .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+
+        if (promocaoEntity.getPromocaoStatus().equals(PromocaoStatusEnum.FINALIZADA))
+            throw new NaoPermitidoAlterarStatusException("Promoção já finalizada!");
+
+        if (this.voucherUtil.checkDataNullAndEmpty(promocaoUpdateApiRequest.getDescricao()))
+            promocaoEntity.setDescricao(promocaoUpdateApiRequest.getDescricao());
+
+        if (this.voucherUtil.checkDataNullAndEmpty(promocaoUpdateApiRequest.getAutorAlteracao()))
+            promocaoEntity.setAutorAlteracao(promocaoUpdateApiRequest.getAutorAlteracao());
+
+        if (this.voucherUtil.checkDataNullAndEmpty(promocaoUpdateApiRequest.getPromocaoStatus()))
+            promocaoEntity.setPromocaoStatus(PromocaoStatusEnum.valueOf(promocaoUpdateApiRequest.getPromocaoStatus()));
+
+        if (this.voucherUtil.checkDataNullAndEmpty(promocaoUpdateApiRequest.getTipoDesconto()))
+            promocaoEntity.setTipoDesconto(TipoDescontoEnum.valueOf(promocaoUpdateApiRequest.getTipoDesconto()));
+
+        if (this.voucherUtil.checkDataNullAndEmpty(promocaoUpdateApiRequest.getFim())) {
+            LocalDateTime fim = this.voucherUtil.stringToLocalDateTime(promocaoUpdateApiRequest.getFim());
+
+            if (fim.isBefore(LocalDateTime.now())) {
+                throw new NaoPermitidoException("Fim da promoção menor que data atual");
+            }
+            promocaoEntity.setFim(fim);
+        }
+
+        if (this.voucherUtil.checkDataNullAndEmpty(promocaoUpdateApiRequest.getInicio())) {
+            LocalDateTime inicio = this.voucherUtil.stringToLocalDateTime(promocaoUpdateApiRequest.getInicio());
+
+            if (this.voucherUtil.checkDataNullAndEmpty(promocaoUpdateApiRequest.getFim())) {
+                LocalDateTime fim = this.voucherUtil.stringToLocalDateTime(promocaoUpdateApiRequest.getFim());
+                if (fim.isBefore(inicio)) {
+                    throw new NaoPermitidoException("Data inicial maior que data final.");
+                }
+            }
+            promocaoEntity.setInicio(inicio);
+        }
+
+        if (promocaoUpdateApiRequest.getValorMinimoParaDisparo() != null)
+            promocaoEntity.setValorMinimoParaDisparo(promocaoUpdateApiRequest.getValorMinimoParaDisparo());
+
+        if (promocaoUpdateApiRequest.getDiasValidadeVoucher() != null)
+            promocaoEntity.setDiasValidadeVoucher(promocaoUpdateApiRequest.getDiasValidadeVoucher());
+
+        if (promocaoUpdateApiRequest.getValorMaximoDesconto() != null) {
+
+            promocaoEntity.setValorMaximoDesconto(
+                    this.voucherUtil.getPromocaoApiRequestValorMaximoDesconto(
+                            PromocaoRequestBuilder.builder()
+                                    .valorMaximoDesconto(promocaoUpdateApiRequest.getValorMaximoDesconto())
+                                    .tipoDesconto(promocaoUpdateApiRequest.getTipoDesconto())
+                                    .buider()
+                    )
+            );
+        }
+
+        if (promocaoUpdateApiRequest.getDescontoValor() != null && promocaoUpdateApiRequest.getDescontoValor()
+                .compareTo(BigDecimal.ZERO) > 0) {
+            promocaoEntity.setDescontoValor(promocaoUpdateApiRequest.getDescontoValor());
+            promocaoEntity.setDescontoPercentual(BigDecimal.ZERO);
+        }
+
+        if (promocaoUpdateApiRequest.getDescontoPercentual() != null && promocaoUpdateApiRequest.getDescontoPercentual()
+                .compareTo(BigDecimal.ZERO) > 0) {
+            promocaoEntity.setDescontoValor(BigDecimal.ZERO);
+            promocaoEntity.setDescontoPercentual(promocaoUpdateApiRequest.getDescontoPercentual());
+        }
+
+        if (promocaoUpdateApiRequest.getLojas() != null) {
+            promocaoEntity.getLojas().clear();
+            promocaoEntity.getLojas().addAll(
+                    this.voucherUtil.getListGuidApiRequestToListLojasEntity(promocaoUpdateApiRequest.getLojas())
+            );
+        } else {
+            promocaoEntity.setLojas(null);
+        }
+
+        return this.mapper.promocaoEntityToPromocaoApiResponse(this.iPromocaoRepository.save(promocaoEntity));
     }
 
     @Override

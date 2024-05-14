@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.builders;
 
-import com.rematec.voucher.models.PromocaoApiRequest;
+
+import com.rematec.voucher.models.PromocaoUpdateApiRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -9,17 +10,17 @@ import java.util.Arrays;
 
 import static com.rematec.voucher.voucherbackapi.builders.GuidApiRequestBuilder.umGuidApiRequest;
 
-public class PromocaoApiRequestBuilder {
+public class PromocaoUpdateApiRequestBuilder {
 
-    private PromocaoApiRequest promocaoApiRequest;
+    private PromocaoUpdateApiRequest promocaoApiRequest;
 
-    private PromocaoApiRequestBuilder() {
+    private PromocaoUpdateApiRequestBuilder() {
     }
 
-    public static PromocaoApiRequestBuilder umaPromocaoApiRequest() {
+    public static PromocaoUpdateApiRequestBuilder umaPromocaoUpdateApiRequest() {
 
-        PromocaoApiRequestBuilder builder = new PromocaoApiRequestBuilder();
-        builder.promocaoApiRequest = new PromocaoApiRequest();
+        PromocaoUpdateApiRequestBuilder builder = new PromocaoUpdateApiRequestBuilder();
+        builder.promocaoApiRequest = new PromocaoUpdateApiRequest();
         builder.promocaoApiRequest.setDescricao("Promocao 01");
         builder.promocaoApiRequest.setInicio(LocalDateTime.now().plusDays(1)
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString());
@@ -36,57 +37,57 @@ public class PromocaoApiRequestBuilder {
         return builder;
     }
 
-    public PromocaoApiRequestBuilder descricao(String nome) {
+    public PromocaoUpdateApiRequestBuilder descricao(String nome) {
         promocaoApiRequest.setDescricao(nome);
         return this;
     }
 
-    public PromocaoApiRequestBuilder inicio(String inicio) {
+    public PromocaoUpdateApiRequestBuilder inicio(String inicio) {
         promocaoApiRequest.setInicio(inicio);
         return this;
     }
 
-    public PromocaoApiRequestBuilder fim(String fim) {
+    public PromocaoUpdateApiRequestBuilder fim(String fim) {
         promocaoApiRequest.setFim(fim);
         return this;
     }
 
-    public PromocaoApiRequestBuilder tipoDesconto(String tipodesconto) {
+    public PromocaoUpdateApiRequestBuilder tipoDesconto(String tipodesconto) {
         promocaoApiRequest.setTipoDesconto(tipodesconto);
         return this;
     }
 
-    public PromocaoApiRequestBuilder promocaoStatus(String promocaoStatus) {
+    public PromocaoUpdateApiRequestBuilder promocaoStatus(String promocaoStatus) {
         promocaoApiRequest.setPromocaoStatus(promocaoStatus);
         return this;
     }
 
-    public PromocaoApiRequestBuilder descontoValor(BigDecimal decimal) {
+    public PromocaoUpdateApiRequestBuilder descontoValor(BigDecimal decimal) {
         promocaoApiRequest.setDescontoValor(decimal);
         return this;
     }
 
-    public PromocaoApiRequestBuilder descontoPercentual(BigDecimal decimal) {
+    public PromocaoUpdateApiRequestBuilder descontoPercentual(BigDecimal decimal) {
         promocaoApiRequest.setDescontoPercentual(decimal);
         return this;
     }
 
-    public PromocaoApiRequestBuilder valorMaximoDesconto(BigDecimal decimal) {
+    public PromocaoUpdateApiRequestBuilder valorMaximoDesconto(BigDecimal decimal) {
         promocaoApiRequest.setValorMaximoDesconto(decimal);
         return this;
     }
 
-    public PromocaoApiRequestBuilder valorMinimoParaDisparo(BigDecimal decimal) {
+    public PromocaoUpdateApiRequestBuilder valorMinimoParaDisparo(BigDecimal decimal) {
         promocaoApiRequest.setValorMinimoParaDisparo(decimal);
         return this;
     }
 
-    public PromocaoApiRequestBuilder comLoja() {
+    public PromocaoUpdateApiRequestBuilder comLoja() {
         promocaoApiRequest.setLojas(Arrays.asList(umGuidApiRequest().agora()));
         return this;
     }
 
-    public PromocaoApiRequest agora() {
+    public PromocaoUpdateApiRequest agora() {
         return promocaoApiRequest;
     }
 
