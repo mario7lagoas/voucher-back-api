@@ -363,14 +363,14 @@ paths:
             default: ""
         - name: inicio
           description: "Inicio da Promoção"
-          example: "2024-05-12 09:56:13"
+          example: "2024-05-12"
           in: query
           schema:
             type: string
             default: ""
         - name: fim
           description: "Fim da Promoção"
-          example: "2029-05-31 09:56:16"
+          example: "2029-05-31"
           in: query
           schema:
             type: string

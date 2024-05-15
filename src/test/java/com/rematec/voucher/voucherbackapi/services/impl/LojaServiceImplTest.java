@@ -395,7 +395,6 @@ public class LojaServiceImplTest {
     public void apagandoLojaCase2() {
         //having
         String guid = UUID.randomUUID().toString();
-
         when(this.iLojaReposity.findByGuid(guid)).thenReturn(Optional.empty());
 
         //when

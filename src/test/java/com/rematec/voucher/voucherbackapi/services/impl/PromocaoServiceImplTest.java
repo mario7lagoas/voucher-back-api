@@ -342,5 +342,87 @@ public class PromocaoServiceImplTest {
     }
     */
 
+    @Test
+    @DisplayName("Should Return A PromocaoApiResponse By GUID Successfully")
+    public void buscandoPromocaoPeloGUIDCase1() {
+        //having
+        PromocaoEntity promocaoEntity = umaPromocaoEntity().agora();
+        String guid = promocaoEntity.getGuid();
+
+        when(this.iPromocaoRepository.findByGuid(guid)).thenReturn(Optional.of(promocaoEntity));
+        when(this.mapper.promocaoEntityToPromocaoApiResponse(any(PromocaoEntity.class))).thenReturn(new PromocaoApiResponse());
+
+        //when
+        PromocaoApiResponse response = this.promocaoService.buscandoPromocaoPeloGUID(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Get LojaApiResponse By GUID")
+    public void buscandoPromocaoPeloGUIDCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        when(this.iPromocaoRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(PromocaoNaoEncontradaException.class,
+                () -> this.promocaoService.buscandoPromocaoPeloGUID(guid));
+
+        assertThat(exception.getMessage(), is("Promoção não encontrada."));
+
+
+    }
+
+    @Test
+    @DisplayName("Should Delete A Promoçao Successfully")
+    public void apagandoPromocaoCase1() {
+        //having
+        PromocaoEntity promocaoEntity = umaPromocaoEntity().descricao("Promoção Delete").agora();
+        String guid = promocaoEntity.getGuid();
+
+        when(this.iPromocaoRepository.findByGuid(guid)).thenReturn(Optional.of(promocaoEntity));
+        //when
+        this.promocaoService.apagandoPromocao(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        verify(this.iPromocaoRepository, times(1)).delete(
+                argThat(promocaoArg -> promocaoArg.getDescricao().equals("Promoção Delete")
+                        && promocaoArg.getGuid().equals(guid)
+                )
+        );
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Delete Promoção And It Does Not Exist")
+    public void apagandoPromocaoCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        when(this.iPromocaoRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(PromocaoNaoEncontradaException.class,
+                () -> this.promocaoService.apagandoPromocao(guid));
+
+        assertThat(exception.getMessage(), is("Promoção não encontrada."));
+
+
+    }
+
+
+
 
 }
