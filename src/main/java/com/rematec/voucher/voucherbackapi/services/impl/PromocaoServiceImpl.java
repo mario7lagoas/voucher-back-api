@@ -92,6 +92,14 @@ public class PromocaoServiceImpl extends PromocaoService {
     }
 
     @Override
+    public PromocaoApiResponse buscandoPromocaoPeloGUID(String guid) {
+        PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
+                .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+
+        return this.mapper.promocaoEntityToPromocaoApiResponse(promocaoEntity);
+    }
+
+    @Override
     public PromocaoApiResponse alterandoPromocao(String guid, PromocaoUpdateApiRequest promocaoUpdateApiRequest) {
         PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
                 .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
@@ -184,11 +192,19 @@ public class PromocaoServiceImpl extends PromocaoService {
                 .descricao(descricao)
                 .tipoDesconto(tipo)
                 .promocaoStatus(status)
-                .inicio( inicio != null && !inicio.isEmpty() ? LocalDate.parse(inicio) : null )
+                .inicio(inicio != null && !inicio.isEmpty() ? LocalDate.parse(inicio) : null)
                 .fim(fim != null && !fim.isEmpty() ? LocalDate.parse(fim) : null)
                 .build();
 
         return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));
+    }
+
+    @Override
+    public void apagandoPromocao(String guid) {
+        PromocaoEntity promocaoEntity = this.iPromocaoRepository.findByGuid(guid)
+                .orElseThrow(() -> new PromocaoNaoEncontradaException("Promoção não encontrada."));
+
+        this.iPromocaoRepository.delete(promocaoEntity);
     }
 
     @Override

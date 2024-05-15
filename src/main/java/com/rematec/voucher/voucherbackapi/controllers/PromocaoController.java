@@ -54,6 +54,11 @@ public class PromocaoController implements PromocaoApi{
     }
 
     @Override
+    public ResponseEntity<PromocaoApiResponse> buscandoPromocaoPeloGUID(String guid) {
+        return new ResponseEntity<PromocaoApiResponse>(this.promocaoService.buscandoPromocaoPeloGUID(guid), HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<PromocaoApiResponse> criandoPromocao(PromocaoApiRequest promocaoApiRequest) {
         return new ResponseEntity<PromocaoApiResponse>(
                 this.promocaoService.criandoPromocao(promocaoApiRequest), HttpStatus.CREATED);
@@ -78,6 +83,14 @@ public class PromocaoController implements PromocaoApi{
                 HttpStatus.OK);
 
     }
+
+    @Override
+    public ResponseEntity<Void> apagandoPromocao(String guid) {
+        this.promocaoService.apagandoPromocao(guid);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PromocaoResponse>> getAll() {

@@ -17,10 +17,13 @@ public interface IPromocaoService {
     List<PromocaoApiResponse> buscandoListaPromocao();
     BuscandoListaPaginadaPromocao200Response buscandoListaPaginadaPromocao(String descricao, Integer page, Integer size);
     PromocaoApiResponse criandoPromocao(PromocaoApiRequest promocaoApiRequest);
+    PromocaoApiResponse buscandoPromocaoPeloGUID(String guid);
     PromocaoApiResponse alterandoPromocao(String guid, PromocaoUpdateApiRequest promocaoUpdateApiRequest);
     BuscandoListaPaginadaPromocao200Response buscandoListaFiltroPromocao(String descricao, String tipo, String status,
                                                                          String inicio, String fim, Integer page,
                                                                          Integer size);
+    void apagandoPromocao(String guid);
+
 
     List<PromocaoResponse> getAllPromocoes();
     PromocaoResponse addPromocao(PromocaoRequest promocaoRequest);

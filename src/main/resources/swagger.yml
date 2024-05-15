@@ -121,6 +121,45 @@ paths:
                           type: string
                           example: "Data inicial maior que data final."
   /promocao/{guid}:
+    get:
+      tags:
+        - Promoção
+      summary: Buscando Promoção Pelo GUID
+      description: Buscando Promoção Pelo GUID na Plataforma
+      operationId: buscandoPromocaoPeloGUID
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromocaoApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Promoção não encontrada."
     put:
       tags:
         - Promoção
@@ -205,6 +244,41 @@ paths:
                         mensagem:
                           type: string
                           example: "Data inicial maior que data final."
+    delete:
+      tags:
+        - Promoção
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Apagando uma Promoção
+      description: Apagando uma Promoção na Plataforma
+      operationId: apagandoPromocao
+      responses:
+        '204':
+          description: No Content successful operation
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: Não encontrado.
+                        mensagem:
+                          type: string
+                          example: "Promoção não encontrada."
   /promocao/paginada:
     get:
       tags:
