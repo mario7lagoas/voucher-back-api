@@ -24,6 +24,7 @@ import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaRespon
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
@@ -97,6 +98,8 @@ public interface VouckBackMapper {
     @Mapping(source = "promocaoEntityPage.content", target = "promocoes")
     BuscandoListaPaginadaPromocao200Response pagePromocoesEntityToPromocoesApiPaginadaResponse(Page<PromocaoEntity> promocaoEntityPage);
 
-    PromocaoApiRequest promocaoUpdateApiRequestTopromocaoApiRequest(PromocaoUpdateApiRequest promocaoUpdateApiRequest);
+    @Mapping(source = "promocaoEntities.content", target = "promocoes")
+    BuscandoListaPaginadaPromocao200Response pagePromocoesEntityToBuscandoListaPaginadaPromocao200Response(
+            PageImpl<PromocaoEntity> promocaoEntities);
 }
 

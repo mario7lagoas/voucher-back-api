@@ -184,11 +184,11 @@ public class PromocaoServiceImpl extends PromocaoService {
                 .descricao(descricao)
                 .tipoDesconto(tipo)
                 .promocaoStatus(status)
-                .inicio(LocalDate.parse(inicio))
-                .fim(LocalDate.parse(fim))
+                .inicio( inicio != null && !inicio.isEmpty() ? LocalDate.parse(inicio) : null )
+                .fim(fim != null && !fim.isEmpty() ? LocalDate.parse(fim) : null)
                 .build();
 
-       // return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));
+        return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));
     }
 
     @Override
@@ -314,7 +314,8 @@ public class PromocaoServiceImpl extends PromocaoService {
                 .fim(fim)
                 .build();
 
-        return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));
+        //return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.interfaces.repositories.criteria;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
@@ -30,7 +31,7 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
     private VouckBackMapper mapper;
 
     @Override
-    public PromocoesPaginadaResponse filtrar(PromocaoFiltro promocaoFiltro, Pageable page) {
+    public BuscandoListaPaginadaPromocao200Response filtrar(PromocaoFiltro promocaoFiltro, Pageable page) {
         From<?, ?> orderByFromEntity = null;
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<PromocaoEntity> criteriaQuery = builder.createQuery(PromocaoEntity.class);
@@ -50,24 +51,24 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
 
         criteriaQuery.orderBy(orderList);
 
-        TypedQuery<PromocaoEntity> query = manager.createQuery(criteriaQuery);
+        TypedQuery<PromocaoEntity> query = this.manager.createQuery(criteriaQuery);
 
         additionalRestrictedDePaginate(query, page);
 
-        return mapper.pagePromocoesEntityToPromocoesPaginadaResponse(new PageImpl<>(query.getResultList(),
-                page, total(promocaoFiltro)));
+        return this.mapper.pagePromocoesEntityToBuscandoListaPaginadaPromocao200Response(
+                new PageImpl<>(query.getResultList(), page, total(promocaoFiltro)));
     }
 
     private Long total(PromocaoFiltro promocaoFiltro) {
 
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        CriteriaBuilder builder = this.manager.getCriteriaBuilder();
         CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
         Root<PromocaoEntity> root = criteria.from(PromocaoEntity.class);
 
         Predicate[] predicates = criarRestricted(promocaoFiltro, builder, root);
         criteria.where(predicates);
         criteria.select(builder.count(root));
-        return manager.createQuery(criteria).getSingleResult();
+        return this.manager.createQuery(criteria).getSingleResult();
     }
 
     private void additionalRestrictedDePaginate(TypedQuery<PromocaoEntity> query, Pageable page) {

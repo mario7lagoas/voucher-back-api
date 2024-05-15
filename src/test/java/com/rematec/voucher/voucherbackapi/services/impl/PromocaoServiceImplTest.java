@@ -12,6 +12,7 @@ import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.rematec.voucher.voucherbackapi.builders.BuscandoListaPaginadaPromocao200ResponseBuilder.umBuscandoListaPaginadaPromocao200Response;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoApiRequestBuilder.umaPromocaoApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoEntityBuilder.umaPromocaoEntity;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoUpdateApiRequestBuilder.umaPromocaoUpdateApiRequest;
@@ -298,6 +300,47 @@ public class PromocaoServiceImplTest {
         assertThat(exception.getMessage(), is("Data inicial maior que data final."));
     }
 
+    /*
+    @Test
+    @DisplayName("Should Return A List PromocaoApiResponse for filtro Successfully")
+    public void buscandoListaFiltroPromocao() {
+        //having
+        Integer page = 0;
+        Integer size = 10;
+
+     */
+
+      /*  when(this.iPromocaoRepository.filtrar(PromocaoFiltro.builder().build(), pageable))
+                .thenReturn(umBuscandoListaPaginadaPromocao200Response().agora());
+
+       */
+    /*
+        List<PromocaoEntity> entities = Arrays.asList(umaPromocaoEntity().agora());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PromocaoEntity> promocaoEntityPage = new PageImpl<>(entities, pageable, 1l);
+
+        doReturn(umBuscandoListaPaginadaPromocao200Response().agora())
+                .when(this.iPromocaoRepository).filtrar(PromocaoFiltro.builder().promocaoStatus("PROGRESSO").build(),
+                        PageRequest.of(page, size));
+        doNothing().when(this.voucherUtil).verificarPromocoesVencidas();
+
+     */
+       /* when(this.mapper.pagePromocoesEntityToBuscandoListaPaginadaPromocao200Response( new PageImpl<>(entities, pageable, 1l)))
+                .thenReturn(new BuscandoListaPaginadaPromocao200Response());
+
+        */
+    /*
+        doReturn(new BuscandoListaPaginadaPromocao200Response()).when(this.mapper)
+                .pagePromocoesEntityToBuscandoListaPaginadaPromocao200Response( new PageImpl<>(entities, pageable, 1l));
+
+        //when
+        BuscandoListaPaginadaPromocao200Response responses =
+                this.promocaoService.buscandoListaFiltroPromocao("", "", "PROGRESSO", "", "", page, size);
+
+        //then
+        Assertions.assertNotNull(responses);
+    }
+    */
 
 
 }
