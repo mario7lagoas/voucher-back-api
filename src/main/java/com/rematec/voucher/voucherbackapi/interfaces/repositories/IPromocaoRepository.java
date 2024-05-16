@@ -24,11 +24,6 @@ public interface IPromocaoRepository extends JpaRepository<PromocaoEntity, Long>
     List<PromocaoEntity> findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
             LocalDateTime inicio, LocalDateTime fim, Double valorMinimo, PromocaoStatusEnum status, String cnpj);
 
-
-    List<PromocaoEntity> findByLojasCnpjAndLojasStatusTrue(String cnpj);
-
     Optional<PromocaoEntity> findByGuidAndLojasCnpjAndLojasStatusTrue(String guid, String cnpjFilial);
-
-
 
 }

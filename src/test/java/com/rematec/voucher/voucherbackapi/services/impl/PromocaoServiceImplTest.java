@@ -12,7 +12,6 @@ import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
-import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
@@ -29,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -300,48 +300,6 @@ public class PromocaoServiceImplTest {
         assertThat(exception.getMessage(), is("Data inicial maior que data final."));
     }
 
-    /*
-    @Test
-    @DisplayName("Should Return A List PromocaoApiResponse for filtro Successfully")
-    public void buscandoListaFiltroPromocao() {
-        //having
-        Integer page = 0;
-        Integer size = 10;
-
-     */
-
-      /*  when(this.iPromocaoRepository.filtrar(PromocaoFiltro.builder().build(), pageable))
-                .thenReturn(umBuscandoListaPaginadaPromocao200Response().agora());
-
-       */
-    /*
-        List<PromocaoEntity> entities = Arrays.asList(umaPromocaoEntity().agora());
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PromocaoEntity> promocaoEntityPage = new PageImpl<>(entities, pageable, 1l);
-
-        doReturn(umBuscandoListaPaginadaPromocao200Response().agora())
-                .when(this.iPromocaoRepository).filtrar(PromocaoFiltro.builder().promocaoStatus("PROGRESSO").build(),
-                        PageRequest.of(page, size));
-        doNothing().when(this.voucherUtil).verificarPromocoesVencidas();
-
-     */
-       /* when(this.mapper.pagePromocoesEntityToBuscandoListaPaginadaPromocao200Response( new PageImpl<>(entities, pageable, 1l)))
-                .thenReturn(new BuscandoListaPaginadaPromocao200Response());
-
-        */
-    /*
-        doReturn(new BuscandoListaPaginadaPromocao200Response()).when(this.mapper)
-                .pagePromocoesEntityToBuscandoListaPaginadaPromocao200Response( new PageImpl<>(entities, pageable, 1l));
-
-        //when
-        BuscandoListaPaginadaPromocao200Response responses =
-                this.promocaoService.buscandoListaFiltroPromocao("", "", "PROGRESSO", "", "", page, size);
-
-        //then
-        Assertions.assertNotNull(responses);
-    }
-    */
-
     @Test
     @DisplayName("Should Return A PromocaoApiResponse By GUID Successfully")
     public void buscandoPromocaoPeloGUIDCase1() {
@@ -358,7 +316,6 @@ public class PromocaoServiceImplTest {
         //then
         Assertions.assertNotNull(guid);
         Assertions.assertNotNull(response);
-
     }
 
     @Test
@@ -377,8 +334,6 @@ public class PromocaoServiceImplTest {
                 () -> this.promocaoService.buscandoPromocaoPeloGUID(guid));
 
         assertThat(exception.getMessage(), is("Promoção não encontrada."));
-
-
     }
 
     @Test
@@ -399,7 +354,6 @@ public class PromocaoServiceImplTest {
                         && promocaoArg.getGuid().equals(guid)
                 )
         );
-
     }
 
     @Test
@@ -418,11 +372,70 @@ public class PromocaoServiceImplTest {
                 () -> this.promocaoService.apagandoPromocao(guid));
 
         assertThat(exception.getMessage(), is("Promoção não encontrada."));
-
-
     }
 
+    @Test
+    @DisplayName("Should Active A Promoçao Successfully")
+    public void ativandoPromocaoCase1() {
+        //having
+        PromocaoEntity promocaoEntity = umaPromocaoEntity()
+                .promocaoStatus(PromocaoStatusEnum.PROGRESSO)
+                .descricao("Promoção Ativar").agora();
+        String guid = promocaoEntity.getGuid();
 
+        when(this.iPromocaoRepository.findByGuid(guid)).thenReturn(Optional.of(promocaoEntity));
+        //when
+        this.promocaoService.ativandoPromocao(guid, "Jose da silva");
 
+        //then
+        Assertions.assertNotNull(guid);
+        verify(this.iPromocaoRepository, times(1)).save(
+                argThat(promocaoArg -> promocaoArg.getDescricao().equals("Promoção Ativar")
+                        && promocaoArg.getAutorAlteracao().equals("Jose da silva")
+                        && promocaoArg.getGuid().equals(guid)
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Active Promoção And It Does Not Exist")
+    public void ativandoPromocaoCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        when(this.iPromocaoRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(PromocaoNaoEncontradaException.class,
+                () -> this.promocaoService.ativandoPromocao(guid, "Jose da Silva"));
+
+        assertThat(exception.getMessage(), is("Promoção não encontrada."));
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Active Promoção And The PromotionStatus is Different Than PROGRESS")
+    public void ativandoPromocaoCase3() {
+        //having
+
+        PromocaoEntity promocaoEntity = umaPromocaoEntity()
+                .promocaoStatus(PromocaoStatusEnum.FINALIZADA)
+                .descricao("Promoção Ativar").agora();
+        String guid = promocaoEntity.getGuid();
+
+        when(this.iPromocaoRepository.findByGuid(guid)).thenReturn(Optional.of(promocaoEntity));
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(NaoPermitidoAlterarStatusException.class,
+                () -> this.promocaoService.ativandoPromocao(guid, "Jose da Silva"));
+
+        assertThat(exception.getMessage(), is("Status da promoção não pode ser alterado."));
+    }
 
 }

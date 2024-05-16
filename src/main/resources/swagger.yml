@@ -244,6 +244,70 @@ paths:
                         mensagem:
                           type: string
                           example: "Data inicial maior que data final."
+    patch:
+      tags:
+        - Promoção
+      summary: Ativando Uma Promoção
+      description: Ativando Uma Promoção na Plataforma
+      operationId: ativandoPromocao
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Alterando uma Promoção
+        content:
+          application/json:
+            schema:
+              properties:
+                autorAlteracao:
+                  type: string
+                  example: "Joao da Silva"
+        required: true
+      responses:
+        '202':
+          description: accepted successful operation
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 422 UNPROCESSABLE_ENTITY
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: "Não permitido alterar Status."
+                        mensagem:
+                          type: string
+                          example: "Status da promoção não pode ser alterado."
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: "Não encontrado."
+                        mensagem:
+                          type: string
+                          example: "Promoção não encontrada."
     delete:
       tags:
         - Promoção
@@ -389,6 +453,29 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/PromocaoApiResponse'
+  /promocao/print:
+    post:
+      tags:
+        - Promoção
+      summary: Relatorio de Promoção
+      description: Relatorio de Promoção na Plataforma
+      operationId: relatorioPromocao
+      requestBody:
+        description: Imprimindo um relatorio de Promoção
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PromocaoApiResponse'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "data:application/pdf;base64,JVBERi0xLjUKJeLjz9MKMyAwIG9iago8PC9Db2xvclNwYWNlL0RldmljZVJHQi9TdWJ0eXBlL0ltYWdlL0hlaWdodCAzNTQvRmlsdGVyL0RDVERlY29kZS9UeXBlL1hPYmplY3QvV2lkdGggMjQ4MC9CaXRzUGVyQ29tcG9uZW50IDgvTGVuZ3RoIDM2ODg5Pj5zdHJlYW0K/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAACgAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAFBAQGRIZJxcXJzImHyYyLiYmJiYuPjU1NTU1PkRBQUFBQUFERERERERERERERERERERERERERERERERERERERAEVGRkgHCAmGBgmNiYgJjZENisrNkREREI1QkRERERERERERERERERERERERERERERERERERERERERERERERERE/8AAEQgBYgmwAwEiAAIRAQMRAf/..."
   /loja:
     get:
       tags:

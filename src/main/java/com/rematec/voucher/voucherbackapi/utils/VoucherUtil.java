@@ -24,7 +24,6 @@ import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.requests.Guid;
-import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -194,18 +193,6 @@ public class VoucherUtil {
         }
         log.debug("Retornado nome da loja {} ", cnpj);
         return cnpj;
-    }
-
-    public BigDecimal getValorMaximoDesconto(PromocaoRequest promocaoRequest) {
-
-        if (promocaoRequest.getValorMaximoDesconto() != null &&
-                promocaoRequest.getTipoDesconto().equals(TipoDescontoEnum.PERCENTUAL.name()) &&
-                promocaoRequest.getValorMaximoDesconto().compareTo(BigDecimal.ZERO) > 0) {
-            log.debug("Retornado valor Maximo desconto {} ", promocaoRequest.getValorMaximoDesconto());
-            return promocaoRequest.getValorMaximoDesconto();
-        }
-        log.debug("Retornado valor Maximo desconto {} ", BigDecimal.ZERO);
-        return BigDecimal.ZERO;
     }
 
     public BigDecimal getPromocaoApiRequestValorMaximoDesconto(PromocaoApiRequest request) {

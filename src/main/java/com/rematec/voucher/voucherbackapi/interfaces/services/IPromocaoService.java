@@ -4,12 +4,6 @@ import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.PromocaoUpdateApiRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.PromocaoRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.PromocaoUpdateRequest;
-import com.rematec.voucher.voucherbackapi.models.response.PromocaoResponse;
-import com.rematec.voucher.voucherbackapi.models.response.PromocoesPaginadaResponse;
-
-import java.time.LocalDate;
 import java.util.List;
 
 public interface IPromocaoService {
@@ -18,23 +12,11 @@ public interface IPromocaoService {
     BuscandoListaPaginadaPromocao200Response buscandoListaPaginadaPromocao(String descricao, Integer page, Integer size);
     PromocaoApiResponse criandoPromocao(PromocaoApiRequest promocaoApiRequest);
     PromocaoApiResponse buscandoPromocaoPeloGUID(String guid);
+    void ativandoPromocao(String guid, String autorAlteracao);
     PromocaoApiResponse alterandoPromocao(String guid, PromocaoUpdateApiRequest promocaoUpdateApiRequest);
     BuscandoListaPaginadaPromocao200Response buscandoListaFiltroPromocao(String descricao, String tipo, String status,
                                                                          String inicio, String fim, Integer page,
                                                                          Integer size);
     void apagandoPromocao(String guid);
-
-
-    List<PromocaoResponse> getAllPromocoes();
-    PromocaoResponse addPromocao(PromocaoRequest promocaoRequest);
-    PromocaoResponse alterarPromocao(String guid, PromocaoUpdateRequest promocaoUpdateRequest);
-    void apagarPromocao(String guid);
-    PromocaoResponse buscarPromocaoByGuid(String guid);
-    PromocoesPaginadaResponse obterPromocoesPaginadas(String descricao, int page, int size);
-    PromocoesPaginadaResponse promocaoFiltro(String descricao, String tipoDesconto, String promocaoStatus, LocalDate inicio,
-                                             LocalDate fim, int page, int size);
-    void ativarPromocao(String guid, String nomeAutorizador);
-
-
 
 }
