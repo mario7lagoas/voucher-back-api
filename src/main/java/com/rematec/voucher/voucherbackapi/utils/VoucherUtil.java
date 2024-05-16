@@ -4,6 +4,7 @@ import com.rematec.voucher.models.GuidApiRequest;
 import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.RoleApiResponse;
 import com.rematec.voucher.models.UsuarioPerfilApiRequest;
+import com.rematec.voucher.models.VoucherApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
@@ -142,6 +143,24 @@ public class VoucherUtil {
         String voucherFinal = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmssSSS"));
         return voucherFinal.concat(thebuffer.toString()).concat(pdv);
 
+    }
+    public void cancelOrConfirmVoucherApi(List<VoucherApiRequest> voucherRequests, VoucherStatusEnum statusEnum) {
+        voucherRequests.forEach(voucherRequest -> {
+            VoucherEntity voucherEntity =
+                    this.iVoucherRepository.findByCodigoEqualsAndClienteCpfEqualsAndFilialCnpjEqualsAndVoucherStatus(
+                            voucherRequest.getCodigo(), this.apenasNumerosNaString(voucherRequest.getClienteCpf()),
+                            this.apenasNumerosNaString(voucherRequest.getFilialCnpj()),
+                            VoucherStatusEnum.DISPONIBILIZADO
+                    ).orElseThrow(
+                            () -> new VoucherNaoEncontradoException("Voucher codigo [" + voucherRequest.getCodigo()
+                                    + "] não encontrado")
+                    );
+            voucherEntity.setVoucherStatus(statusEnum);
+            if (VoucherStatusEnum.CANCELADO.equals(statusEnum)) {
+                voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.CANCELADO);
+            }
+            this.iVoucherRepository.save(voucherEntity);
+        });
     }
 
     public void cancelOrConfirmVoucher(List<VoucherRequest> voucherRequests, VoucherStatusEnum statusEnum) {

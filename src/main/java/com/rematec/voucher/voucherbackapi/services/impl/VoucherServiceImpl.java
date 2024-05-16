@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.services.impl;
 
 import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
+import com.rematec.voucher.models.VoucherApiRequest;
 import com.rematec.voucher.models.VoucherApiResponse;
 import com.rematec.voucher.voucherbackapi.builders.ConsultaVoucherApiResponseBuilder;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
@@ -116,6 +117,18 @@ public class VoucherServiceImpl extends VoucherService {
         }
 
         return consultaVoucherResponse;
+    }
+
+    @Async("threadPollConfirmandoVoucherExecutor")
+    @Override
+    public void confirmandoVoucher(List<VoucherApiRequest> voucherApiRequest) {
+        this.voucherUtil.cancelOrConfirmVoucherApi(voucherApiRequest, VoucherStatusEnum.CONFIRMADO);
+    }
+
+    @Async("threadPollCancelandoVoucherExecutor")
+    @Override
+    public void cancelandoVoucher(List<VoucherApiRequest> voucherApiRequest) {
+        this.voucherUtil.cancelOrConfirmVoucherApi(voucherApiRequest, VoucherStatusEnum.CANCELADO);
     }
 
     @Override

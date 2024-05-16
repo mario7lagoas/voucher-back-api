@@ -50,6 +50,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConsultaVoucherApiResponse'
+  /voucher/confirm:
+    post:
+      tags:
+        - Voucher
+      summary: Confirmando Voucher Disponível
+      description: Confirmando Voucher Disponível na Plataforma
+      operationId: confirmandoVoucher
+      requestBody:
+        description: Confirmando Voucher Disponível
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/VoucherApiRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+  /voucher/cancel:
+    post:
+      tags:
+        - Voucher
+      summary: Cancelando Voucher Disponível
+      description: Cancelando Voucher Disponível na Plataforma
+      operationId: cancelandoVoucher
+      requestBody:
+        description: Cancelando Voucher Disponível
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/VoucherApiRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
   /promocao:
     get:
       tags:
@@ -1438,6 +1476,24 @@ components:
           type: boolean
           description: "Status [true/false]"
           example: true
+    VoucherApiRequest:
+      required:
+        - filialCnpj
+        - clienteCpf
+        - codigo
+      properties:
+        filialCnpj:
+          type: string
+          example: "11111111111111"
+          description: "CNPJ da Loja"
+        clienteCpf:
+          type: string
+          example: "12345678900"
+          description: "CPF do Cliente"
+        codigo:
+          type: string
+          example: "240422172055905959002"
+          description: "Codigo do Voucher disponibilizado"
     ConsultaVoucherApiRequest:
       required:
         - filialCnpj
