@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public interface IPromocaoRepository extends JpaRepository<PromocaoEntity, Long>
     List<PromocaoEntity> findByFimLessThanAndPromocaoStatusNot(LocalDateTime dateNow, PromocaoStatusEnum notStatus);
 
     List<PromocaoEntity> findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
-            LocalDateTime inicio, LocalDateTime fim, Double valorMinimo, PromocaoStatusEnum status, String cnpj);
+            LocalDateTime inicio, LocalDateTime fim, BigDecimal valorCompra, PromocaoStatusEnum status, String cnpj);
 
     Optional<PromocaoEntity> findByGuidAndLojasCnpjAndLojasStatusTrue(String guid, String cnpjFilial);
 

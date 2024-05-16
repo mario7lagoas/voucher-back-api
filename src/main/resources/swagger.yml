@@ -18,6 +18,8 @@ servers:
 
 
 tags:
+  - name: Voucher
+    description: Operações sobre Voucher
   - name: Promoção
     description: Operações sobre Promoção
   - name: Loja
@@ -27,6 +29,27 @@ tags:
   - name: Usuario
     description: Operações sobre Usuario
 paths:
+  /voucher/consulta:
+    post:
+      tags:
+        - Voucher
+      summary: Consultando Promoções Disponiveis
+      description: Consultando Promoções Disponiveis na Plataforma
+      operationId: consultandoPromocoes
+      requestBody:
+        description: Consultando um Voucher
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsultaVoucherApiRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaVoucherApiResponse'
   /promocao:
     get:
       tags:
@@ -1415,6 +1438,83 @@ components:
           type: boolean
           description: "Status [true/false]"
           example: true
+    ConsultaVoucherApiRequest:
+      required:
+        - filialCnpj
+        - pdvFilial
+        - clienteCpf
+        - cupom
+        - valorCompra
+      properties:
+        filialCnpj:
+          type: string
+          example: "11111111111111"
+          description: "CNPJ da Loja"
+        pdvFilial:
+          type: string
+          example: "101"
+          description: "Numero do PDV"
+        clienteCpf:
+          type: string
+          example: "12345678900"
+          description: "CPF do Cliente"
+        cupom:
+          type: string
+          example: "88888"
+          description: "Numero do Cupom da Venda"
+        valorCompra:
+          type: number
+          example: 10.99
+          description: "Valor do Pagamento"
+    ConsultaVoucherApiResponse:
+      properties:
+        status:
+          type: string
+          example: "OK"
+          description: "Status da promoção"
+        totalVoucher:
+          type: integer
+          example: 1
+          description: "Total de Voucher disponibilizado"
+        vouchers:
+          type: array
+          description: "Lojas associadas a promoção"
+          items:
+            $ref: '#/components/schemas/VoucherApiResponse'
+    VoucherApiResponse:
+      properties:
+        descricao:
+          type: string
+          example: "Promocao de Natal"
+          description: "Descrição da Promoção"
+        codigo:
+          type: string
+          example: "240422172055905959002"
+          description: "Codigo do Voucher disponibilizado"
+        inicio:
+          type: string
+          example: "2024-05-12 09:56:13"
+          description: "Data e Hora inicio da Promoção"
+        fim:
+          type: string
+          example: "2024-05-31 09:56:16"
+          description: "Data e Hora fim da Promoção"
+        tipoDesconto:
+          type: string
+          example: "PERCENTUAL"
+          description: "Tipo de desconto"
+        promocaoStatus:
+          type: string
+          example: "ATIVA"
+          description: "Status Atual da promoção da Promoção"
+        valorDesconto:
+          type: number
+          example: 5.00
+          description: "Valor do Desconto"
+        valorMaximoDesconto:
+          type: number
+          example: 10.00
+          description: "Valor maximo de desconto concedido"
     PromocaoUpdateApiRequest:
       properties:
         descricao:

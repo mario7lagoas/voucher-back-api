@@ -1,5 +1,9 @@
 package com.rematec.voucher.voucherbackapi.services.impl;
 
+import com.rematec.voucher.models.ConsultaVoucherApiRequest;
+import com.rematec.voucher.models.ConsultaVoucherApiResponse;
+import com.rematec.voucher.models.VoucherApiResponse;
+import com.rematec.voucher.voucherbackapi.builders.ConsultaVoucherApiResponseBuilder;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
@@ -55,6 +59,66 @@ public class VoucherServiceImpl extends VoucherService {
 
 
     @Override
+    public ConsultaVoucherApiResponse consultandoPromocoes(ConsultaVoucherApiRequest consulta) {
+
+
+        ConsultaVoucherApiResponse consultaVoucherResponse = ConsultaVoucherApiResponseBuilder.builder().status("VOID")
+                .totalVoucher(0).build();
+
+        List<PromocaoEntity> promocaoEntities = iPromocaoRepository
+                .findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
+                        LocalDateTime.now(), LocalDateTime.now(), consulta.getValorCompra(), PromocaoStatusEnum.ATIVA,
+                        this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj())
+                );
+
+        if (!promocaoEntities.isEmpty()) {
+
+            final boolean[] promocaoDisponivel = new boolean[1];
+            promocaoDisponivel[0] = false;
+
+            List<VoucherApiResponse> voucherResponses = new ArrayList<>();
+            promocaoEntities.forEach(promocaoEntity -> {
+                if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatusNot(
+                        this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
+                        VoucherStatusEnum.CANCELADO).isPresent()) {
+
+                    VoucherEntity voucherEntity = VoucherEntity.builder()
+                            .guid(UUID.randomUUID().toString())
+                            .codigo(this.voucherUtil.gerarCodigoVoucher(consulta.getPdvFilial()))
+                            .clienteCpf(this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()))
+                            .filialCnpj(this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()))
+                            .pdv(consulta.getPdvFilial())
+                            .cupom(consulta.getCupom())
+                            .valorDesconto(promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDescontoValor() : promocaoEntity.getDescontoPercentual())
+                            .voucherStatus(VoucherStatusEnum.DISPONIBILIZADO)
+                            .promocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL)
+                            .diasValidadeVoucher(promocaoEntity.getDiasValidadeVoucher())
+                            .fimResgate(promocaoEntity.getFim().plusDays(promocaoEntity.getDiasValidadeVoucher()))
+                            .promocaoGuid(promocaoEntity.getGuid())
+                            .valorMaximoDesconto(promocaoEntity.getValorMaximoDesconto())
+                            .tipoDesconto(promocaoEntity.getTipoDesconto())
+                            .inicio(promocaoEntity.getInicio())
+                            .fim(promocaoEntity.getFim())
+                            .build();
+
+                    VoucherApiResponse voucherApiResponse = mapper.voucherEntityToVoucherApiResponse(
+                            this.iVoucherRepository.save(voucherEntity));
+
+                    voucherResponses.add(voucherApiResponse);
+                    promocaoDisponivel[0] = true;
+                }
+            });
+            if (promocaoDisponivel[0]) {
+                consultaVoucherResponse.setStatus("OK");
+                consultaVoucherResponse.setVouchers(voucherResponses);
+                consultaVoucherResponse.setTotalVoucher(voucherResponses.size());
+            }
+        }
+
+        return consultaVoucherResponse;
+    }
+
+    @Override
     public ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta) {
 
         ConsultaVoucherResponse consultaVoucherResponse = ConsultaVoucherResponse.builder().status("VOID")
@@ -62,7 +126,7 @@ public class VoucherServiceImpl extends VoucherService {
 
         List<PromocaoEntity> promocaoEntities = iPromocaoRepository
                 .findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
-                        LocalDateTime.now(), LocalDateTime.now(), consulta.getValorCompra(), PromocaoStatusEnum.ATIVA,
+                        LocalDateTime.now(), LocalDateTime.now(), BigDecimal.valueOf(consulta.getValorCompra()), PromocaoStatusEnum.ATIVA,
                         this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj())
                 );
 

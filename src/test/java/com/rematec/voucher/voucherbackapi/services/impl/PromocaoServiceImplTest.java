@@ -28,7 +28,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.rematec.voucher.voucherbackapi.builders.BuscandoListaPaginadaPromocao200ResponseBuilder.umBuscandoListaPaginadaPromocao200Response;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoApiRequestBuilder.umaPromocaoApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoEntityBuilder.umaPromocaoEntity;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoUpdateApiRequestBuilder.umaPromocaoUpdateApiRequest;

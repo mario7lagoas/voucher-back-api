@@ -1,5 +1,7 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.models.ConsultaVoucherApiRequest;
+import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
 import com.rematec.voucher.voucherbackapi.models.requests.VoucherFinalizeRequest;
@@ -28,10 +30,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/voucher")
-public class VoucherController {
+public class VoucherController implements VoucherApi{
 
     @Autowired
     private VoucherService voucherService;
+
+    @Override
+    public ResponseEntity<ConsultaVoucherApiResponse> consultandoPromocoes(ConsultaVoucherApiRequest consultaVoucherApiRequest) {
+        return new ResponseEntity<ConsultaVoucherApiResponse>(
+                this.voucherService.consultandoPromocoes(consultaVoucherApiRequest), HttpStatus.OK);
+    }
 
     @PostMapping(value = "/consulta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConsultaVoucherResponse> consultarPromocao(@RequestBody @Valid ConsultaVoucherRequest consulta) {
