@@ -4,7 +4,10 @@ import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.VoucherApiRequest;
 import com.rematec.voucher.models.VoucherApiResponse;
+import com.rematec.voucher.models.VoucherPromocaoApiRequest;
+import com.rematec.voucher.models.VoucherPromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.builders.ConsultaVoucherApiResponseBuilder;
+import com.rematec.voucher.voucherbackapi.builders.VoucherPromocaoApiResponseBuilder;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
@@ -47,6 +50,9 @@ import java.util.UUID;
 public class VoucherServiceImpl extends VoucherService {
 
     @Autowired
+    private IVoucherRepository iVoucherRepository;
+
+    @Autowired
     private IPromocaoRepository iPromocaoRepository;
 
     @Autowired
@@ -54,9 +60,6 @@ public class VoucherServiceImpl extends VoucherService {
 
     @Autowired
     private VouckBackMapper mapper;
-
-    @Autowired
-    private IVoucherRepository iVoucherRepository;
 
 
     @Override
@@ -129,6 +132,55 @@ public class VoucherServiceImpl extends VoucherService {
     @Override
     public void cancelandoVoucher(List<VoucherApiRequest> voucherApiRequest) {
         this.voucherUtil.cancelOrConfirmVoucherApi(voucherApiRequest, VoucherStatusEnum.CANCELADO);
+    }
+
+    @Override
+    public VoucherPromocaoApiResponse resgatandoVoucher(VoucherPromocaoApiRequest promocaoRequest) {
+        VoucherEntity voucherEntity = this.iVoucherRepository
+                .findByCodigoEqualsAndFimResgateGreaterThanEqualAndVoucherStatus(
+                        promocaoRequest.getCodigo(), LocalDateTime.now(), VoucherStatusEnum.CONFIRMADO)
+                .orElseThrow(() -> new VoucherNaoEncontradoException("Voucher nao [" + promocaoRequest.getCodigo()
+                        + "] encontrado"));
+
+        this.voucherUtil.checkStatusVoucher(voucherEntity);
+
+        this.iPromocaoRepository.findByGuidAndLojasCnpjAndLojasStatusTrue(voucherEntity.getPromocaoGuid(),
+                        this.voucherUtil.apenasNumerosNaString(promocaoRequest.getFilialCnpj()))
+                .orElseThrow(() -> new VoucherNaoEncontradoException("Promocao indisponivel para "
+                        + this.voucherUtil.getLojaNome(promocaoRequest.getFilialCnpj())));
+
+        VoucherPromocaoApiResponse voucherPromocaoResponse = VoucherPromocaoApiResponseBuilder.builder()
+                .status("OK")
+                .descricao(voucherEntity.getDescricao())
+                .transacao(voucherEntity.getGuid())
+                .build();
+
+        if (voucherEntity.getTipoDesconto().name().equals("PERCENTUAL")) {
+
+            BigDecimal desconto = getValorformatado(promocaoRequest.getValorPagamento(), voucherEntity.getValorDesconto(),
+                    voucherEntity.getTipoDesconto().name());
+
+            voucherPromocaoResponse.setValorDesconto(
+                    desconto.compareTo(voucherEntity.getValorMaximoDesconto()) < 0 ? desconto : voucherEntity.getValorMaximoDesconto()
+            );
+
+        } else {
+            voucherPromocaoResponse.setValorDesconto(voucherEntity.getValorDesconto());
+        }
+
+        if (voucherPromocaoResponse.getValorDesconto().compareTo(promocaoRequest.getValorPagamento()) == 1) {
+            throw new VoucherNaoPermitidoException("Desconto [" + voucherPromocaoResponse.getValorDesconto()
+                    + "] maior que pagamento [" + promocaoRequest.getValorPagamento() + "]");
+        }
+
+        voucherEntity.setCupomResgate(promocaoRequest.getCupom());
+        voucherEntity.setFilialCnpjResgate(promocaoRequest.getFilialCnpj());
+        voucherEntity.setValorPagamento(promocaoRequest.getValorPagamento());
+        voucherEntity.setPdvResgate(promocaoRequest.getPdv());
+        voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.EM_USO);
+        this.iVoucherRepository.save(voucherEntity);
+
+        return voucherPromocaoResponse;
     }
 
     @Override

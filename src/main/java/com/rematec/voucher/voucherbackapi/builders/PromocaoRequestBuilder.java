@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public class PromocaoRequestBuilder {
 
-    private PromocaoApiRequest request;
+    protected PromocaoApiRequest request;
 
     private PromocaoRequestBuilder() {
     }

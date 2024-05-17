@@ -88,6 +88,65 @@ paths:
       responses:
         '200':
           description: successful operation
+  /voucher/resgate:
+    post:
+      tags:
+        - Voucher
+      summary: Resgatando Um Voucher Disponivel
+      description: Resgatando Um Voucher Disponivel na Plataforma
+      operationId: resgatandoVoucher
+      requestBody:
+        description: Resgatando um Voucher
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherPromocaoApiRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoucherPromocaoApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 404 NOT_FOUND
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: "Não encontrado."
+                        mensagem:
+                          type: string
+                          example: "Voucher nao [240422172055905959002] encontrado"
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: 422 UNPROCESSABLE_ENTITY
+                  erros:
+                    type: array
+                    items:
+                      properties:
+                        codigo:
+                          type: string
+                          example: "Não permitido."
+                        mensagem:
+                          type: string
+                          example: "Desconto [8.99] maior que pagamento [5.99]"
   /promocao:
     get:
       tags:
@@ -1521,7 +1580,7 @@ components:
         valorCompra:
           type: number
           example: 10.99
-          description: "Valor do Pagamento"
+          description: "Valor Total da Compra"
     ConsultaVoucherApiResponse:
       properties:
         status:
@@ -1537,6 +1596,52 @@ components:
           description: "Lojas associadas a promoção"
           items:
             $ref: '#/components/schemas/VoucherApiResponse'
+    VoucherPromocaoApiRequest:
+      required:
+        - codigo
+        - filialCnpj
+        - pdv
+        - cupom
+        - valorPagamento
+      properties:
+        codigo:
+          type: string
+          example: "240422172055905959002"
+          description: "Numero do Voucher"
+        filialCnpj:
+          type: string
+          example: "11111111111111"
+          description: "CNPJ da Loja"
+        pdv:
+          type: string
+          example: "101"
+          description: "Numero do PDV"
+        cupom:
+          type: string
+          example: "88888"
+          description: "Numero do Cupom da Venda"
+        valorPagamento:
+          type: number
+          example: 5.99
+          description: "Valor do Pagamento"
+    VoucherPromocaoApiResponse:
+      properties:
+        status:
+          type: string
+          example: "OK"
+          description: "Status do Resgate do Voucher"
+        transacao:
+          type: string
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
+          description: "GUID de identificação da transação"
+        descricao:
+          type: string
+          example: "Promocao de Natal"
+          description: "Descrição da Promoção"
+        valorDesconto:
+          type: number
+          example: 5.99
+          description: "Valor do Desconto concedido"
     VoucherApiResponse:
       properties:
         descricao:
