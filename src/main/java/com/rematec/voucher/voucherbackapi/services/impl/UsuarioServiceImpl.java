@@ -11,7 +11,6 @@ import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoExceptio
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
-import com.rematec.voucher.voucherbackapi.services.PerfilService;
 import com.rematec.voucher.voucherbackapi.services.UsuarioService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
@@ -89,6 +88,7 @@ public class UsuarioServiceImpl extends UsuarioService {
                 .email(usuarioApiRequest.getEmail())
                 .perfis(this.voucherUtil.listUsuarioPerfilApiRequestToListPerfilEntity(usuarioApiRequest.getPerfis()))
                 .status(usuarioApiRequest.getStatus())
+                .lojas(this.voucherUtil.getListGuidApiRequestToListLojasEntity(usuarioApiRequest.getLojas()))
                 .password(this.passwordEncoder.encode(usuarioApiRequest.getPassword()))
                 .build();
 
@@ -123,6 +123,15 @@ public class UsuarioServiceImpl extends UsuarioService {
             usuario.setPerfis(
                     this.voucherUtil.listUsuarioPerfilApiRequestToListPerfilEntity(usuarioUpdateApiRequest.getPerfis())
             );
+        }
+
+        if (usuarioUpdateApiRequest.getLojas() != null && !usuarioUpdateApiRequest.getLojas().isEmpty()) {
+            usuario.getLojas().clear();
+            usuario.getLojas().addAll(
+                    this.voucherUtil.getListGuidApiRequestToListLojasEntity(usuarioUpdateApiRequest.getLojas())
+            );
+        } else {
+            usuario.setLojas(null);
         }
 
         return this.mapper.usuarioEntityToUsuarioApiResponse(this.iUsuarioRepository.save(usuario));

@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity(name= "usuario")
@@ -56,5 +57,13 @@ public class UsuarioEntity extends BaseEntity implements Serializable {
             uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "perfil_id"})
     )
     private Set<PerfilEntity> perfis = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "usuario_loja",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "loja_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "loja_id"})
+    )
+    private List<LojaEntity> lojas ;
 
 }

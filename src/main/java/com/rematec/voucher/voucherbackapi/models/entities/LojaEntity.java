@@ -49,5 +49,9 @@ public class LojaEntity extends BaseEntity implements Serializable {
     @JsonBackReference
     private List<PromocaoEntity> promocoes;
 
+    @ManyToMany(mappedBy = "lojas", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<UsuarioEntity> usuarios;
+
 
 }

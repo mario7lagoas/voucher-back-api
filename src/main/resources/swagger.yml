@@ -2001,6 +2001,11 @@ components:
           description: "Permissões do Usuario"
           items:
             $ref: '#/components/schemas/PerfilResumidoApiResponse'
+        lojas:
+          type: array
+          description: "Lojas associadas ao Usuario"
+          items:
+            $ref: '#/components/schemas/LojaApiResponse'
     UsuarioPerfilApiRequest:
       type: object
       properties:
@@ -2038,6 +2043,11 @@ components:
           description: "Perfil do Usuario"
           items:
             $ref: '#/components/schemas/UsuarioPerfilApiRequest'
+        lojas:
+          type: array
+          description: "Lojas associadas ao Usuario"
+          items:
+            $ref: '#/components/schemas/GuidApiRequest'
     UsuarioUpdateApiRequest:
       type: object
       properties:
@@ -2062,3 +2072,8 @@ components:
           description: "Perfil do Usuario"
           items:
             $ref: '#/components/schemas/UsuarioPerfilApiRequest'
+        lojas:
+          type: array
+          description: "Lojas associadas ao Usuario"
+          items:
+            $ref: '#/components/schemas/GuidApiRequest'

@@ -427,6 +427,28 @@ public class LojaServiceImplTest {
         assertThat(exception.getMessage(), is("Loja não pode ser Excluida. Pois está associada a alguma promoção."));
     }
 
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Delete Loja And It Does In use for User")
+    public void apagandoLojaCase4() {
+        //having
+        List<Optional<LojaEntity>> optionals =  Arrays.asList(Optional.of(umaLojaEntity().agora()));
+        String guid = UUID.randomUUID().toString();
+
+        LojaEntity lojaEntity = umaLojaEntity().guid(guid).nome("Loja em uso").agora();
+
+        when(this.iLojaReposity.findByGuid(guid)).thenReturn(Optional.of(lojaEntity));
+        when(this.iLojaReposity.findByUsuariosLojasGuid(guid)).thenReturn(optionals);
+
+        //when
+
+        //then
+        Exception exception = Assertions.assertThrows(NaoPermitidoExcluirLojaException.class,
+                () -> this.lojaService.apagandoLoja(guid));
+
+        assertThat(exception.getMessage(), is("Loja não pode ser Excluida. Pois está associada a algum Usuário."));
+    }
+
+
 
     @Test
     @DisplayName("Should Update Status a Loja Successfully")

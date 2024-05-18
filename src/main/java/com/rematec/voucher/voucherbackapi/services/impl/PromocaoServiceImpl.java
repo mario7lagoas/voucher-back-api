@@ -159,7 +159,7 @@ public class PromocaoServiceImpl extends PromocaoService {
             promocaoEntity.setDescontoPercentual(promocaoUpdateApiRequest.getDescontoPercentual());
         }
 
-        if (promocaoUpdateApiRequest.getLojas() != null) {
+        if (promocaoUpdateApiRequest.getLojas() != null && !promocaoUpdateApiRequest.getLojas().isEmpty()) {
             promocaoEntity.getLojas().clear();
             promocaoEntity.getLojas().addAll(
                     this.voucherUtil.getListGuidApiRequestToListLojasEntity(promocaoUpdateApiRequest.getLojas())

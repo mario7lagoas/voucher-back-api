@@ -131,6 +131,9 @@ public class LojaServiceImpl extends LojaService {
         if (!this.iLojaReposity.findByPromocoesLojasGuid(guid).isEmpty())
             throw new NaoPermitidoExcluirLojaException("Loja não pode ser Excluida. Pois está associada a alguma promoção.");
 
+        if (!this.iLojaReposity.findByUsuariosLojasGuid(guid).isEmpty())
+            throw new NaoPermitidoExcluirLojaException("Loja não pode ser Excluida. Pois está associada a algum Usuário.");
+
         this.iLojaReposity.delete(lojaEntity);
     }
 
