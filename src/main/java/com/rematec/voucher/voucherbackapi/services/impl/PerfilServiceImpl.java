@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class PerfilServiceImpl extends PerfilService {
+class PerfilServiceImpl extends PerfilService {
 
     @Autowired
     private IPerfilRepository iPerfilRepository;

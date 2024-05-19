@@ -48,7 +48,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @Slf4j
-public class VoucherServiceImpl extends VoucherService {
+class VoucherServiceImpl extends VoucherService {
 
     @Autowired
     private IVoucherRepository iVoucherRepository;

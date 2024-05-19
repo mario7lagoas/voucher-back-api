@@ -21,6 +21,7 @@ public class UsuarioController implements UsuarioApi {
     @Autowired
     private UsuarioService usuarioService;
 
+
     @Override
     public ResponseEntity<List<UsuarioApiResponse>> buscandoListaUsuario() {
         return new ResponseEntity<List<UsuarioApiResponse>>(this.usuarioService.buscandoListaUsuario(), HttpStatus.OK);

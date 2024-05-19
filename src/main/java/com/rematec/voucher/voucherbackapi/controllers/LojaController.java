@@ -35,8 +35,8 @@ public class LojaController implements LojaApi {
     }
 
     @Override
-    public ResponseEntity<List<LojaApiResponse>> buscandoListaLojaAtiva() {
-        return new ResponseEntity<List<LojaApiResponse>>(this.lojaService.buscandoListaLojaAtiva(), HttpStatus.OK);
+    public ResponseEntity<List<LojaApiResponse>> buscandoListaLojaAtiva(String email) {
+        return new ResponseEntity<List<LojaApiResponse>>(this.lojaService.buscandoListaLojaAtiva(email), HttpStatus.OK);
     }
 
     @Override

@@ -31,7 +31,7 @@ public interface IVoucherService {
     void confirmarVoucher(List<VoucherRequest> voucherRequests);
     void cancelarVoucher(List<VoucherRequest> voucherRequests);
     void rollback(VoucherFinalizeRequest voucher);
-    public void consumer(VoucherFinalizeRequest voucher);
+    void consumer(VoucherFinalizeRequest voucher);
     VoucherPromocaoResponse resgateVoucher(VoucherPromocaoRequest promocaoRequest);
     VouchersPaginadaResponse voucherFiltro(int page, int size, String codigo, String descricao, String clienteCpf
             , String pdv, String cupomResgate, LocalDate inicio, LocalDate fim, String voucherStatus, String filialCnpj,

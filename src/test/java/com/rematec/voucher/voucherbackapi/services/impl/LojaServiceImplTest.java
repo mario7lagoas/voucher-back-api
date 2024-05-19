@@ -104,8 +104,28 @@ public class LojaServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Return A List LojaApiResponse Ative Successfully")
+    @DisplayName("Should Return A List LojaApiResponse Ative With user email Successfully")
     public void buscandoListaLojaAtivaCase1() {
+
+        String email = "usuario@email.com";
+
+        //having
+        List<LojaEntity> lojaEntities = Arrays.asList(umaLojaEntity().agora());
+
+        when(this.iLojaReposity.findByStatusTrueAndUsuariosEmail(email)).thenReturn(lojaEntities);
+
+        //when
+        List<LojaApiResponse> lojaApiResponses = this.lojaService.buscandoListaLojaAtiva(email);
+
+        //then
+        Assertions.assertNotNull(lojaApiResponses);
+    }
+
+    @Test
+    @DisplayName("Should Return A List LojaApiResponse Ative without user email Successfully")
+    public void buscandoListaLojaAtivaCase3() {
+
+        String email = "";
 
         //having
         List<LojaEntity> lojaEntities = Arrays.asList(umaLojaEntity().agora());
@@ -113,7 +133,7 @@ public class LojaServiceImplTest {
         when(this.iLojaReposity.findByStatusTrue()).thenReturn(lojaEntities);
 
         //when
-        List<LojaApiResponse> lojaApiResponses = this.lojaService.buscandoListaLojaAtiva();
+        List<LojaApiResponse> lojaApiResponses = this.lojaService.buscandoListaLojaAtiva(email);
 
         //then
         Assertions.assertNotNull(lojaApiResponses);

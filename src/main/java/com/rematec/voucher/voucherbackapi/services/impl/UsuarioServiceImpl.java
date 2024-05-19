@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
-public class UsuarioServiceImpl extends UsuarioService {
+class UsuarioServiceImpl extends UsuarioService {
 
     @Autowired
     private IUsuarioRepository iUsuarioRepository;

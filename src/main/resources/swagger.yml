@@ -940,6 +940,14 @@ paths:
       summary: Buscando Lista de Loja Ativa
       description: Buscando Lista de Loja Ativa na Plataforma
       operationId: buscandoListaLojaAtiva
+      parameters:
+        - name: email
+          description: "E-mail do usuario logado"
+          example: "mario7lagoas@gmail.com"
+          in: query
+          schema:
+            type: string
+            default: ""
       responses:
         '200':
           description: successful operation

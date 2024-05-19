@@ -27,7 +27,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @Slf4j
-public class LojaServiceImpl extends LojaService {
+class LojaServiceImpl extends LojaService {
 
     @Autowired
     private ILojaRepository iLojaReposity;
@@ -53,8 +53,11 @@ public class LojaServiceImpl extends LojaService {
     }
 
     @Override
-    public List<LojaApiResponse> buscandoListaLojaAtiva() {
-        return this.mapper.listLojaEntityToListLojaApiResponse(iLojaReposity.findByStatusTrue());
+    public List<LojaApiResponse> buscandoListaLojaAtiva(String email) {
+        return this.mapper.listLojaEntityToListLojaApiResponse(
+                email.isEmpty() ?
+                        this.iLojaReposity.findByStatusTrue() : this.iLojaReposity.findByStatusTrueAndUsuariosEmail(email)
+        );
     }
 
     @Override

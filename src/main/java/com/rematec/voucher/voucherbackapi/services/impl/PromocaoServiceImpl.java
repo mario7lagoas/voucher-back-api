@@ -203,10 +203,6 @@ public class PromocaoServiceImpl extends PromocaoService {
     public BuscandoListaPaginadaPromocao200Response buscandoListaFiltroPromocao(String descricao, String tipo,
                                                                                 String status, String inicio, String fim,
                                                                                 Integer page, Integer size, String email) {
-        this.voucherUtil.verificarPromocoesVencidas();
-
-        List<Long> idLojaList = this.voucherUtil.getListLojaIdForUsuarioEmail(email);
-
         PromocaoFiltro filtro = PromocaoFiltro.builder()
                 .descricao(descricao)
                 .tipoDesconto(tipo)

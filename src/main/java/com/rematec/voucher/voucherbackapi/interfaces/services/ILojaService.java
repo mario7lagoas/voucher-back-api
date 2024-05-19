@@ -14,7 +14,7 @@ public interface ILojaService {
 
     BuscandoListaPaginadaLoja200Response buscandoListaPaginadaLoja(String cnpj, Integer page, Integer size);
 
-    List<LojaApiResponse> buscandoListaLojaAtiva();
+    List<LojaApiResponse> buscandoListaLojaAtiva(String email);
 
     LojaApiResponse buscandoLojaPeloGUID(String guid);
 
