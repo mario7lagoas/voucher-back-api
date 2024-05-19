@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.interfaces.services;
 import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.VoucherApiRequest;
+import com.rematec.voucher.models.VoucherFinalizeApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
@@ -22,6 +23,8 @@ public interface IVoucherService {
     void confirmandoVoucher(List<VoucherApiRequest> voucherApiRequest);
     void cancelandoVoucher(List<VoucherApiRequest> voucherApiRequest);
     VoucherPromocaoApiResponse resgatandoVoucher(VoucherPromocaoApiRequest voucherPromocaoApiRequest);
+    void consumindoVoucher(VoucherFinalizeApiRequest voucherFinalizeApiRequest);
+    void estornandoVoucher(VoucherFinalizeApiRequest voucherFinalizeApiRequest);
 
     ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta);
 

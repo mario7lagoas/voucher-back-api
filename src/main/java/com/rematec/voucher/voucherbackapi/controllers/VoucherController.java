@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.controllers;
 import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.VoucherApiRequest;
+import com.rematec.voucher.models.VoucherFinalizeApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
@@ -62,7 +63,17 @@ public class VoucherController implements VoucherApi{
                 this.voucherService.resgatandoVoucher(voucherPromocaoApiRequest), HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Void> consumindoVoucher(VoucherFinalizeApiRequest voucherFinalizeApiRequest) {
+        this.voucherService.consumindoVoucher(voucherFinalizeApiRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
+    @Override
+    public ResponseEntity<Void> estornandoVoucher(VoucherFinalizeApiRequest voucherFinalizeApiRequest) {
+        this.voucherService.estornandoVoucher(voucherFinalizeApiRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PostMapping(value = "/consulta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConsultaVoucherResponse> consultarPromocao(@RequestBody @Valid ConsultaVoucherRequest consulta) {

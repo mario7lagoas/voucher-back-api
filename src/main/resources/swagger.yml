@@ -4,7 +4,7 @@ info:
   description: |-
     Microserviço para geração de voucher como descontos em valor ou percentual paras clientes em seu ponto de venda.
 
-    _Se você que saber mais sobre a REMATEC, então  click [aqui](http://rematecvarejo.com.br). Aproveite e nos façam uma visita!_
+    _Se você que saber mais sobre a REMATEC, então  click [aqui](http://tibbi.com.br)._
 
   contact:
     email: mario7lagoas@gmail.com
@@ -147,6 +147,40 @@ paths:
                         mensagem:
                           type: string
                           example: "Desconto [8.99] maior que pagamento [5.99]"
+  /voucher/consumer:
+    post:
+      tags:
+        - Voucher
+      summary: Consumindo Voucher Disponbilizado
+      description: Consumindo Voucher Disponbilizado na Plataforma
+      operationId: consumindoVoucher
+      requestBody:
+        description: Consumindo Voucher Disponbilizado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherFinalizeApiRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+  /voucher/rollback:
+    post:
+      tags:
+        - Voucher
+      summary: Estornando Voucher Disponbilizado
+      description: Estornando Voucher Disponbilizado na Plataforma
+      operationId: estornandoVoucher
+      requestBody:
+        description: Estornando Voucher Disponbilizado
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherFinalizeApiRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
   /promocao:
     get:
       tags:
@@ -1535,6 +1569,18 @@ components:
           type: boolean
           description: "Status [true/false]"
           example: true
+    VoucherFinalizeApiRequest:
+      required:
+        - transacao
+      properties:
+        transacao:
+          type: string
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
+          description: "GUID da Transação"
+        valorPago:
+          type: number
+          example: 5.99
+          description: "Valor Pago"
     VoucherApiRequest:
       required:
         - filialCnpj

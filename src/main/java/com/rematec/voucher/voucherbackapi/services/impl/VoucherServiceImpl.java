@@ -4,6 +4,7 @@ import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.VoucherApiRequest;
 import com.rematec.voucher.models.VoucherApiResponse;
+import com.rematec.voucher.models.VoucherFinalizeApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.builders.ConsultaVoucherApiResponseBuilder;
@@ -183,6 +184,34 @@ public class VoucherServiceImpl extends VoucherService {
         return voucherPromocaoResponse;
     }
 
+    @Async("threadPollConfirmandoVoucherExecutor")
+    @Override
+    public void consumindoVoucher(VoucherFinalizeApiRequest voucherFinalizeApiRequest) {
+
+        VoucherEntity entity = this.getVoucherEntityPosVenda(voucherFinalizeApiRequest);
+        if (entity != null) {
+            entity.setDataResgate(LocalDateTime.now());
+            entity.setVoucherStatus(VoucherStatusEnum.UTILIZADO);
+            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.UTILIZADO);
+            entity.setValorPago(voucherFinalizeApiRequest.getValorPago());
+            log.warn("Baixa no Voucher {} .", voucherFinalizeApiRequest.getTransacao());
+            this.iVoucherRepository.save(entity);
+        }
+    }
+
+    @Override
+    public void estornandoVoucher(VoucherFinalizeApiRequest voucherFinalizeApiRequest) {
+
+        VoucherEntity entity = this.getVoucherEntityPosVenda(voucherFinalizeApiRequest);
+        if (entity != null) {
+            entity.setVoucherStatus(VoucherStatusEnum.CONFIRMADO);
+            entity.setPromocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL);
+            log.warn("Estorno no Voucher {} .", voucherFinalizeApiRequest.getTransacao());
+            this.iVoucherRepository.save(entity);
+
+        }
+    }
+
     @Override
     public ConsultaVoucherResponse consultarPromocoes(ConsultaVoucherRequest consulta) {
 
@@ -224,7 +253,6 @@ public class VoucherServiceImpl extends VoucherService {
                             .inicio(promocaoEntity.getInicio())
                             .fim(promocaoEntity.getFim())
                             .build();
-
 
                     VoucherResponse voucherResponse = mapper.voucherEntityToVoucherResponse(
                             this.iVoucherRepository.save(voucherEntity));
@@ -363,6 +391,22 @@ public class VoucherServiceImpl extends VoucherService {
             valor = (compra.multiply(desconto).divide(BigDecimal.valueOf(100)));
         }
         return valor.setScale(2, RoundingMode.HALF_EVEN);
+    }
+
+    private VoucherEntity getVoucherEntityPosVenda(VoucherFinalizeApiRequest voucher) {
+        if (this.iVoucherRepository.findByGuid(voucher.getTransacao()).isPresent()) {
+            VoucherEntity entity = this.iVoucherRepository.findByGuid(voucher.getTransacao()).get();
+            if (entity.getPromocaoStatus().name().equals("EM_USO")) {
+                return entity;
+            } else {
+                log.warn("Voucher {} não está com status de EM_USO, status atual {}.", voucher.getTransacao(),
+                        entity.getPromocaoStatus().name());
+            }
+        } else {
+            log.warn("Voucher {} não ecnontrado", voucher.getTransacao());
+        }
+        return null;
+
     }
 
     private VoucherEntity getVoucherPosVenda(VoucherFinalizeRequest voucher) {
