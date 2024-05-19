@@ -202,8 +202,10 @@ public class PromocaoServiceImpl extends PromocaoService {
     @Override
     public BuscandoListaPaginadaPromocao200Response buscandoListaFiltroPromocao(String descricao, String tipo,
                                                                                 String status, String inicio, String fim,
-                                                                                Integer page, Integer size) {
+                                                                                Integer page, Integer size, String email) {
         this.voucherUtil.verificarPromocoesVencidas();
+
+        List<Long> idLojaList = this.voucherUtil.getListLojaIdForUsuarioEmail(email);
 
         PromocaoFiltro filtro = PromocaoFiltro.builder()
                 .descricao(descricao)
@@ -211,6 +213,7 @@ public class PromocaoServiceImpl extends PromocaoService {
                 .promocaoStatus(status)
                 .inicio(inicio != null && !inicio.isEmpty() ? LocalDate.parse(inicio) : null)
                 .fim(fim != null && !fim.isEmpty() ? LocalDate.parse(fim) : null)
+                .idLojas(this.voucherUtil.getListLojaIdForUsuarioEmail(email))
                 .build();
 
         return this.iPromocaoRepository.filtrar(filtro, PageRequest.of(page, size));

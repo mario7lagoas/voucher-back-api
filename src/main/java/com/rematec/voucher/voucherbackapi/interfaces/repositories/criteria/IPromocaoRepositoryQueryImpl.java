@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.interfaces.repositories.criteria;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
 import jakarta.persistence.EntityManager;
@@ -10,7 +11,10 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.From;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
@@ -83,6 +88,14 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
     private Predicate[] criarRestricted(PromocaoFiltro promocaoFiltro, CriteriaBuilder builder, Root<PromocaoEntity> root) {
 
         List<Predicate> predicates = new ArrayList<>();
+
+        Join<PromocaoEntity, LojaEntity> promocaoEntityLojaEntityJoin = root.join("lojas");
+
+        Path<Long> promocaoEntityId = promocaoEntityLojaEntityJoin.get("id");
+
+        predicates.add(
+                builder.isTrue(promocaoEntityId.in(promocaoFiltro.getIdLojas()))
+        );
 
         if (!StringUtils.isEmpty(promocaoFiltro.getDescricao())) {
             predicates.add(builder.like(

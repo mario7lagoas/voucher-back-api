@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,5 +19,6 @@ public class PromocaoFiltro {
     private LocalDate fim;
     private String tipoDesconto;
     private String promocaoStatus;
+    private List<Long> idLojas;
 
 }

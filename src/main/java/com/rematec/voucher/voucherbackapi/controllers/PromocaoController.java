@@ -65,9 +65,10 @@ public class PromocaoController implements PromocaoApi{
                                                                                                 String status,
                                                                                                 String tipo,
                                                                                                 String inicio,
-                                                                                                String fim) {
+                                                                                                String fim,
+                                                                                                String email) {
         return new ResponseEntity<BuscandoListaPaginadaPromocao200Response>(
-                this.promocaoService.buscandoListaFiltroPromocao(descricao, tipo, status, inicio, fim, page, size),
+                this.promocaoService.buscandoListaFiltroPromocao(descricao, tipo, status, inicio, fim, page, size, email),
                 HttpStatus.OK);
 
     }

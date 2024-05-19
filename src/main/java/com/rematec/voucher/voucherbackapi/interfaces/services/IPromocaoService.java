@@ -16,7 +16,7 @@ public interface IPromocaoService {
     PromocaoApiResponse alterandoPromocao(String guid, PromocaoUpdateApiRequest promocaoUpdateApiRequest);
     BuscandoListaPaginadaPromocao200Response buscandoListaFiltroPromocao(String descricao, String tipo, String status,
                                                                          String inicio, String fim, Integer page,
-                                                                         Integer size);
+                                                                         Integer size, String usuario);
     void apagandoPromocao(String guid);
 
 }

@@ -5,7 +5,6 @@ import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.RoleApiResponse;
 import com.rematec.voucher.models.UsuarioPerfilApiRequest;
 import com.rematec.voucher.models.VoucherApiRequest;
-import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
@@ -66,17 +65,9 @@ public class VoucherUtil {
 
     public List<LojaEntity> getListGuidApiRequestToListLojasEntity(List<GuidApiRequest> lojas) {
 
-        try {
-            if (lojas != null && !lojas.isEmpty()) {
-                return lojas.stream()
-                        .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
-                        .toList();
-            }
-        } catch (Exception e) {
-            throw new LojaNaoEncontradaException("Loja não encontrada.");
-        }
-
-        return null;
+        return lojas != null ? lojas.stream()
+                .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
+                .toList() : null;
     }
 
     public boolean checkDataNullAndEmpty(String data) {
@@ -236,4 +227,11 @@ public class VoucherUtil {
 
     }
 
+    public List<Long> getListLojaIdForUsuarioEmail(String email) {
+
+        List<LojaEntity> lojaEntities = this.iLojaReposity.findByUsuariosEmail(email);
+
+        return  lojaEntities != null && !lojaEntities.isEmpty() ?
+                lojaEntities.stream().map(LojaEntity::getId).toList() : List.of(0L);
+    }
 }

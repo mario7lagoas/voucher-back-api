@@ -163,22 +163,6 @@ public class PromocaoServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Thrown An Exception When Try To Add A Promocao And Loja Not Exist")
-    public void criandoPromocaoCase4() {
-        //having
-        PromocaoApiRequest request = umaPromocaoApiRequest().comLoja().agora();
-
-        //when
-
-        //then
-        Assertions.assertNotNull(request);
-        Exception exception = Assertions.assertThrows(LojaNaoEncontradaException.class,
-                () -> this.promocaoService.criandoPromocao(request));
-
-        assertThat(exception.getMessage(), is("Loja não encontrada."));
-    }
-
-    @Test
     @DisplayName("Should Update a Promocao Successfully")
     public void alterandoPromocaoCase1() {
         //having

@@ -593,6 +593,13 @@ paths:
           schema:
             type: string
             default: ""
+        - name: email
+          description: "E-mail do usuario logado"
+          example: "mario7lagoas@gmail.com"
+          in: query
+          schema:
+            type: string
+            default: ""
       responses:
         '200':
           description: successful operation

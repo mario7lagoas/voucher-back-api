@@ -19,5 +19,6 @@ public interface ILojaRepository extends JpaRepository<LojaEntity, Long> {
     List<LojaEntity> findByStatusTrue();
     Page<LojaEntity> findByCnpjContaining(String cnpj, PageRequest of);
     List<Optional<LojaEntity>> findByUsuariosLojasGuid(String guid);
+    List<LojaEntity> findByUsuariosEmail(String email);
 
 }
