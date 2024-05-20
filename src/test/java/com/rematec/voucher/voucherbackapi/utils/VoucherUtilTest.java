@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.utils;
 
+import com.rematec.voucher.models.GuidApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherEmUsoException;
 import com.rematec.voucher.voucherbackapi.exceptios.VoucherUtilizadoException;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.ILojaRepository;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +39,7 @@ public class VoucherUtilTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
-/*
+
     @Test
     @DisplayName("Should Return A LojaEntity Is null")
     public void getListGuidLojasToListLojasEntityCase1() {
@@ -45,11 +47,10 @@ public class VoucherUtilTest {
         //having
 
         //when
-        List<LojaEntity> lojaEntities = this.voucherUtil.getListGuidLojasToListLojasEntity(null);
+        List<LojaEntity> lojaEntities = this.voucherUtil.getListGuidApiRequestToListLojasEntity(null);
 
         //then
         Assertions.assertNull(lojaEntities);
-
     }
 
 
@@ -58,21 +59,20 @@ public class VoucherUtilTest {
     public void getListGuidLojasToListLojasEntityCase2() {
 
         //having
-        List<Guid> guidList = Collections.singletonList(Guid.builder().guid("1234").build());
+        List<GuidApiRequest> guidList = Collections.singletonList(new GuidApiRequest().guid("123456"));
 
         LojaEntity lojaEntity = LojaEntity.builder()
                 .id(1L).cnpj("123456").guid("1234").cnpj("123456").identificacao("Lj 01").build();
         when(this.iLojaReposity.findByGuid(anyString())).thenReturn(Optional.of(lojaEntity));
 
         //when
-        List<LojaEntity> lojaEntitiesReturn = this.voucherUtil.getListGuidLojasToListLojasEntity(guidList);
+        List<LojaEntity> lojaEntitiesReturn = this.voucherUtil.getListGuidApiRequestToListLojasEntity(guidList);
 
         //then
         Assertions.assertNotNull(lojaEntitiesReturn);
 
     }
 
-     */
 
     @Test
     @DisplayName("Should Return A boolen False")

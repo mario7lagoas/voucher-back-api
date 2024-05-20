@@ -31,13 +31,13 @@ public class VoucherController implements VoucherApi {
     }
 
     @Override
-    public ResponseEntity<Void> confirmandoVoucher(List<@Valid VoucherApiRequest> voucherApiRequest) {
+    public ResponseEntity<Void> confirmandoVoucher(List<VoucherApiRequest> voucherApiRequest) {
         this.voucherService.confirmandoVoucher(voucherApiRequest);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> cancelandoVoucher(List<@Valid VoucherApiRequest> voucherApiRequest) {
+    public ResponseEntity<Void> cancelandoVoucher(List<VoucherApiRequest> voucherApiRequest) {
         this.voucherService.cancelandoVoucher(voucherApiRequest);
         return new ResponseEntity(HttpStatus.OK);
     }

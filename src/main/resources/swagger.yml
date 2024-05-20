@@ -163,13 +163,13 @@ paths:
       operationId: confirmandoVoucher
       requestBody:
         description: Confirmando Voucher Disponível
+        required: true
         content:
           application/json:
             schema:
               type: array
               items:
                 $ref: '#/components/schemas/VoucherApiRequest'
-        required: true
       responses:
         '200':
           description: successful operation
@@ -182,13 +182,13 @@ paths:
       operationId: cancelandoVoucher
       requestBody:
         description: Cancelando Voucher Disponível
+        required: true
         content:
           application/json:
             schema:
               type: array
               items:
                 $ref: '#/components/schemas/VoucherApiRequest'
-        required: true
       responses:
         '200':
           description: successful operation
@@ -1680,6 +1680,7 @@ paths:
 components:
   schemas:
     PaginacaoApiResponse:
+      type: object
       properties:
         number:
           type: integer
@@ -1714,6 +1715,7 @@ components:
     VoucherFinalizeApiRequest:
       required:
         - transacao
+      type: object
       properties:
         transacao:
           type: string
@@ -1724,6 +1726,7 @@ components:
           example: 5.99
           description: "Valor Pago"
     VoucherApiRequest:
+      type: object
       required:
         - filialCnpj
         - clienteCpf
@@ -1748,6 +1751,7 @@ components:
         - clienteCpf
         - cupom
         - valorCompra
+      type: object
       properties:
         filialCnpj:
           type: string
@@ -1770,6 +1774,7 @@ components:
           example: 10.99
           description: "Valor Total da Compra"
     ConsultaVoucherApiResponse:
+      type: object
       properties:
         status:
           type: string
@@ -1791,6 +1796,7 @@ components:
         - pdv
         - cupom
         - valorPagamento
+      type: object
       properties:
         codigo:
           type: string
@@ -1813,6 +1819,7 @@ components:
           example: 5.99
           description: "Valor do Pagamento"
     VoucherPromocaoApiResponse:
+      type: object
       properties:
         status:
           type: string
@@ -1831,6 +1838,7 @@ components:
           example: 5.99
           description: "Valor do Desconto concedido"
     VoucherFiltroApiResponse:
+      type: object
       properties:
         guid:
           type: string
@@ -1929,6 +1937,7 @@ components:
           example: "2024-05-12 09:56:13"
           description: "Data e Hora do cadastrado"
     VoucherApiResponse:
+      type: object
       properties:
         descricao:
           type: string
@@ -1963,6 +1972,7 @@ components:
           example: 10.00
           description: "Valor maximo de desconto concedido"
     PromocaoUpdateApiRequest:
+      type: object
       properties:
         descricao:
           type: string
@@ -2022,6 +2032,7 @@ components:
         - valorMinimoParaDisparo
         - diasValidadeVoucher
         - autorAlteracao
+      type: object
       properties:
         descricao:
           type: string
@@ -2073,6 +2084,7 @@ components:
           items:
             $ref: '#/components/schemas/GuidApiRequest'
     PromocaoApiResponse:
+      type: object
       properties:
         guid:
           type: string
@@ -2235,6 +2247,7 @@ components:
           example: "Moderator"
           description: "Nome do Perfil"
     PerfilApiResponse:
+      type: object
       properties:
         guid:
           type: string
@@ -2257,6 +2270,7 @@ components:
           example: "MENU_LOJA"
           description: "Permissão"
     UsuarioApiResponse:
+      type: object
       properties:
         guid:
           type: string

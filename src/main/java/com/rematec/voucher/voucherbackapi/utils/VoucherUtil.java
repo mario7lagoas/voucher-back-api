@@ -53,10 +53,9 @@ public class VoucherUtil {
     @Autowired
     private IVoucherRepository iVoucherRepository;
 
+    public List<LojaEntity> getListGuidApiRequestToListLojasEntity(List<GuidApiRequest> guidList) {
 
-    public List<LojaEntity> getListGuidApiRequestToListLojasEntity(List<GuidApiRequest> lojas) {
-
-        return lojas != null ? lojas.stream()
+        return guidList != null ? guidList.stream()
                 .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
                 .toList() : null;
     }
