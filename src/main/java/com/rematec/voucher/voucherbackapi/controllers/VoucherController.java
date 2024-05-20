@@ -1,43 +1,28 @@
 package com.rematec.voucher.voucherbackapi.controllers;
 
+import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
 import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.VoucherApiRequest;
+import com.rematec.voucher.models.VoucherFiltroApiResponse;
 import com.rematec.voucher.models.VoucherFinalizeApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiResponse;
-import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
-import com.rematec.voucher.voucherbackapi.models.requests.ConsultaVoucherRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.VoucherFinalizeRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.VoucherPrintRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.VoucherPromocaoRequest;
-import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
-import com.rematec.voucher.voucherbackapi.models.response.ConsultaVoucherResponse;
-import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
-import com.rematec.voucher.voucherbackapi.models.response.VoucherPromocaoResponse;
-import com.rematec.voucher.voucherbackapi.services.VoucherService;
+import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import jakarta.validation.Valid;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/voucher")
-public class VoucherController implements VoucherApi{
+public class VoucherController implements VoucherApi {
 
     @Autowired
-    private VoucherService voucherService;
+    private VoucherBackFacade voucherService;
 
     @Override
     public ResponseEntity<ConsultaVoucherApiResponse> consultandoPromocoes(ConsultaVoucherApiRequest consultaVoucherApiRequest) {
@@ -75,72 +60,20 @@ public class VoucherController implements VoucherApi{
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/consulta", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConsultaVoucherResponse> consultarPromocao(@RequestBody @Valid ConsultaVoucherRequest consulta) {
+    @Override
+    public ResponseEntity<BuscandoListaFiltroVoucher200Response> buscandoListaFiltroVoucher(
+            Integer page, Integer size, String codigo, String descricao, String clienteCpf, String pdv, String cupomResgate,
+            String voucherStatus, String filialCnpj, String tipoDesconto, String inicio, String fim) {
 
-        return new ResponseEntity<ConsultaVoucherResponse>(this.voucherService.consultarPromocoes(consulta), HttpStatus.OK);
-
-    }
-
-    @PostMapping(value = "/confirm", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity confirmarVoucher(@RequestBody @Valid List<VoucherRequest> voucherRequests) {
-        this.voucherService.confirmarVoucher(voucherRequests);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/cancel", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity cancelarVoucher(@RequestBody @Valid List<VoucherRequest> voucherRequests) {
-        this.voucherService.cancelarVoucher(voucherRequests);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/resgate", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VoucherPromocaoResponse> resgateVoucher(@RequestBody @Valid VoucherPromocaoRequest promocaoRequest) {
-
-        return new ResponseEntity<VoucherPromocaoResponse>(this.voucherService.resgateVoucher(promocaoRequest), HttpStatus.OK);
-
-    }
-
-    @PostMapping(value = "/consumer", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity consumerVoucher(@RequestBody @Valid VoucherFinalizeRequest voucherComsumer) {
-        this.voucherService.consumer(voucherComsumer);
-        return new ResponseEntity<>(HttpStatus.OK);
-
-    }
-
-    @PostMapping(value = "/rollback", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity cancelVoucher(@RequestBody @Valid VoucherFinalizeRequest voucherRollback) {
-        this.voucherService.rollback(voucherRollback);
-        return new ResponseEntity<>(HttpStatus.OK);
-
-    }
-
-    @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<VouchersPaginadaResponse> getAllTransacoesFilter(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size,
-            @RequestParam(name = "codigo", defaultValue = "") String codigo,
-            @RequestParam(name = "descricao", defaultValue = "") String descricao,
-            @RequestParam(name = "clienteCpf", defaultValue = "") String clienteCpf,
-            @RequestParam(name = "pdv", defaultValue = "") String pdv,
-            @RequestParam(name = "cupomResgate", defaultValue = "") String cupomResgate,
-            @RequestParam(name = "voucherStatus", defaultValue = "") String voucherStatus,
-            @RequestParam(name = "filialCnpj", defaultValue = "") String filialCnpj,
-            @RequestParam(name = "tipoDesconto", defaultValue = "") String tipoDesconto,
-            @RequestParam(name = "inicio", defaultValue = "") LocalDate inicio,
-            @RequestParam(name = "fim", defaultValue = "") LocalDate fim) {
-
-
-        return new ResponseEntity<VouchersPaginadaResponse>(
-                this.voucherService.voucherFiltro(page, size, codigo, descricao, clienteCpf, pdv, cupomResgate,
+        return new ResponseEntity<BuscandoListaFiltroVoucher200Response>(
+                this.voucherService.buscandoListaFiltroVoucher(page, size, codigo, descricao, clienteCpf, pdv, cupomResgate,
                         inicio, fim, voucherStatus, filialCnpj, tipoDesconto), HttpStatus.OK);
 
     }
 
-    @PostMapping(value = "/print", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> printPromocoes(@RequestBody List<VoucherPrintRequest> prints) {
+    @Override
+    public ResponseEntity<String> relatorioVoucher(List<VoucherFiltroApiResponse> prints) {
         return new ResponseEntity<String>(
-                ReportFactory.report(new JRBeanCollectionDataSource(prints), "vouchers"), HttpStatus.OK);
+                this.voucherService.report(new JRBeanCollectionDataSource(prints), "vouchers"), HttpStatus.OK);
     }
-
 }

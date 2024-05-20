@@ -6,7 +6,7 @@ import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
-import com.rematec.voucher.voucherbackapi.services.LojaService;
+import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.List;
 public class LojaController implements LojaApi {
 
     @Autowired
-    private LojaService lojaService;
+    private VoucherBackFacade lojaService;
 
     @Override
     public ResponseEntity<List<LojaApiResponse>> buscandoListaLoja() {
@@ -71,7 +71,7 @@ public class LojaController implements LojaApi {
     @Override
     public ResponseEntity<String> relatorioLoja(List<LojaApiResponse> lojaApiResponse) {
         return new ResponseEntity<String>(
-                ReportFactory.report(new JRBeanCollectionDataSource(lojaApiResponse), "lojas"), HttpStatus.OK);
+                this.lojaService.report(new JRBeanCollectionDataSource(lojaApiResponse), "lojas"), HttpStatus.OK);
     }
 
 }

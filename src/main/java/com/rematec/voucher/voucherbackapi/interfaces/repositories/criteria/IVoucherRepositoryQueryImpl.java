@@ -1,9 +1,9 @@
 package com.rematec.voucher.voucherbackapi.interfaces.repositories.criteria;
 
+import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.filter.VoucherFiltro;
-import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -30,7 +30,7 @@ public class IVoucherRepositoryQueryImpl implements IVoucherRepositoryQuery {
     private VouckBackMapper mapper;
 
     @Override
-    public VouchersPaginadaResponse filtrar(VoucherFiltro voucherFiltro, Pageable page) {
+    public BuscandoListaFiltroVoucher200Response filtrar(VoucherFiltro voucherFiltro, Pageable page) {
         From<?, ?> orderByFromEntity = null;
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<VoucherEntity> criteriaQuery = builder.createQuery(VoucherEntity.class);
@@ -54,7 +54,7 @@ public class IVoucherRepositoryQueryImpl implements IVoucherRepositoryQuery {
 
         additionalRestrictedDePaginate(query, page);
 
-        return mapper.pageVouchersEntityToVouchersPaginadaResponse(new PageImpl<>(query.getResultList(),
+        return mapper.pageVouchersEntityToBuscandoListaFiltroVoucher200Response(new PageImpl<>(query.getResultList(),
                 page, total(voucherFiltro)));
     }
 

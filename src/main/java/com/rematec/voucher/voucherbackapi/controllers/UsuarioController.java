@@ -6,7 +6,7 @@ import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.UsuarioUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
-import com.rematec.voucher.voucherbackapi.services.UsuarioService;
+import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.List;
 public class UsuarioController implements UsuarioApi {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private VoucherBackFacade usuarioService;
 
 
     @Override
@@ -68,7 +68,7 @@ public class UsuarioController implements UsuarioApi {
     @Override
     public ResponseEntity<String> relatorioUsuario(List<UsuarioApiResponse> usuarioApiResponse) {
         return new ResponseEntity<String>(
-                ReportFactory.report(new JRBeanCollectionDataSource(usuarioApiResponse), "usuarios"),
+                this.usuarioService.report(new JRBeanCollectionDataSource(usuarioApiResponse), "usuarios"),
                 HttpStatus.OK);
     }
 }

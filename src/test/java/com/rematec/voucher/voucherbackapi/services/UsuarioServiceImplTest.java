@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services.impl;
+package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.UpdateStatusApiRequest;

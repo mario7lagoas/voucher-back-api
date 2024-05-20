@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services.impl;
+package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;

@@ -23,8 +23,6 @@ import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherPromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
-import com.rematec.voucher.voucherbackapi.models.requests.Guid;
-import com.rematec.voucher.voucherbackapi.models.requests.VoucherRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -55,13 +53,6 @@ public class VoucherUtil {
     @Autowired
     private IVoucherRepository iVoucherRepository;
 
-
-    public List<LojaEntity> getListGuidLojasToListLojasEntity(List<Guid> lojas) {
-
-        return lojas != null ? lojas.stream()
-                .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
-                .toList() : null;
-    }
 
     public List<LojaEntity> getListGuidApiRequestToListLojasEntity(List<GuidApiRequest> lojas) {
 
@@ -136,25 +127,6 @@ public class VoucherUtil {
 
     }
     public void cancelOrConfirmVoucherApi(List<VoucherApiRequest> voucherRequests, VoucherStatusEnum statusEnum) {
-        voucherRequests.forEach(voucherRequest -> {
-            VoucherEntity voucherEntity =
-                    this.iVoucherRepository.findByCodigoEqualsAndClienteCpfEqualsAndFilialCnpjEqualsAndVoucherStatus(
-                            voucherRequest.getCodigo(), this.apenasNumerosNaString(voucherRequest.getClienteCpf()),
-                            this.apenasNumerosNaString(voucherRequest.getFilialCnpj()),
-                            VoucherStatusEnum.DISPONIBILIZADO
-                    ).orElseThrow(
-                            () -> new VoucherNaoEncontradoException("Voucher codigo [" + voucherRequest.getCodigo()
-                                    + "] não encontrado")
-                    );
-            voucherEntity.setVoucherStatus(statusEnum);
-            if (VoucherStatusEnum.CANCELADO.equals(statusEnum)) {
-                voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.CANCELADO);
-            }
-            this.iVoucherRepository.save(voucherEntity);
-        });
-    }
-
-    public void cancelOrConfirmVoucher(List<VoucherRequest> voucherRequests, VoucherStatusEnum statusEnum) {
         voucherRequests.forEach(voucherRequest -> {
             VoucherEntity voucherEntity =
                     this.iVoucherRepository.findByCodigoEqualsAndClienteCpfEqualsAndFilialCnpjEqualsAndVoucherStatus(

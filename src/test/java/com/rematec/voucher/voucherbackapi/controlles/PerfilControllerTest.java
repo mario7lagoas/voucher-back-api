@@ -2,7 +2,7 @@ package com.rematec.voucher.voucherbackapi.controlles;
 
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.voucherbackapi.controllers.PerfilController;
-import com.rematec.voucher.voucherbackapi.services.PerfilService;
+import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,14 +27,14 @@ public class PerfilControllerTest {
     private PerfilController perfilController;
 
     @Mock
-    private PerfilService perfilService;
+    private VoucherBackFacade perfilService;
 
     @Test
     @DisplayName("Should Call Get All Perfis And Return Code 200")
-    public void buscandoListaPerfilCase1(){
+    public void buscandoListaPerfilCase1() {
         //Having
-        List<PerfilApiResponse> perfilApiResponse =  Arrays.asList(umPerfilApiResponse().agora(),
-                umPerfilApiResponse().nome("Two Perfil").guid("654321").agora() );
+        List<PerfilApiResponse> perfilApiResponse = Arrays.asList(umPerfilApiResponse().agora(),
+                umPerfilApiResponse().nome("Two Perfil").guid("654321").agora());
         when(this.perfilService.buscandoListaPerfil()).thenReturn(perfilApiResponse);
 
         //when
@@ -43,12 +43,10 @@ public class PerfilControllerTest {
         //then
         Assertions.assertNotNull(result);
 
-        assertThat(result.getStatusCode().value(), is (200 ));
-        assertThat(result.getBody().size(), is (2));
-        assertThat(result.getBody().get(0).getNome(), is ("One Perfil"));
-        assertThat(result.getBody().get(1).getNome(), is ("Two Perfil"));
-
-
+        assertThat(result.getStatusCode().value(), is(200));
+        assertThat(result.getBody().size(), is(2));
+        assertThat(result.getBody().get(0).getNome(), is("One Perfil"));
+        assertThat(result.getBody().get(1).getNome(), is("Two Perfil"));
     }
 
 }

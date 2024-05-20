@@ -4,7 +4,7 @@ info:
   description: |-
     Microserviço para geração de voucher como descontos em valor ou percentual paras clientes em seu ponto de venda.
 
-    _Se você que saber mais sobre a REMATEC, então  click [aqui](http://tibbi.com.br)._
+    _Se você que saber mais sobre a TIBBI, então  click [aqui](http://tibbi.com.br)._
 
   contact:
     email: mario7lagoas@gmail.com
@@ -29,6 +29,110 @@ tags:
   - name: Usuario
     description: Operações sobre Usuario
 paths:
+  /voucher/filter:
+    get:
+      tags:
+        - Voucher
+      summary: Buscando Lista de Voucher Por Filtros
+      description: Buscando Lista de Voucher Por Filtros na Plataforma
+      operationId: buscandoListaFiltroVoucher
+      parameters:
+        - name: page
+          description: "Numero da pagina atual"
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          description: "Quantidade de registro por pagina"
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: codigo
+          description: "Código do Voucher disponibilizado"
+          example: "240422172055905959002"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: descricao
+          description: "Descrição da Promoção"
+          example: "Promocao de Natal"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: clienteCpf
+          description: "CPF do Cliente"
+          example: "12345678900"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: pdv
+          description: "Numero do PDV"
+          example: "101"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: cupomResgate
+          description: "Numero do cupom onde o voucher foi resgatado"
+          example: "123456"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: voucherStatus
+          description: "Status Atual do Voucher"
+          example: "DISPONIBILIZADO"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: filialCnpj
+          description: "Buscar pelo CNPJ da Filial"
+          example: "11111111111111"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: tipoDesconto
+          description: "Buscar pelo tipo de Desconto"
+          example: "PERCENTUAL"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: inicio
+          description: "Inicio da Promoção"
+          example: "2024-05-12"
+          in: query
+          schema:
+            type: string
+            default: ""
+        - name: fim
+          description: "Fim da Promoção"
+          example: "2029-05-31"
+          in: query
+          schema:
+            type: string
+            default: ""
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginacaoApiResponse'
+                  - type: object
+                    properties:
+                      transacoes:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/VoucherFiltroApiResponse'
   /voucher/consulta:
     post:
       tags:
@@ -181,6 +285,29 @@ paths:
       responses:
         '200':
           description: successful operation
+  /voucher/print:
+    post:
+      tags:
+        - Voucher
+      summary: Relatorio de Voucher
+      description: Relatorio de Voucher na Plataforma
+      operationId: relatorioVoucher
+      requestBody:
+        description: Imprimindo um relatorio de Voucher
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/VoucherFiltroApiResponse'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "data:application/pdf;base64,JVBERi0xLjUKJeLjz9MKMyAwIG9iago8PC9Db2xvclNwYWNlL0RldmljZVJHQi9TdWJ0eXBlL0ltYWdlL0hlaWdodCAzNTQvRmlsdGVyL0RDVERlY29kZS9UeXBlL1hPYmplY3QvV2lkdGggMjQ4MC9CaXRzUGVyQ29tcG9uZW50IDgvTGVuZ3RoIDM2ODg5Pj5zdHJlYW0K/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAACgAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAFBAQGRIZJxcXJzImHyYyLiYmJiYuPjU1NTU1PkRBQUFBQUFERERERERERERERERERERERERERERERERERERERAEVGRkgHCAmGBgmNiYgJjZENisrNkREREI1QkRERERERERERERERERERERERERERERERERERERERERERERERERE/8AAEQgBYgmwAwEiAAIRAQMRAf/..."
   /promocao:
     get:
       tags:
@@ -1703,6 +1830,104 @@ components:
           type: number
           example: 5.99
           description: "Valor do Desconto concedido"
+    VoucherFiltroApiResponse:
+      properties:
+        guid:
+          type: string
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
+          description: "Identificador GUID"
+        codigo:
+          type: string
+          example: "240422172055905959002"
+          description: "Codigo do Voucher disponibilizado"
+        clienteCpf:
+          type: string
+          example: "12345678900"
+          description: "CPF do Cliente"
+        filialCnpj:
+          type: string
+          example: "11111111111111"
+          description: "CNPJ da Loja origem do voucher"
+        promocaoGuid:
+          type: string
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
+          description: "Identificador GUID da promoção"
+        descricao:
+          type: string
+          example: "Promocao de Natal"
+          description: "Descrição da Promoção"
+        pdv:
+          type: string
+          example: "102"
+          description: "PDV origem do Voucher"
+        cupom:
+          type: string
+          example: "123456"
+          description: "Cupom origem do Voucher"
+        pdvResgate:
+          type: string
+          example: "102"
+          description: "PDV resgate do Voucher"
+        filialCnpjResgate:
+          type: string
+          example: "11111111111111"
+          description: "CNPJ da Loja resgate do voucher"
+        cupomResgate:
+          type: string
+          example: "123456"
+          description: "Cupom resgate do Voucher"
+        valorPagamento:
+          type: number
+          example: 7.00
+          description: "Valor pagamento"
+        tipoDesconto:
+          type: string
+          example: "PERCENTUAL"
+          description: "Tipo de desconto [PERCENTUAL/VALOR]"
+        voucherStatus:
+          type: string
+          example: "DISPONIVEL"
+          description: "Tipo de status do Voucher [DISPONIVEL - EM_USO - UTILIZADO - CANCELADO - EXPIRADO]"
+        promocaoStatus:
+          type: string
+          example: "ATIVA"
+          description: "Status Atual da promoção [ATIVA - PROGRESSO - BLOQUEADA - FINALIZADA] "
+        valorDesconto:
+          type: number
+          example: 5.00
+          description: "Valor do Desconto"
+        valorMaximoDesconto:
+          type: number
+          example: 10.00
+          description: "Valor maximo de desconto concedido"
+        valorPago:
+          type: number
+          example: 7.00
+          description: "Valor pago"
+        fimResgate:
+          type: string
+          example: "2024-06-05 09:56:13"
+          description: "Data e Hora fim do resgate"
+        dataResgate:
+          type: string
+          example: "2024-05-14 09:56:13"
+          description: "Data e Hora do resgate"
+        inicio:
+          type: string
+          example: "2024-05-12 09:56:13"
+          description: "Data e Hora inicio da Promoção"
+        fim:
+          type: string
+          example: "2024-05-31 09:56:16"
+          description: "Data e Hora fim da Promoção"
+        dataAtualizacao:
+          type: string
+          example: "2024-05-14 09:56:13"
+          description: "Data e Hora da ultima atualização"
+        dataCadastro:
+          type: string
+          example: "2024-05-12 09:56:13"
+          description: "Data e Hora do cadastrado"
     VoucherApiResponse:
       properties:
         descricao:

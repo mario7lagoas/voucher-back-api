@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.services.impl;
+package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;
@@ -14,7 +14,6 @@ import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
-import com.rematec.voucher.voucherbackapi.services.PromocaoService;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class PromocaoServiceImpl extends PromocaoService {
+class PromocaoServiceImpl implements IPromocaoService {
 
     @Autowired
     private IPromocaoRepository iPromocaoRepository;

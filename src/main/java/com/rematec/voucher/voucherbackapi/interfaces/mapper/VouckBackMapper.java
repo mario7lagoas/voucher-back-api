@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.interfaces.mapper;
 
+import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
@@ -15,8 +16,6 @@ import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
-import com.rematec.voucher.voucherbackapi.models.response.VoucherResponse;
-import com.rematec.voucher.voucherbackapi.models.response.VouchersPaginadaResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;
@@ -30,11 +29,6 @@ public interface VouckBackMapper {
     List<UsuarioApiResponse> listUsuarioEntityTolistUsuarioApiResponse(List<UsuarioEntity> all);
 
     UsuarioApiResponse usuarioEntityToUsuarioApiResponse(UsuarioEntity usuarioEntity);
-
-    VoucherResponse voucherEntityToVoucherResponse(VoucherEntity voucherEntity);
-
-    @Mapping(source = "voucherEntities.content", target = "transacoes")
-    VouchersPaginadaResponse pageVouchersEntityToVouchersPaginadaResponse(Page<VoucherEntity> voucherEntities);
 
     List<PerfilApiResponse> listPerfilEntityToListPerfilApiResponse(List<PerfilEntity> all);
 
@@ -65,5 +59,8 @@ public interface VouckBackMapper {
             PageImpl<PromocaoEntity> promocaoEntities);
 
     VoucherApiResponse voucherEntityToVoucherApiResponse(VoucherEntity save);
+
+    @Mapping(source = "voucherEntities.content", target = "transacoes")
+    BuscandoListaFiltroVoucher200Response pageVouchersEntityToBuscandoListaFiltroVoucher200Response(PageImpl<VoucherEntity> voucherEntities);
 }
 

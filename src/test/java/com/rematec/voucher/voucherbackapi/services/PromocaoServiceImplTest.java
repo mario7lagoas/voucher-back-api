@@ -1,10 +1,9 @@
-package com.rematec.voucher.voucherbackapi.services.impl;
+package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.PromocaoUpdateApiRequest;
-import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;

@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.interfaces.services;
+package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;

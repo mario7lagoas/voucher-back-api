@@ -6,7 +6,7 @@ import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.PromocaoUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
-import com.rematec.voucher.voucherbackapi.services.PromocaoService;
+import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.List;
 public class PromocaoController implements PromocaoApi{
 
     @Autowired
-    private PromocaoService promocaoService;
+    private VoucherBackFacade promocaoService;
 
     @Override
     public ResponseEntity<List<PromocaoApiResponse>> buscandoListaPromocao() {
@@ -82,7 +82,8 @@ public class PromocaoController implements PromocaoApi{
     @Override
     public ResponseEntity<String> relatorioPromocao(List<PromocaoApiResponse> promocaoApiResponse) {
         return new ResponseEntity<String>(
-                ReportFactory.report(new JRBeanCollectionDataSource(promocaoApiResponse), "promocoes"), HttpStatus.OK);
+                this.promocaoService.report(new JRBeanCollectionDataSource(promocaoApiResponse), "promocoes"),
+                HttpStatus.OK);
     }
 
 }
