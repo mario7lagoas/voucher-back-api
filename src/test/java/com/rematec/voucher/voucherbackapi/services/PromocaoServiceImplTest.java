@@ -11,6 +11,7 @@ import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
@@ -417,6 +418,31 @@ public class PromocaoServiceImplTest {
                 () -> this.promocaoService.ativandoPromocao(guid, "Jose da Silva"));
 
         assertThat(exception.getMessage(), is("Status da promoção não pode ser alterado."));
+    }
+
+    @Test
+    @DisplayName("Should Return A List PromocaoApiResponse For Filter Successfully")
+    public void buscandoListaFiltroPromocaoCase1() {
+        //having
+        String descricao = "";
+        String tipo = "";
+        String status = "";
+        String inicio = "";
+        String fim = "";
+        Integer page = 0;
+        Integer size = 10;
+        String email = "any@email.com";
+
+        doReturn(List.of(1L)).when(this.voucherUtil).getListLojaIdForUsuarioEmail(email);
+        when(this.iPromocaoRepository.filtrar(any(PromocaoFiltro.class), any(PageRequest.class)))
+                .thenReturn(new BuscandoListaPaginadaPromocao200Response() );
+
+        //when
+        BuscandoListaPaginadaPromocao200Response responses = this.promocaoService.buscandoListaFiltroPromocao(
+                descricao, tipo, status, inicio, fim, page, size, email);
+
+        //then
+        Assertions.assertNotNull(responses);
     }
 
 }

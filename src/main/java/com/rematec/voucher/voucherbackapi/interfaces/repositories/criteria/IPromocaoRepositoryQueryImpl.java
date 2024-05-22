@@ -35,7 +35,7 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
     @Override
     public BuscandoListaPaginadaPromocao200Response filtrar(PromocaoFiltro promocaoFiltro, Pageable page) {
         From<?, ?> orderByFromEntity = null;
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        CriteriaBuilder builder = this.manager.getCriteriaBuilder();
         CriteriaQuery<PromocaoEntity> criteriaQuery = builder.createQuery(PromocaoEntity.class);
 
         Root<PromocaoEntity> root = criteriaQuery.from(PromocaoEntity.class);

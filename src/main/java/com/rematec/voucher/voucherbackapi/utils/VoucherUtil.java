@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 public class VoucherUtil {
 
     @Autowired
-    private ILojaRepository iLojaReposity;
+    private ILojaRepository iLojaRepository;
     @Autowired
     private IPromocaoRepository iPromocaoRepository;
     @Autowired
@@ -56,7 +56,7 @@ public class VoucherUtil {
     public List<LojaEntity> getListGuidApiRequestToListLojasEntity(List<GuidApiRequest> guidList) {
 
         return guidList != null ? guidList.stream()
-                .map(loja -> this.iLojaReposity.findByGuid(loja.getGuid()).get())
+                .map(loja -> this.iLojaRepository.findByGuid(loja.getGuid()).get())
                 .toList() : null;
     }
 
@@ -167,7 +167,7 @@ public class VoucherUtil {
 
     public String getLojaNome(String cnpj) {
 
-        Optional<LojaEntity> lojaEntity = this.iLojaReposity.findByCnpj(this.apenasNumerosNaString(cnpj));
+        Optional<LojaEntity> lojaEntity = this.iLojaRepository.findByCnpj(this.apenasNumerosNaString(cnpj));
         if (lojaEntity.isPresent()) {
             log.debug("Retornado nome da loja {} ", lojaEntity.get().getNome());
             return lojaEntity.get().getNome();
@@ -200,7 +200,7 @@ public class VoucherUtil {
 
     public List<Long> getListLojaIdForUsuarioEmail(String email) {
 
-        List<LojaEntity> lojaEntities = this.iLojaReposity.findByUsuariosEmail(email);
+        List<LojaEntity> lojaEntities = this.iLojaRepository.findByUsuariosEmail(email);
 
         return  lojaEntities != null && !lojaEntities.isEmpty() ?
                 lojaEntities.stream().map(LojaEntity::getId).toList() : List.of(0L);
