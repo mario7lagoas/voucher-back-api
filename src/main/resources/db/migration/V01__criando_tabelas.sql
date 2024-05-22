@@ -32,8 +32,8 @@ CREATE TABLE promocao (
 	autor_alteracao VARCHAR(255),
 	descricao VARCHAR(255),
 	dias_validade_voucher INTEGER,
-	disconto_percentual DECIMAL(38,2),
-	disconto_valor DECIMAL(38,2),
+	desconto_percentual DECIMAL(38,2),
+	desconto_valor DECIMAL(38,2),
 	fim DATETIME(6),
 	inicio DATETIME(6),
 	promocao_status ENUM ('ATIVA','PROGRESSO','BLOQUEADA','FINALIZADA'),
@@ -70,6 +70,12 @@ CREATE TABLE usuario_perfil (
 	usuario_id BIGINT NOT NULL,
 	perfil_id BIGINT NOT NULL,
 	PRIMARY KEY (usuario_id, perfil_id)
+)ENGINE=InnoDB;
+
+CREATE TABLE usuario_loja (
+	usuario_id BIGINT NOT NULL,
+	loja_id BIGINT NOT NULL,
+	PRIMARY KEY (usuario_id, loja_id)
 )ENGINE=InnoDB;
 
 CREATE TABLE voucher (
@@ -139,6 +145,8 @@ ALTER TABLE promocoes_lojas ADD CONSTRAINT UKiqrxcawavvo1rybihlapphm28 UNIQUE (p
 
 ALTER TABLE perfil_roles ADD CONSTRAINT UKmvyn5fhyitlav9mbkxp4pauqu UNIQUE (perfil_id, role_id);
 
+ALTER TABLE usuario_loja ADD CONSTRAINT UK52bbm870o4b1n3aiqvw5p1fcv unique (usuario_id, loja_id);
+
 ALTER TABLE perfil_roles  ADD CONSTRAINT FK_PerilRolesAndRoleId FOREIGN KEY (role_id) REFERENCES role (id);
 
 ALTER TABLE perfil_roles ADD CONSTRAINT FK_PerfilRolesAndPerfilId FOREIGN KEY (perfil_id) REFERENCES perfil (id);
@@ -151,5 +159,6 @@ ALTER TABLE usuario_perfil ADD CONSTRAINT FK_UsuarioPerfilAndPerfilId FOREIGN KE
 
 ALTER TABLE usuario_perfil ADD CONSTRAINT FK_UsuarioPerfilAndUsuarioId FOREIGN KEY (usuario_id) REFERENCES usuario (id);
 
+ALTER TABLE usuario_loja ADD CONSTRAINT FK_UsuarioLojaAndLojaId FOREIGN KEY (loja_id) REFERENCES loja (id);
 
-
+ALTER TABLE usuario_loja ADD CONSTRAINT FK_UsuarioLojaAndUsuarioId FOREIGN KEY (usuario_id) REFERENCES usuario (id);
