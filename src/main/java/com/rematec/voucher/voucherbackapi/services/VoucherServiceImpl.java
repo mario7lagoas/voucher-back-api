@@ -85,6 +85,7 @@ class VoucherServiceImpl implements IVoucherService {
                             .filialCnpj(this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj()))
                             .pdv(consulta.getPdvFilial())
                             .cupom(consulta.getCupom())
+                            .descricao(promocaoEntity.getDescricao())
                             .valorDesconto(promocaoEntity.getTipoDesconto().name().equals("VALOR") ? promocaoEntity.getDescontoValor() : promocaoEntity.getDescontoPercentual())
                             .voucherStatus(VoucherStatusEnum.DISPONIBILIZADO)
                             .promocaoStatus(VoucherPromocaoStatusEnum.DISPONIVEL)
