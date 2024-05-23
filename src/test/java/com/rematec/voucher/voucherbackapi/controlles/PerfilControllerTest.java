@@ -35,6 +35,7 @@ public class PerfilControllerTest {
         //Having
         List<PerfilApiResponse> perfilApiResponse = Arrays.asList(umPerfilApiResponse().agora(),
                 umPerfilApiResponse().nome("Two Perfil").guid("654321").agora());
+
         when(this.perfilService.buscandoListaPerfil()).thenReturn(perfilApiResponse);
 
         //when
