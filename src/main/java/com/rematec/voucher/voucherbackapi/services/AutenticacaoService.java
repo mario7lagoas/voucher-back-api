@@ -2,10 +2,7 @@ package com.rematec.voucher.voucherbackapi.services;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
-import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.security.UserDetail;
-import com.rematec.voucher.voucherbackapi.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,12 +12,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -32,7 +27,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Service
@@ -120,13 +114,30 @@ public class AutenticacaoService {
                                                    HttpServletResponse response) {
 
         String token = request.getHeader(HEAD_AUTHORIZATION);
-        try {
 
             if (token != null) {
-                Claims user = Jwts.parser()
-                        .setSigningKey(JWT_KEY)
-                        .parseClaimsJws(token.replace(BEARER, ""))
-                        .getBody();
+                Claims user = null;
+               try {
+                   user = Jwts.parser()
+                           .setSigningKey(JWT_KEY)
+                           .parseClaimsJws(token.replace(BEARER, ""))
+                           .getBody();
+
+               }catch (ExpiredJwtException e){
+                   try {
+                       response.setHeader("error", e.getMessage());
+                       response.setStatus(FORBIDDEN.value());
+                       Map<String, String> error = new HashMap<>();
+                       error.put("codigo", "JWT_ERRO");
+                       error.put("mensagem", "Token Expirado.");
+                       response.setContentType(APPLICATION_JSON_VALUE);
+                       new ObjectMapper().writeValue(response.getOutputStream(), error);
+
+                   } catch (IOException ex) {
+                       throw new RuntimeException(ex);
+                   }
+
+               }
 
                 if (user != null && user.get(AUTHORITIES) != null) {
 
@@ -136,39 +147,21 @@ public class AutenticacaoService {
                             .toList();
                     return new UsernamePasswordAuthenticationToken(user, null, permissoes);
                 } else {
-                    throw new RuntimeException("Autenticação falhou.");
+
+                    try {
+                        response.setHeader("error", "Autenticação falhou.");
+                        response.setStatus(FORBIDDEN.value());
+                        Map<String, String> error = new HashMap<>();
+                        error.put("codigo", "JWT_ERRO");
+                        error.put("mensagem", "Autenticação falhou.");
+                        response.setContentType(APPLICATION_JSON_VALUE);
+                        new ObjectMapper().writeValue(response.getOutputStream(), error);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException("Autenticação falhou. " + e.getMessage());
+                    }
                 }
             }
-        } catch (Exception ex) {
-
-            try {
-
-                log.error("Error em realizar no login: {}", ex.getMessage());
-                response.setHeader("error", ex.getMessage());
-                response.setStatus(FORBIDDEN.value());
-                Map<String, String> error = new HashMap<>();
-                error.put("codigo", "JWT_ERRO");
-                error.put("mensagem", ex.getMessage());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-        log.error("Token não informado.");
-        response.setHeader("error", "Token não informado");
-        response.setStatus(UNAUTHORIZED.value());
-        Map<String, String> error = new HashMap<>();
-        error.put("codigo", "JWT_ERRO");
-        error.put("mensagem", "Token não informado");
-        response.setContentType(APPLICATION_JSON_VALUE);
-        try {
-            new ObjectMapper().writeValue(response.getOutputStream(), error);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         return null;
     }
