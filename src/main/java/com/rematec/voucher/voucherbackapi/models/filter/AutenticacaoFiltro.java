@@ -38,6 +38,7 @@ public class AutenticacaoFiltro extends BasicAuthenticationFilter {
         //TODO melhorar isso aqui
         if (!"/voucher-back/v1/login/refresh".equals(request.getRequestURI())
                 && !"refresh_token".equals(request.getParameter("grant_type"))) {
+          /*
             if (!"/voucher-back/v1/voucher/consulta".equals(request.getRequestURI()) &&
                     !"/voucher-back/v1/voucher/cancel".equals(request.getRequestURI()) &&
                     !"/voucher-back/v1/voucher/confirm".equals(request.getRequestURI()) &&
@@ -45,10 +46,12 @@ public class AutenticacaoFiltro extends BasicAuthenticationFilter {
                     !"/voucher-back/v1/voucher/consumer".equals(request.getRequestURI()) &&
                     !"/voucher-back/v1/voucher/rollback".equals(request.getRequestURI())) {
 
+           */
+
                 Authentication authentication = AutenticacaoService.obterAutenticacao(request, response);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            }
+         //   }
         }
         chain.doFilter(request, response);
 

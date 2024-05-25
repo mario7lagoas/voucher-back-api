@@ -23,8 +23,6 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-
-
         HttpServletRequest req = (HttpServletRequest)request;
 
         if ("/voucher-back/v1/login/refresh".equalsIgnoreCase(req.getRequestURI())
