@@ -71,7 +71,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Return A List UsuarioApiResponse Successfully")
-    public void buscandoListaLojaCase1() {
+    public void buscandoListaUsuarioCase1() {
         //having
         when(this.iUsuarioRepository.findAll()).thenReturn(new CollisionCheckStack<UsuarioEntity>());
 

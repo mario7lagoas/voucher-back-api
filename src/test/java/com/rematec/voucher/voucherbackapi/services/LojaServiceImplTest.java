@@ -30,6 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -110,7 +111,7 @@ public class LojaServiceImplTest {
         String email = "usuario@email.com";
 
         //having
-        List<LojaEntity> lojaEntities = Arrays.asList(umaLojaEntity().agora());
+        List<LojaEntity> lojaEntities = Collections.singletonList(umaLojaEntity().agora());
 
         when(this.iLojaReposity.findByStatusTrueAndUsuariosEmail(email)).thenReturn(lojaEntities);
 

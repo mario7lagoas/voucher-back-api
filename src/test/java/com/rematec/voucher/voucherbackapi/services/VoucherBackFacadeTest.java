@@ -1,9 +1,11 @@
 package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
+import com.rematec.voucher.models.PerfilUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
@@ -27,6 +29,7 @@ import java.util.UUID;
 
 import static com.rematec.voucher.voucherbackapi.builders.LojaApiResponseBuilder.umaLojaApiResponse;
 import static com.rematec.voucher.voucherbackapi.builders.PerfilApiRequestBuilder.umPerfilApiRequest;
+import static com.rematec.voucher.voucherbackapi.builders.PerfilUpdateApiRequestBuilder.umPerfilUpdateApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoApiResponseBuilder.umaPromocaoApiResponse;
 import static com.rematec.voucher.voucherbackapi.builders.UpdateStatusApiRequestBuilder.umUpdateStatusApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioApiRequestBuilder.umUsuarioApiRequest;
@@ -45,6 +48,9 @@ public class VoucherBackFacadeTest {
     @Mock
     private PerfilServiceImpl perfilService;
 
+    @Mock
+    private LojaServiceImpl lojaService;
+
     @Before("")
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -52,7 +58,7 @@ public class VoucherBackFacadeTest {
 
     @Test
     @DisplayName("Should Return A List UsuarioApiResponse Successfully")
-    public void buscandoListaLojaCase1() {
+    public void buscandoListaUsuarioCase1() {
 
         //having
         when(this.usuarioService.buscandoListaUsuario()).thenReturn(new CollisionCheckStack<UsuarioApiResponse>());
@@ -81,19 +87,6 @@ public class VoucherBackFacadeTest {
         //then
         Assertions.assertNotNull(responses);
    }
-
-    @Test
-    @DisplayName("Should Return A String PromocaoApiResponse Base64 Successfully")
-    public void reportCase1(){
-        //having
-        JRBeanCollectionDataSource collectionDataSource = new JRBeanCollectionDataSource(
-                Collections.singletonList(umaPromocaoApiResponse().comLoja().agora()));
-        //when
-        String report = this.voucherBackFacade.report(collectionDataSource , "promocoes");
-
-        //then
-        Assertions.assertNotNull(report);
-    }
 
     @Test
     @DisplayName("Should Return A UsuarioApiResponse By GUID Successfully")
@@ -182,6 +175,19 @@ public class VoucherBackFacadeTest {
     }
 
     @Test
+    @DisplayName("Should Return A String PromocaoApiResponse Base64 Successfully")
+    public void reportCase1(){
+        //having
+        JRBeanCollectionDataSource collectionDataSource = new JRBeanCollectionDataSource(
+                Collections.singletonList(umaPromocaoApiResponse().comLoja().agora()));
+        //when
+        String report = this.voucherBackFacade.report(collectionDataSource , "promocoes");
+
+        //then
+        Assertions.assertNotNull(report);
+    }
+
+    @Test
     @DisplayName("Should Return A List PerfilApiResponse Successfully")
     public void buscandoListaPerfilCase1() {
 
@@ -261,6 +267,69 @@ public class VoucherBackFacadeTest {
 
     }
 
+    @Test
+    @DisplayName("Should Update a Perfil status Successfully")
+    public void alterandoPerfilCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        PerfilUpdateApiRequest request = umPerfilUpdateApiRequest().setNome("Other").agora();
+
+        when(this.perfilService.alterandoPerfil(guid, request)).thenReturn(new PerfilApiResponse());
+
+        //when
+        PerfilApiResponse response = this.voucherBackFacade.alterandoPerfil(guid, request);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    @DisplayName("Should Delete A Perfil Successfully")
+    public void apagandoPerfilCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        //when
+        this.voucherBackFacade.apagandoPerfil(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+    }
+
+    @Test
+    @DisplayName("Should Return A List LojaApiResponse Successfully")
+    public void buscandoListaLojaCase1() {
+
+        //having
+        when(this.lojaService.buscandoListaLoja()).thenReturn(new CollisionCheckStack<LojaApiResponse>());
+
+        //when
+        List<LojaApiResponse> responses = this.voucherBackFacade.buscandoListaLoja();
+
+        //then
+        Assertions.assertNotNull(responses);
+    }
+
+    @Test
+    @DisplayName("Should Return A List LojaApiResponse Ative With user email Successfully")
+    public void buscandoListaLojaAtivaCase1() {
+
+        //having
+        String email = "usuario@email.com";
+        when(this.lojaService.buscandoListaLojaAtiva(email)).thenReturn(new CollisionCheckStack<LojaApiResponse>());
+
+        //when
+        List<LojaApiResponse> responses = this.voucherBackFacade.buscandoListaLojaAtiva(email);
+
+        //then
+        Assertions.assertNotNull(email);
+        Assertions.assertNotNull(responses);
+
+    }
 
     @Test
     @DisplayName("Should Return A String lojaApiResponse Base64 Successfully")
@@ -270,8 +339,8 @@ public class VoucherBackFacadeTest {
         JRBeanCollectionDataSource collectionDataSource = new JRBeanCollectionDataSource(
                 Collections.singletonList(umaLojaApiResponse().agora()));
         //when
-
         String report = this.voucherBackFacade.report(collectionDataSource , "lojas");
+
         //then
         Assertions.assertNotNull(report);
     }
