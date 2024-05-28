@@ -1,5 +1,6 @@
 package com.rematec.voucher.voucherbackapi.controlles;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.voucherbackapi.controllers.UsuarioController;
 import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
@@ -14,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
+import static com.rematec.voucher.voucherbackapi.builders.BuscandoListaPaginadaUsuario200ResponseBuilder.umaListaPaganidaUsuarioResponse;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioApiResponseBuilder.umUsuarioApiResponse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -48,7 +51,54 @@ public class UsuarioControllerTest {
 
     }
 
+    @Test
+    @DisplayName("Should Call Get All UsuarioApiResponse paginator And Return Code 200")
+    public void buscandoListaPaginadaUsuarioCase1() {
 
+        //having
+        String nome = "anyname";
+        Integer page = 0;
+        Integer size = 10;
+        when(this.usuarioService.buscandoListaPaginadaUsuario(nome, page, size))
+                .thenReturn(umaListaPaganidaUsuarioResponse().comUmUsuario().agora());
+
+        //when
+        ResponseEntity<BuscandoListaPaginadaUsuario200Response> response =
+                this.usuarioController.buscandoListaPaginadaUsuario( page, size, nome);
+
+        //then
+        Assertions.assertNotNull(response);
+
+        assertThat(response.getStatusCode().value(), is(200));
+        assertThat(response.getBody().getUsuarios().size(), is(1));
+        assertThat(response.getBody().getUsuarios().get(0).getUserName(), is("Any Name"));
+        assertThat(response.getBody().getUsuarios().get(0).getEmail(), is("any@email.com"));
+
+    }
+
+    @Test
+    @DisplayName("Should Call Get A UsuarioApiResponse By GUID And Return Code 200")
+    public void buscandoUsuarioPeloGUIDCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        when(this.usuarioService.buscandoUsuarioPeloGUID(guid)).thenReturn(umUsuarioApiResponse().guid(guid)
+                .agora());
+
+        //when
+        ResponseEntity<UsuarioApiResponse> response = this.usuarioController.buscandoUsuarioPeloGUID(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+
+        assertThat(response.getStatusCode().value(), is(200));
+        assertThat(response.getBody().getGuid(), is(guid));
+        assertThat(response.getBody().getUserName(), is("Any Name"));
+        assertThat(response.getBody().getEmail(), is("any@email.com"));
+
+    }
 
 
 }

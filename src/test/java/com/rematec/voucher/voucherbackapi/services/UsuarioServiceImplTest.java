@@ -147,7 +147,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Create a Usuario Successfully")
-    public void criandoLojaCase1() {
+    public void criandoUsuarioCase1() {
 
         //having
 
@@ -171,7 +171,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario Exist")
-    public void criandoLojaCase2() {
+    public void criandoUsuarioCase2() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().userName("New User").agora();
@@ -192,7 +192,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario Email Is Null")
-    public void criandoLojaCase3() {
+    public void criandoUsuarioCase3() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().email(null).agora();
@@ -209,7 +209,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario Password Is Null")
-    public void criandoLojaCase4() {
+    public void criandoUsuarioCase4() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().password(null).agora();
@@ -226,7 +226,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario UserName Is Null")
-    public void criandoLojaCase5() {
+    public void criandoUsuarioCase5() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().userName(null).comPerfis().agora();
@@ -244,7 +244,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario Email Is Empty")
-    public void criandoLojaCase6() {
+    public void criandoUsuarioCase6() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().email("").agora();
@@ -261,7 +261,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario Password Is Empty")
-    public void criandoLojaCase7() {
+    public void criandoUsuarioCase7() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().password("").agora();
@@ -278,7 +278,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario UserName Is Empty")
-    public void criandoLojaCase8() {
+    public void criandoUsuarioCase8() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().userName("").comPerfis().agora();
@@ -295,7 +295,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario Status Is Null")
-    public void criandoLojaCase9() {
+    public void criandoUsuarioCase9() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().status(null).agora();
@@ -312,7 +312,7 @@ public class UsuarioServiceImplTest {
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Add Usuario Perfis Is Null")
-    public void criandoLojaCase10() {
+    public void criandoUsuarioCase10() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().agora();

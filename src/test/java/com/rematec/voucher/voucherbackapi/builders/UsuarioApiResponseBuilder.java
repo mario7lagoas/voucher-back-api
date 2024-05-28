@@ -16,6 +16,11 @@ public class UsuarioApiResponseBuilder {
         return builder;
     }
 
+    public UsuarioApiResponseBuilder guid(String guid){
+        usuarioApiResponse.setGuid(guid);
+        return this;
+    }
+
     public UsuarioApiResponse agora(){
         return usuarioApiResponse;
     }

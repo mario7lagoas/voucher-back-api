@@ -399,7 +399,7 @@ public class LojaServiceImplTest {
         when(this.iLojaReposity.findByGuid(guid)).thenReturn(Optional.of(lojaEntity));
 
         //when
-         this.lojaService.apagandoLoja(guid);
+        this.lojaService.apagandoLoja(guid);
 
         //then
         Assertions.assertNotNull(guid);
@@ -431,7 +431,7 @@ public class LojaServiceImplTest {
     @DisplayName("Should Thrown An Exception When Try To Delete Loja And It Does In use")
     public void apagandoLojaCase3() {
         //having
-       List<Optional<LojaEntity>> optionals =  Arrays.asList(Optional.of(umaLojaEntity().agora()));
+        List<Optional<LojaEntity>> optionals = Arrays.asList(Optional.of(umaLojaEntity().agora()));
         String guid = UUID.randomUUID().toString();
 
         LojaEntity lojaEntity = umaLojaEntity().guid(guid).nome("Loja em uso").agora();
@@ -452,7 +452,7 @@ public class LojaServiceImplTest {
     @DisplayName("Should Thrown An Exception When Try To Delete Loja And It Does In use for User")
     public void apagandoLojaCase4() {
         //having
-        List<Optional<LojaEntity>> optionals =  Arrays.asList(Optional.of(umaLojaEntity().agora()));
+        List<Optional<LojaEntity>> optionals = Arrays.asList(Optional.of(umaLojaEntity().agora()));
         String guid = UUID.randomUUID().toString();
 
         LojaEntity lojaEntity = umaLojaEntity().guid(guid).nome("Loja em uso").agora();
@@ -468,7 +468,6 @@ public class LojaServiceImplTest {
 
         assertThat(exception.getMessage(), is("Loja não pode ser Excluida. Pois está associada a algum Usuário."));
     }
-
 
 
     @Test
@@ -511,6 +510,4 @@ public class LojaServiceImplTest {
 
         assertThat(exception.getMessage(), is("Loja não encontrada."));
     }
-
-
 }

@@ -1,7 +1,10 @@
 package com.rematec.voucher.voucherbackapi.services;
 
+import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
+import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
@@ -27,7 +30,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static com.rematec.voucher.voucherbackapi.builders.LojaApiRequestBuilder.umaLojaApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.LojaApiResponseBuilder.umaLojaApiResponse;
+import static com.rematec.voucher.voucherbackapi.builders.LojaUpdateApiRequestBuilder.umaLojaUpdateApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PerfilApiRequestBuilder.umPerfilApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PerfilUpdateApiRequestBuilder.umPerfilUpdateApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoApiResponseBuilder.umaPromocaoApiResponse;
@@ -86,7 +91,7 @@ public class VoucherBackFacadeTest {
 
         //then
         Assertions.assertNotNull(responses);
-   }
+    }
 
     @Test
     @DisplayName("Should Return A UsuarioApiResponse By GUID Successfully")
@@ -94,7 +99,6 @@ public class VoucherBackFacadeTest {
 
         //having
         String guid = UUID.randomUUID().toString();
-        UsuarioEntity entity = umUsuarioEntity().agora();
         when(this.usuarioService.buscandoUsuarioPeloGUID(guid)).thenReturn(new UsuarioApiResponse());
 
         //when
@@ -107,7 +111,7 @@ public class VoucherBackFacadeTest {
 
     @Test
     @DisplayName("Should Create a Usuario Successfully")
-    public void criandoLojaCase1() {
+    public void criandoUsuarioCase1() {
 
         //having
         UsuarioApiRequest request = umUsuarioApiRequest().userName("New User").comPerfis().agora();
@@ -176,12 +180,12 @@ public class VoucherBackFacadeTest {
 
     @Test
     @DisplayName("Should Return A String PromocaoApiResponse Base64 Successfully")
-    public void reportCase1(){
+    public void reportCase1() {
         //having
         JRBeanCollectionDataSource collectionDataSource = new JRBeanCollectionDataSource(
                 Collections.singletonList(umaPromocaoApiResponse().comLoja().agora()));
         //when
-        String report = this.voucherBackFacade.report(collectionDataSource , "promocoes");
+        String report = this.voucherBackFacade.report(collectionDataSource, "promocoes");
 
         //then
         Assertions.assertNotNull(report);
@@ -201,6 +205,7 @@ public class VoucherBackFacadeTest {
         Assertions.assertNotNull(responses);
 
     }
+
     @Test
     @DisplayName("Should Return A List PerfilResumidoApiResponse Successfully")
     public void buscandoListaResumidoPerfilCase1() {
@@ -332,14 +337,119 @@ public class VoucherBackFacadeTest {
     }
 
     @Test
-    @DisplayName("Should Return A String lojaApiResponse Base64 Successfully")
-    public void reportCase2(){
-        //having
+    @DisplayName("Should Return A List LojaApiResponse Paginator Successfully")
+    public void buscandoListaPaginadaLojaCase1() {
 
+        //having
+        String cnpj = "11111111111111";
+        Integer page = 0;
+        Integer size = 10;
+        when(this.lojaService.buscandoListaPaginadaLoja(cnpj, page, size))
+                .thenReturn(new BuscandoListaPaginadaLoja200Response());
+
+        //when
+        BuscandoListaPaginadaLoja200Response lojaResponses = this.voucherBackFacade.buscandoListaPaginadaLoja(
+                cnpj, page, size);
+
+        //then
+        Assertions.assertNotNull(lojaResponses);
+
+    }
+
+    @Test
+    @DisplayName("Should Return A LojaApiResponse By GUID Successfully")
+    public void buscandoLojaPeloGUIDCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        when(this.lojaService.buscandoLojaPeloGUID(guid)).thenReturn(new LojaApiResponse());
+
+        //when
+        LojaApiResponse response = this.voucherBackFacade.buscandoLojaPeloGUID(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Should Create a Loja Successfully")
+    public void criandoLojaCase1() {
+
+        //having
+        LojaApiRequest request = umaLojaApiRequest().agora();
+
+        when(this.lojaService.criandoLoja(request)).thenReturn(new LojaApiResponse());
+
+        //when
+        LojaApiResponse response = this.voucherBackFacade.criandoLoja(request);
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Should Update a Loja Successfully")
+    public void alterandoLojaCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        LojaUpdateApiRequest request = umaLojaUpdateApiRequest().nome("Other").agora();
+
+        when(this.lojaService.alterandoLoja(guid, request)).thenReturn(new LojaApiResponse());
+
+        //when
+        LojaApiResponse response = this.voucherBackFacade.alterandoLoja(guid, request);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Should Delete A Loja Successfully")
+    public void apagandoLojaCase1() {
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        //when
+        this.voucherBackFacade.apagandoLoja(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+    }
+
+    @Test
+    @DisplayName("Should Update Status a Loja Successfully")
+    public void alterandoStatusLojaCase1() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        UpdateStatusApiRequest request = umUpdateStatusApiRequest().status(false).agora();
+
+        //when
+        this.voucherBackFacade.alterandoStatusLoja(guid, request);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(request);
+
+    }
+
+    @Test
+    @DisplayName("Should Return A String lojaApiResponse Base64 Successfully")
+    public void reportCase2() {
+
+        //having
         JRBeanCollectionDataSource collectionDataSource = new JRBeanCollectionDataSource(
                 Collections.singletonList(umaLojaApiResponse().agora()));
         //when
-        String report = this.voucherBackFacade.report(collectionDataSource , "lojas");
+        String report = this.voucherBackFacade.report(collectionDataSource, "lojas");
 
         //then
         Assertions.assertNotNull(report);
