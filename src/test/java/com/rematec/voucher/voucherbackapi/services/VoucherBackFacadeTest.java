@@ -1,6 +1,7 @@
 package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
+import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
@@ -9,11 +10,13 @@ import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.models.PerfilUpdateApiRequest;
+import com.rematec.voucher.models.PromocaoApiRequest;
+import com.rematec.voucher.models.PromocaoApiResponse;
+import com.rematec.voucher.models.PromocaoUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.UsuarioUpdateApiRequest;
-import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
@@ -35,10 +38,11 @@ import static com.rematec.voucher.voucherbackapi.builders.LojaApiResponseBuilder
 import static com.rematec.voucher.voucherbackapi.builders.LojaUpdateApiRequestBuilder.umaLojaUpdateApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PerfilApiRequestBuilder.umPerfilApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PerfilUpdateApiRequestBuilder.umPerfilUpdateApiRequest;
+import static com.rematec.voucher.voucherbackapi.builders.PromocaoApiRequestBuilder.umaPromocaoApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoApiResponseBuilder.umaPromocaoApiResponse;
+import static com.rematec.voucher.voucherbackapi.builders.PromocaoUpdateApiRequestBuilder.umaPromocaoUpdateApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UpdateStatusApiRequestBuilder.umUpdateStatusApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioApiRequestBuilder.umUsuarioApiRequest;
-import static com.rematec.voucher.voucherbackapi.builders.UsuarioEntityBuilder.umUsuarioEntity;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioUpdateApiRequestBuilder.umUsuarioUpdateApiRequest;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +59,9 @@ public class VoucherBackFacadeTest {
 
     @Mock
     private LojaServiceImpl lojaService;
+
+    @Mock
+    private PromocaoServiceImpl promocaoService;
 
     @Before("")
     public void setUp() {
@@ -454,4 +461,146 @@ public class VoucherBackFacadeTest {
         //then
         Assertions.assertNotNull(report);
     }
+
+
+    @Test
+    @DisplayName("Should Return A List PromocaoApiResponse Successfully")
+    public void buscandoListaPromocaoCase1() {
+
+        //having
+        when(this.promocaoService.buscandoListaPromocao()).thenReturn(new CollisionCheckStack<PromocaoApiResponse>());
+
+        //when
+        List<PromocaoApiResponse> responses = this.voucherBackFacade.buscandoListaPromocao();
+
+        //then
+        Assertions.assertNotNull(responses);
+    }
+
+    @Test
+    @DisplayName("Should Return A PromocaoApiResponse By GUID Successfully")
+    public void buscandoPromocaoPeloGUIDCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        when(this.promocaoService.buscandoPromocaoPeloGUID(guid)).thenReturn(new PromocaoApiResponse());
+
+        //when
+        PromocaoApiResponse response = this.voucherBackFacade.buscandoPromocaoPeloGUID(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    @DisplayName("Should Create a Promoção Successfully")
+    public void criandoPromocaoCase1() {
+
+        //having
+        PromocaoApiRequest request = umaPromocaoApiRequest().agora();
+
+        when(this.promocaoService.criandoPromocao(request)).thenReturn(new PromocaoApiResponse());
+
+        //when
+        PromocaoApiResponse response = this.voucherBackFacade.criandoPromocao(request);
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Should Update A Promoção Successfully")
+    public void alterandoPromocaoCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        PromocaoUpdateApiRequest request = umaPromocaoUpdateApiRequest().agora();
+
+        when(this.promocaoService.alterandoPromocao(guid, request)).thenReturn(new PromocaoApiResponse());
+
+        //when
+        PromocaoApiResponse response = this.voucherBackFacade.alterandoPromocao(guid, request);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Should Ative A Promoção Successfully")
+    public void ativandoPromocaoCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        String autor = "Any Athor";
+
+        //when
+        this.voucherBackFacade.ativandoPromocao(guid, autor);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(autor);
+
+    }
+
+    @Test
+    @DisplayName("Should Delete A Promoção Successfully")
+    public void apagandoPromocaoCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        //when
+        this.voucherBackFacade.apagandoPromocao(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+    }
+
+    @Test
+    @DisplayName("Should Return A List PromocaoApiResponse paginator Successfully")
+    public void buscandoListaPaginadaPromocaoCase1() {
+        //having
+        String descricao = "Any Promotion";
+        Integer page = 0;
+        Integer size = 10;
+        when(this.promocaoService.buscandoListaPaginadaPromocao(descricao, page, size))
+                .thenReturn(new BuscandoListaPaginadaPromocao200Response());
+
+        //when
+        BuscandoListaPaginadaPromocao200Response responses = this.voucherBackFacade.buscandoListaPaginadaPromocao(
+                descricao, page, size);
+
+        //then
+        Assertions.assertNotNull(responses);
+    }
+
+    @Test
+    @DisplayName("Should Return A List PromocaoApiResponse Filter Successfully")
+    public void  buscandoListaFiltroPromocao() {
+        //having
+        String descricao = "Any Promotion";
+        String tipo = "PERCENTUAL";
+        String status = "ATIVA";
+        String inicio = "";
+        String fim = "";
+        Integer page = 0;
+        Integer size = 10;
+        String email = "";
+        when(this.promocaoService.buscandoListaFiltroPromocao(descricao, tipo, status, inicio, fim, page, size, email))
+                .thenReturn(new BuscandoListaPaginadaPromocao200Response());
+
+        //when
+        BuscandoListaPaginadaPromocao200Response responses = this.voucherBackFacade.buscandoListaFiltroPromocao(
+                descricao, tipo, status, inicio, fim, page, size, email);
+
+        //then
+        Assertions.assertNotNull(responses);
+    }
+
 }
