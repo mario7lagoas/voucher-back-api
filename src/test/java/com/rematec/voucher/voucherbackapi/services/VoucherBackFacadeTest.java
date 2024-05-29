@@ -3,6 +3,8 @@ package com.rematec.voucher.voucherbackapi.services;
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.ConsultaVoucherApiRequest;
+import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
@@ -33,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static com.rematec.voucher.voucherbackapi.builders.ConsultaVoucherApiRequestBuilder.umaConsultaVoucherApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.LojaApiRequestBuilder.umaLojaApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.LojaApiResponseBuilder.umaLojaApiResponse;
 import static com.rematec.voucher.voucherbackapi.builders.LojaUpdateApiRequestBuilder.umaLojaUpdateApiRequest;
@@ -62,6 +65,9 @@ public class VoucherBackFacadeTest {
 
     @Mock
     private PromocaoServiceImpl promocaoService;
+
+    @Mock
+    private VoucherServiceImpl voucherService;
 
     @Before("")
     public void setUp() {
@@ -600,6 +606,23 @@ public class VoucherBackFacadeTest {
                 descricao, tipo, status, inicio, fim, page, size, email);
 
         //then
+        Assertions.assertNotNull(responses);
+    }
+
+    @Test
+    @DisplayName("Should Return A List ConsultaVoucherApiResponse Successfully")
+    public void consultandoPromocoesCase1() {
+
+        //having
+        ConsultaVoucherApiRequest request = umaConsultaVoucherApiRequest().agora();
+
+        when(this.voucherService.consultandoPromocoes(request)).thenReturn(new ConsultaVoucherApiResponse());
+
+        //when
+        ConsultaVoucherApiResponse responses = this.voucherBackFacade.consultandoPromocoes(request);
+
+        //then
+        Assertions.assertNotNull(request);
         Assertions.assertNotNull(responses);
     }
 

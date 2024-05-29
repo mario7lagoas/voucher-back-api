@@ -67,7 +67,7 @@ class VoucherServiceImpl implements IVoucherService {
                         this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj())
                 );
 
-        if (!promocaoEntities.isEmpty()) {
+        if (promocaoEntities != null && !promocaoEntities.isEmpty()) {
 
             final boolean[] promocaoDisponivel = new boolean[1];
             promocaoDisponivel[0] = false;
