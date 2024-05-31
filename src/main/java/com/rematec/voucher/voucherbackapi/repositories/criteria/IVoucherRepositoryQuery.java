@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.interfaces.repositories.criteria;
+package com.rematec.voucher.voucherbackapi.repositories.criteria;
 
 import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
 import com.rematec.voucher.voucherbackapi.models.filter.VoucherFiltro;

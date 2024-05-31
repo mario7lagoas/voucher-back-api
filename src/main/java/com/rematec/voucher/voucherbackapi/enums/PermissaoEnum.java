@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.models.enums;
+package com.rematec.voucher.voucherbackapi.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package com.rematec.voucher.voucherbackapi.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
-import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
+import com.rematec.voucher.voucherbackapi.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.enums.TipoDescontoEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

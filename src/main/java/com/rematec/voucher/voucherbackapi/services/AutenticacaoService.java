@@ -36,15 +36,26 @@ public class AutenticacaoService {
 
     private static final String BEARER = "Bearer ";
     private static final String HEAD_AUTHORIZATION = "Authorization";
-
-    private static final String REFRESH_TOKEN = "RefreshToken";
-    private static final String JWT_KEY = "signinKey";
-
     private static final String AUTHORITIES = "authorities";
     private static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
-    //private static final int EXPIRATION_TOKEN = 3600000;
-    private static final int EXPIRATION_TOKEN = 2 * 900000;
-    private static final int EXPIRATION_REFRESH_TOKEN = 3600000;
+    private static final String REFRESH_TOKEN = "RefreshToken";
+
+    private static String JWT_KEY ;
+    private static int EXPIRATION_TOKEN;
+    private static int EXPIRATION_REFRESH_TOKEN;
+    @Value("${jwt.secret}")
+    private void setKey(String key){
+        JWT_KEY = key;
+    }
+    @Value("${jwt.expiration}")
+    private void setExpiration(int expiration){
+        EXPIRATION_TOKEN = expiration;
+    }
+
+    @Value("${jwt.refreshToken}")
+    private void setRefresh(int refresh){
+        EXPIRATION_REFRESH_TOKEN = refresh;
+    }
 
     static public void addJWTToken(HttpServletResponse response, HttpServletRequest request,
                                    Authentication authentication) {
@@ -81,34 +92,7 @@ public class AutenticacaoService {
 
         response.addHeader(HEAD_AUTHORIZATION, BEARER + jwtToken);
 
-
-        // response.addHeader(REFRESH_TOKEN, jwtReshToken);
-/*
-        Map<String,String> tokens = new HashMap<>();
-
-        tokens.put(HEAD_AUTHORIZATION, BEARER + jwtToken);
-        tokens.put(REFRESH_TOKEN, jwtReshToken);
-
-       response.setContentType(APPLICATION_JSON_VALUE );
-        try {
-            new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        */
-
         response.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, HEAD_AUTHORIZATION);
-        // response.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, REFRESH_TOKEN);
-/*
-        //Retorno token no corpo
-        try {
-            response.getWriter().write(jwtToken);
-            response.getWriter().flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
- */
     }
 
     static public Authentication obterAutenticacao(HttpServletRequest request,

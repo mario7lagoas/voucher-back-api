@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.interfaces.repositories;
+package com.rematec.voucher.voucherbackapi.repositories;
 
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import org.springframework.data.domain.Page;

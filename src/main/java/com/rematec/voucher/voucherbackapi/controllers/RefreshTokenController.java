@@ -2,7 +2,7 @@ package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioInativoException;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
+import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 
 import com.rematec.voucher.voucherbackapi.utils.JWTUtil;
@@ -12,11 +12,11 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,19 +41,28 @@ public class RefreshTokenController {
     private IUsuarioRepository iUsuarioRepository;
 
     private static final String REFRESH_TOKEN = "RefreshToken";
-
-
-    private static final int EXPIRATION_TOKEN = 2 * 900000;
-
-    private static final int EXPIRATION_REFRESH_TOKEN = 3600000;
-    private static final String JWT_KEY = "signinKey";
-
     private static final String AUTHORITIES = "authorities";
-
     private static final String HEAD_AUTHORIZATION = "Authorization";
-
     private static final String BEARER = "Bearer ";
     private static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+
+    private static String JWT_KEY ;
+    private static int EXPIRATION_TOKEN;
+    private static int EXPIRATION_REFRESH_TOKEN;
+    @Value("${jwt.secret}")
+    private void setKey(String key){
+        JWT_KEY = key;
+    }
+    @Value("${jwt.expiration}")
+    private void setExpiration(int expiration){
+        EXPIRATION_TOKEN = expiration;
+    }
+
+    @Value("${jwt.refreshToken}")
+    private void setRefresh(int refresh){
+        EXPIRATION_REFRESH_TOKEN = refresh;
+    }
+
 
 
     @PostMapping("/refresh")

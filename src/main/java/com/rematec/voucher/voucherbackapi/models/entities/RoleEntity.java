@@ -1,6 +1,6 @@
 package com.rematec.voucher.voucherbackapi.models.entities;
 
-import com.rematec.voucher.voucherbackapi.models.enums.PermissaoEnum;
+import com.rematec.voucher.voucherbackapi.enums.PermissaoEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

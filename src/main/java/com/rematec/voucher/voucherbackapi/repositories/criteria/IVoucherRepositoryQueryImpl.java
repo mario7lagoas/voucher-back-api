@@ -1,7 +1,7 @@
-package com.rematec.voucher.voucherbackapi.interfaces.repositories.criteria;
+package com.rematec.voucher.voucherbackapi.repositories.criteria;
 
 import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
-import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
 import com.rematec.voucher.voucherbackapi.models.filter.VoucherFiltro;
 import jakarta.persistence.EntityManager;

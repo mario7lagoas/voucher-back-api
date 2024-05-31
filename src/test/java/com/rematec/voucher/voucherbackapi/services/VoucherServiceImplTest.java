@@ -3,12 +3,9 @@ package com.rematec.voucher.voucherbackapi.services;
 import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
 import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
-import com.rematec.voucher.voucherbackapi.interfaces.mapper.VouckBackMapper;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IPromocaoRepository;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IVoucherRepository;
-import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
-import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.repositories.IPromocaoRepository;
+import com.rematec.voucher.voucherbackapi.repositories.IVoucherRepository;
 import com.rematec.voucher.voucherbackapi.models.filter.VoucherFiltro;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
@@ -23,14 +20,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 
 import static com.rematec.voucher.voucherbackapi.builders.ConsultaVoucherApiRequestBuilder.umaConsultaVoucherApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.PromocaoEntityBuilder.umaPromocaoEntity;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 

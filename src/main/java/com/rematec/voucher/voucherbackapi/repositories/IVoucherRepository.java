@@ -1,8 +1,8 @@
-package com.rematec.voucher.voucherbackapi.interfaces.repositories;
+package com.rematec.voucher.voucherbackapi.repositories;
 
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.criteria.IVoucherRepositoryQuery;
+import com.rematec.voucher.voucherbackapi.repositories.criteria.IVoucherRepositoryQuery;
 import com.rematec.voucher.voucherbackapi.models.entities.VoucherEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.VoucherStatusEnum;
+import com.rematec.voucher.voucherbackapi.enums.VoucherStatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

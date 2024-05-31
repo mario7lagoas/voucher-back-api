@@ -1,4 +1,4 @@
-package com.rematec.voucher.voucherbackapi.interfaces.mapper;
+package com.rematec.voucher.voucherbackapi.mapper;
 
 import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
@@ -11,6 +11,7 @@ import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.VoucherApiResponse;
+import com.rematec.voucher.voucherbackapi.constants.VoucherConstants;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
@@ -23,7 +24,9 @@ import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", imports = {
+        VoucherConstants.class
+})
 public interface VouckBackMapper {
 
     List<UsuarioApiResponse> listUsuarioEntityTolistUsuarioApiResponse(List<UsuarioEntity> all);

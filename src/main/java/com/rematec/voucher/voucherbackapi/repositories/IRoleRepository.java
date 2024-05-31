@@ -1,7 +1,7 @@
-package com.rematec.voucher.voucherbackapi.interfaces.repositories;
+package com.rematec.voucher.voucherbackapi.repositories;
 
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.PermissaoEnum;
+import com.rematec.voucher.voucherbackapi.enums.PermissaoEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

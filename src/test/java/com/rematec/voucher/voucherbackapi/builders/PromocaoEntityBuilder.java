@@ -1,8 +1,8 @@
 package com.rematec.voucher.voucherbackapi.builders;
 
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.PromocaoStatusEnum;
-import com.rematec.voucher.voucherbackapi.models.enums.TipoDescontoEnum;
+import com.rematec.voucher.voucherbackapi.enums.PromocaoStatusEnum;
+import com.rematec.voucher.voucherbackapi.enums.TipoDescontoEnum;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

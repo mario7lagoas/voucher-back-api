@@ -1,6 +1,8 @@
 package com.rematec.voucher.voucherbackapi.exceptios;
 
-import com.rematec.voucher.voucherbackapi.models.enums.ErrosEnum;
+import com.rematec.voucher.models.CriandoPromocao404Response;
+import com.rematec.voucher.models.CriandoPromocao404ResponseErrosInner;
+import com.rematec.voucher.voucherbackapi.enums.ErrosEnum;
 import com.rematec.voucher.voucherbackapi.models.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -96,17 +98,17 @@ public class ExceptionsHandlers {
     }
 
     @ExceptionHandler(PromocaoNaoEncontradaException.class)
-    public ResponseEntity<ErrorResponse> promocaoNaoEncontradaExceptionHandler(PromocaoNaoEncontradaException exception){
-        Map<String, String> response = new HashMap<>();
-        response.put("codigo", ErrosEnum.NAO_ENCONTRADO.toString());
-        response.put("mensagem", exception.getMessage());
+    public ResponseEntity<CriandoPromocao404Response> promocaoNaoEncontradaExceptionHandler(PromocaoNaoEncontradaException exception){
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.toString())
-                .erros(Collections.singletonList(response))
-                .build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        CriandoPromocao404ResponseErrosInner errosInner = new CriandoPromocao404ResponseErrosInner();
+        errosInner.setCodigo(ErrosEnum.NAO_ENCONTRADO.toString());
+        errosInner.setMensagem(exception.getMessage());
 
+        CriandoPromocao404Response erroResponse =  new CriandoPromocao404Response();
+        erroResponse.setStatus(HttpStatus.NOT_FOUND.toString());
+        erroResponse.setErros(Collections.singletonList(errosInner));
+
+        return new ResponseEntity<>(erroResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PerfilNaoEncontradoException.class)

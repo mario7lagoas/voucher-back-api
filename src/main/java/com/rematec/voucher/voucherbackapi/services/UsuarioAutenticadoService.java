@@ -2,7 +2,7 @@ package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioInativoException;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
+import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.security.UserDetail;
 import com.rematec.voucher.voucherbackapi.utils.JWTUtil;
 import jakarta.transaction.Transactional;

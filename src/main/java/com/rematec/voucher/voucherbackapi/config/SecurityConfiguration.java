@@ -3,8 +3,8 @@ package com.rematec.voucher.voucherbackapi.config;
 
 import com.rematec.voucher.voucherbackapi.models.filter.AutenticacaoFiltro;
 import com.rematec.voucher.voucherbackapi.models.filter.LoginFiltro;
-import com.rematec.voucher.voucherbackapi.interfaces.repositories.IUsuarioRepository;
-import com.rematec.voucher.voucherbackapi.models.enums.PermissaoEnum;
+import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
+import com.rematec.voucher.voucherbackapi.enums.PermissaoEnum;
 import com.rematec.voucher.voucherbackapi.services.UsuarioAutenticadoService;
 import com.rematec.voucher.voucherbackapi.utils.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;

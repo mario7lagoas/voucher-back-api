@@ -2,7 +2,7 @@ package com.rematec.voucher.voucherbackapi.builders;
 
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.RoleEntity;
-import com.rematec.voucher.voucherbackapi.models.enums.PermissaoEnum;
+import com.rematec.voucher.voucherbackapi.enums.PermissaoEnum;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
