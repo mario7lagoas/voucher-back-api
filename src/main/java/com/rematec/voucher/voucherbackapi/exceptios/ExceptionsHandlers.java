@@ -21,226 +21,97 @@ public class ExceptionsHandlers {
     @ExceptionHandler(UsuarioNaoEncontradoException.class)
     public ResponseEntity<ErrorApiResponse> usuarioNaoEncontradaExceptionHandler(UsuarioNaoEncontradoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.NOT_FOUND.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_ENCONTRADO.toString())
-                        .mensagem(ex.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(getNotfound(ex), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(VoucherNaoEncontradoException.class)
     public ResponseEntity<ErrorApiResponse> voucherNaoEncontradaExceptionHandler(VoucherNaoEncontradoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.NOT_FOUND.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_ENCONTRADO.toString())
-                        .mensagem(ex.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(getNotfound(ex), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(VoucherEmUsoException.class)
     public ResponseEntity<ErrorApiResponse> voucherEmUsoExceptionHandler(VoucherEmUsoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.EM_USO.toString())
-                        .mensagem(ex.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.EM_USO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(VoucherUtilizadoException.class)
     public ResponseEntity<ErrorApiResponse> voucherUtilizadoExceptionHandler(VoucherUtilizadoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.UTILIZADO.toString())
-                        .mensagem(ex.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.UTILIZADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(VoucherNaoPermitidoException.class)
     public ResponseEntity<ErrorApiResponse> voucherNaoPermitidoExceptionHandler(VoucherNaoPermitidoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_PERMITIDO.toString())
-                        .mensagem(ex.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.NAO_PERMITIDO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(UsuarioInativoException.class)
     public ResponseEntity<ErrorApiResponse> usuarioInativoExceptionHandler(UsuarioInativoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.USUARIO_INATIVADO.toString())
-                        .mensagem(ex.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.USUARIO_INATIVADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-
     @ExceptionHandler(PromocaoNaoEncontradaException.class)
-    public ResponseEntity<ErrorApiResponse> promocaoNaoEncontradaExceptionHandler(PromocaoNaoEncontradaException exception) {
+    public ResponseEntity<ErrorApiResponse> promocaoNaoEncontradaExceptionHandler(PromocaoNaoEncontradaException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.NOT_FOUND.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_ENCONTRADO.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(getNotfound(ex), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(PerfilNaoEncontradoException.class)
-    public ResponseEntity<ErrorApiResponse> perfilNaoEncontradaExceptionHandler(PerfilNaoEncontradoException exception) {
+    public ResponseEntity<ErrorApiResponse> perfilNaoEncontradaExceptionHandler(PerfilNaoEncontradoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.NOT_FOUND.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_ENCONTRADO.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(getNotfound(ex), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(LojaNaoEncontradaException.class)
-    public ResponseEntity<ErrorApiResponse> lojaNaoEncontradaExceptionHandler(LojaNaoEncontradaException exception) {
+    public ResponseEntity<ErrorApiResponse> lojaNaoEncontradaExceptionHandler(LojaNaoEncontradaException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.NOT_FOUND.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_ENCONTRADO.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(getNotfound(ex), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NaoPermitidoExcluirLojaException.class)
-    public ResponseEntity<ErrorApiResponse> naoPermitidoExcluirLojaExceptionHandler(NaoPermitidoExcluirLojaException exception) {
+    public ResponseEntity<ErrorApiResponse> naoPermitidoExcluirLojaExceptionHandler(NaoPermitidoExcluirLojaException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NaoPermitidoException.class)
-    public ResponseEntity<ErrorApiResponse> naoPermitidoExceptionHandler(NaoPermitidoException exception) {
+    public ResponseEntity<ErrorApiResponse> naoPermitidoExceptionHandler(NaoPermitidoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_PERMITIDO.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.NAO_PERMITIDO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NaoPermitidoExcluirPerfilException.class)
-    public ResponseEntity<ErrorApiResponse> naoPermitidoExcluirPerfilExceptionHandler(NaoPermitidoExcluirPerfilException exception) {
+    public ResponseEntity<ErrorApiResponse> naoPermitidoExcluirPerfilExceptionHandler(NaoPermitidoExcluirPerfilException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NaoPermitidoAlterarStatusException.class)
-    public ResponseEntity<ErrorApiResponse> naoPermitidoalterarStatusExceptionHandler(NaoPermitidoAlterarStatusException exception) {
+    public ResponseEntity<ErrorApiResponse> naoPermitidoalterarStatusExceptionHandler(NaoPermitidoAlterarStatusException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.NAO_PERMITIDO_ALTERAR_STATUS.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.NAO_PERMITIDO_ALTERAR_STATUS.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(LojaCadastradaException.class)
-    public ResponseEntity<ErrorApiResponse> lojaCadastradaExceptionHandler(LojaCadastradaException exception) {
+    public ResponseEntity<ErrorApiResponse> lojaCadastradaExceptionHandler(LojaCadastradaException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.CNPJ_JA_CADASTRADO.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.CNPJ_JA_CADASTRADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(PerfilCadastradoException.class)
-    public ResponseEntity<ErrorApiResponse> perfilExceptionHandler(PerfilCadastradoException exception) {
+    public ResponseEntity<ErrorApiResponse> perfilExceptionHandler(PerfilCadastradoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.PERFIL_JA_CADASTRADO.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.PERFIL_JA_CADASTRADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(UsuarioCadastradoException.class)
-    public ResponseEntity<ErrorApiResponse> UsuarioCadastradoExceptionHandler(UsuarioCadastradoException exception) {
+    public ResponseEntity<ErrorApiResponse> UsuarioCadastradoExceptionHandler(UsuarioCadastradoException ex) {
 
-        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
-                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
-                .erros(Collections.singletonList(ErroResponseBuilder.builder()
-                        .codigo(ErrosEnum.USUARIO_JA_CADASTRADO.toString())
-                        .mensagem(exception.getMessage())
-                        .build())
-                ).build();
-
-        return new ResponseEntity<>(erroResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.USUARIO_JA_CADASTRADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
@@ -284,4 +155,26 @@ public class ExceptionsHandlers {
 
         return new ResponseEntity<>(erroResponse, HttpStatus.BAD_REQUEST);
     }
+
+    private ErrorApiResponse getNotfound(Exception ex) {
+
+        return ErrorApiResponseBuilder.builder()
+                .status(HttpStatus.NOT_FOUND.toString())
+                .erros(Collections.singletonList(ErroResponseBuilder.builder()
+                        .codigo(ErrosEnum.NAO_ENCONTRADO.toString())
+                        .mensagem(ex.getMessage())
+                        .build())
+                ).build();
+    }
+
+    private ErrorApiResponse getUnProcessable(Exception ex, String statusEnum) {
+        return ErrorApiResponseBuilder.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.toString())
+                .erros(Collections.singletonList(ErroResponseBuilder.builder()
+                        .codigo(statusEnum)
+                        .mensagem(ex.getMessage())
+                        .build())
+                ).build();
+    }
+
 }
