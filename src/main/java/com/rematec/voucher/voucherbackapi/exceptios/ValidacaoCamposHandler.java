@@ -1,8 +1,10 @@
 package com.rematec.voucher.voucherbackapi.exceptios;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rematec.voucher.voucherbackapi.models.response.ErrorResponse;
+import com.rematec.voucher.models.ErroResponse;
+import com.rematec.voucher.models.ErrorApiResponse;
+import com.rematec.voucher.voucherbackapi.builders.ErroResponseBuilder;
+import com.rematec.voucher.voucherbackapi.builders.ErrorApiResponseBuilder;
 import jakarta.validation.ConstraintViolation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,35 +14,27 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @ControllerAdvice
 public class ValidacaoCamposHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> tratarValidacoes(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorApiResponse> tratarValidacoes(MethodArgumentNotValidException ex) {
 
-        List<Map<String, String>> listaErros = ex.getBindingResult()
+        List<ErroResponse> erros1 = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(erro -> {
-                    Map<String, String> erros = new HashMap<>();
+                .map(erro -> ErroResponseBuilder.builder()
+                        .codigo(obterNomePropriedade(erro))
+                        .mensagem(erro.getDefaultMessage())
+                        .build()).toList();
 
-                    erros.put("campo", obterNomePropriedade(erro));
-                    erros.put("mensagem", erro.getDefaultMessage());
-
-                    return erros;
-
-                })
-                .toList();
-
-        ErrorResponse response = ErrorResponse.builder()
+        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
                 .status(HttpStatus.BAD_REQUEST.toString())
-                .erros(listaErros)
+                .erros(erros1)
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(erroResponse, HttpStatus.BAD_REQUEST);
     }
 
     private String obterNomePropriedade(final FieldError error) {

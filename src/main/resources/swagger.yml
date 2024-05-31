@@ -218,39 +218,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não encontrado."
-                        mensagem:
-                          type: string
-                          example: "Voucher nao [240422172055905959002] encontrado"
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não permitido."
-                        mensagem:
-                          type: string
-                          example: "Desconto [8.99] maior que pagamento [5.99]"
+                $ref: '#/components/schemas/ErrorApiResponse'
   /voucher/consumer:
     post:
       tags:
@@ -349,58 +323,19 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 400 BAD_REQUEST
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        mensagem:
-                          type: string
-                          example: "não deve ser nulo"
-                        campo:
-                          type: string
-                          example: "descricao"
+                $ref: '#/components/schemas/ErrorApiResponse'
         '404':
           description: not found operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não encontrado."
-                        mensagem:
-                          type: string
-                          example: "Loja não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não permitido."
-                        mensagem:
-                          type: string
-                          example: "Data inicial maior que data final."
+                $ref: '#/components/schemas/ErrorApiResponse'
   /promocao/{guid}:
     get:
       tags:
@@ -427,20 +362,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Promoção não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
     put:
       tags:
         - Promoção
@@ -473,58 +395,19 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 400 BAD_REQUEST
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        mensagem:
-                          type: string
-                          example: "não deve ser nulo"
-                        campo:
-                          type: string
-                          example: "descricao"
+                $ref: '#/components/schemas/ErrorApiResponse'
         '404':
           description: not found operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não encontrado."
-                        mensagem:
-                          type: string
-                          example: "Promoção não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não permitido."
-                        mensagem:
-                          type: string
-                          example: "Data inicial maior que data final."
+                $ref: '#/components/schemas/ErrorApiResponse'
     patch:
       tags:
         - Promoção
@@ -556,39 +439,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não permitido alterar Status."
-                        mensagem:
-                          type: string
-                          example: "Status da promoção não pode ser alterado."
+                $ref: '#/components/schemas/ErrorApiResponse'
         '404':
           description: not found operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Não encontrado."
-                        mensagem:
-                          type: string
-                          example: "Promoção não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
     delete:
       tags:
         - Promoção
@@ -610,20 +467,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Promoção não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
   /promocao/paginada:
     get:
       tags:
@@ -805,39 +649,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 400 BAD_REQUEST
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        mensagem:
-                          type: string
-                          example: "não deve ser nulo"
-                        campo:
-                          type: string
-                          example: "cnpj"
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: CNPJ já Cadastrado.
-                        mensagem:
-                          type: string
-                          example: "CNPJ Já cadastrado."
+                $ref: '#/components/schemas/ErrorApiResponse'
   /loja/{guid}:
     get:
       tags:
@@ -864,20 +682,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Loja não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
     put:
       tags:
         - Loja
@@ -910,20 +715,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Loja não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
     delete:
       tags:
         - Loja
@@ -945,39 +737,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Loja não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não permitido Excluir.
-                        mensagem:
-                          type: string
-                          example: "Loja não pode ser Excluida. Pois está associada a alguma promoção."
+                $ref: '#/components/schemas/ErrorApiResponse'
     patch:
       tags:
         - Loja
@@ -1006,20 +772,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Loja não encontrada."
+                $ref: '#/components/schemas/ErrorApiResponse'
   /loja/paginada:
     get:
       tags:
@@ -1148,39 +901,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 400 BAD_REQUEST
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        mensagem:
-                          type: string
-                          example: "não deve ser nulo"
-                        campo:
-                          type: string
-                          example: "nome"
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Perfil já cadastrado.
-                        mensagem:
-                          type: string
-                          example: Já existe um Perfil com este nome.
+                $ref: '#/components/schemas/ErrorApiResponse'
   /perfil/resumido:
     get:
       tags:
@@ -1223,20 +950,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: Perfil não encontrado.
+                $ref: '#/components/schemas/ErrorApiResponse'
     put:
       tags:
         - Perfil
@@ -1269,20 +983,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: Perfil não encontrado.
+                $ref: '#/components/schemas/ErrorApiResponse'
     delete:
       tags:
         - Perfil
@@ -1304,39 +1005,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: Perfil não encontrado.
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não permitido Excluir.
-                        mensagem:
-                          type: string
-                          example: Não permitido Excluir. Perfil associado a algum Usuario.
+                $ref: '#/components/schemas/ErrorApiResponse'
   /perfil/{nome}/nome:
     get:
       tags:
@@ -1363,20 +1038,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: Perfil não encontrado.
+                $ref: '#/components/schemas/ErrorApiResponse'
   /usuario:
     get:
       tags:
@@ -1418,39 +1080,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 400 BAD_REQUEST
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        mensagem:
-                          type: string
-                          example: "não deve ser nulo"
-                        campo:
-                          type: string
-                          example: "email"
+                $ref: '#/components/schemas/ErrorApiResponse'
         '422':
           description: unprocessable operation
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 422 UNPROCESSABLE_ENTITY
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: "Usuario já Cadastrado."
-                        mensagem:
-                          type: string
-                          example: "E-mail já cadastrado."
+                $ref: '#/components/schemas/ErrorApiResponse'
   /usuario/{guid}:
     get:
       tags:
@@ -1477,20 +1113,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Usuario não encontrado."
+                $ref: '#/components/schemas/ErrorApiResponse'
     put:
       tags:
         - Usuario
@@ -1523,20 +1146,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Usuario não encontrado."
+                $ref: '#/components/schemas/ErrorApiResponse'
     delete:
       tags:
         - Usuario
@@ -1558,20 +1168,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Usuario não encontrado."
+                $ref: '#/components/schemas/ErrorApiResponse'
     patch:
       tags:
         - Usuario
@@ -1600,20 +1197,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  status:
-                    type: string
-                    example: 404 NOT_FOUND
-                  erros:
-                    type: array
-                    items:
-                      properties:
-                        codigo:
-                          type: string
-                          example: Não encontrado.
-                        mensagem:
-                          type: string
-                          example: "Usuario não encontrado."
+                $ref: '#/components/schemas/ErrorApiResponse'
   /usuario/paginada:
     get:
       tags:
@@ -1694,6 +1278,29 @@ components:
           type: integer
           example: 1
           description: "Total de Items"
+    ErrorApiResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "XXX HTTP_STATUS_CODE"
+          description: "Status do http response"
+        erros:
+          type: array
+          description: "Lojas associadas a promoção"
+          items:
+            $ref: '#/components/schemas/ErroResponse'
+    ErroResponse:
+      type: object
+      properties:
+        codigo:
+          type: string
+          example: "Alguma operação inválida"
+          description: "Apresenta o motivo da exceção"
+        mensagem:
+          type: string
+          example: "Informa qual campo que está incorreto"
+          description: "Apresenta qual campo do objeto que sofreu a exceção."
     GuidApiRequest:
       required:
         - guid

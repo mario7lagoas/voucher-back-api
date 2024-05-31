@@ -141,7 +141,7 @@ class PromocaoServiceImpl implements IPromocaoService {
                             PromocaoRequestBuilder.builder()
                                     .valorMaximoDesconto(promocaoUpdateApiRequest.getValorMaximoDesconto())
                                     .tipoDesconto(promocaoUpdateApiRequest.getTipoDesconto())
-                                    .buider()
+                                    .build()
                     )
             );
         }

@@ -27,7 +27,7 @@ public class PromocaoRequestBuilder {
         return this;
     }
 
-    public PromocaoApiRequest buider() {
+    public PromocaoApiRequest build() {
         return request;
     }
 }
