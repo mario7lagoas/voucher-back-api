@@ -23,7 +23,7 @@ public class PerfilUpdateApiRequestBuilder {
         builder.perfilApiRequest.setNome("Any Description");
         return builder;
     }
-    public PerfilUpdateApiRequestBuilder setNome(String nome){
+    public PerfilUpdateApiRequestBuilder nome(String nome){
         perfilApiRequest.setNome(nome);
         return this;
     }

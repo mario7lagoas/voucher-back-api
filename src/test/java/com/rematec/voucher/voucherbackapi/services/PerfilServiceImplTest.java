@@ -305,7 +305,7 @@ public class PerfilServiceImplTest {
         PerfilEntity entity = umPerfilEntity().agora();
         String guid = entity.getGuid();
 
-        PerfilUpdateApiRequest request = umPerfilUpdateApiRequest().setNome("Other").agora();
+        PerfilUpdateApiRequest request = umPerfilUpdateApiRequest().nome("Other").agora();
 
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
         when(this.iPerfilRepository.findByGuid(guid)).thenReturn(Optional.of(entity));

@@ -22,7 +22,7 @@ public class PerfilApiRequestBuilder {
         builder.perfilApiRequest.setNome("Any Description");
         return builder;
     }
-    public PerfilApiRequestBuilder setNome(String nome){
+    public PerfilApiRequestBuilder nome(String nome){
         perfilApiRequest.setNome(nome);
         return this;
     }

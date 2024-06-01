@@ -291,7 +291,7 @@ public class VoucherBackFacadeTest {
 
         //having
         String guid = UUID.randomUUID().toString();
-        PerfilUpdateApiRequest request = umPerfilUpdateApiRequest().setNome("Other").agora();
+        PerfilUpdateApiRequest request = umPerfilUpdateApiRequest().nome("Other").agora();
 
         when(this.perfilService.alterandoPerfil(guid, request)).thenReturn(new PerfilApiResponse());
 
