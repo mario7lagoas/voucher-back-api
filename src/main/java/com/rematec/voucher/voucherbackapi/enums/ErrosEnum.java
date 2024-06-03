@@ -10,6 +10,7 @@ public enum ErrosEnum {
     USUARIO_NAO_ENCONTRADO("Usuario não encontrado."),
     USUARIO_INATIVADO("Usuario Inativado."),
     CNPJ_JA_CADASTRADO("CNPJ já Cadastrado."),
+    EMPRESA_JA_CADASTRADO("Empresa já Cadastrada."),
     USUARIO_JA_CADASTRADO("Usuario já Cadastrado."),
     PERFIL_JA_CADASTRADO("Perfil já cadastrado."),
     EM_USO("Em uso no momento."),

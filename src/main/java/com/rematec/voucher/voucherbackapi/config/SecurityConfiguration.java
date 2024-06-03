@@ -59,7 +59,6 @@ public class SecurityConfiguration {
             "/v3/api-docs/**"
     };
 
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -83,7 +82,8 @@ public class SecurityConfiguration {
                             .hasAnyAuthority( PermissaoEnum.BUSCAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.GET, "/voucher")
                             .hasAnyAuthority( PermissaoEnum.BUSCAR_VOUCHER.getRole())
-
+                            .requestMatchers(HttpMethod.GET, "/empresa")
+                            .hasAnyAuthority( PermissaoEnum.BUSCAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.PUT, "/loja")
                             .hasAnyAuthority( PermissaoEnum.ALTERAR_LOJA.getRole())
@@ -95,7 +95,8 @@ public class SecurityConfiguration {
                             .hasAnyAuthority( PermissaoEnum.ALTERAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.PUT, "/voucher")
                             .hasAnyAuthority( PermissaoEnum.ALTERAR_VOUCHER.getRole())
-
+                            .requestMatchers(HttpMethod.PUT, "/empresa")
+                            .hasAnyAuthority( PermissaoEnum.ALTERAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.POST, "/loja")
                             .hasAnyAuthority( PermissaoEnum.CADASTRAR_LOJA.getRole())
@@ -107,6 +108,8 @@ public class SecurityConfiguration {
                             .hasAnyAuthority( PermissaoEnum.CADASTRAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.POST, "/voucher")
                             .hasAnyAuthority( PermissaoEnum.CADASTRAR_VOUCHER.getRole())
+                            .requestMatchers(HttpMethod.POST, "/empresa")
+                            .hasAnyAuthority( PermissaoEnum.CADASTRAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.DELETE, "/loja")
                             .hasAnyAuthority( PermissaoEnum.APAGAR_LOJA.getRole())
@@ -118,6 +121,8 @@ public class SecurityConfiguration {
                             .hasAnyAuthority( PermissaoEnum.APAGAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.DELETE, "/voucher")
                             .hasAnyAuthority( PermissaoEnum.APAGAR_VOUCHER.getRole())
+                            .requestMatchers(HttpMethod.DELETE, "/empresa")
+                            .hasAnyAuthority( PermissaoEnum.APAGAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.PATCH, "/loja")
                             .hasAnyAuthority( PermissaoEnum.ALTERAR_LOJA.getRole())

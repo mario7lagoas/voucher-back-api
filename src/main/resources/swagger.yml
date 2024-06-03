@@ -22,6 +22,8 @@ tags:
     description: Operações sobre Voucher
   - name: Promoção
     description: Operações sobre Promoção
+  - name: Empresa
+    description: Operações sobre Empresa
   - name: Loja
     description: Operações sobre Loja
   - name: Perfil
@@ -608,6 +610,54 @@ paths:
               schema:
                 type: string
                 example: "data:application/pdf;base64,JVBERi0xLjUKJeLjz9MKMyAwIG9iago8PC9Db2xvclNwYWNlL0RldmljZVJHQi9TdWJ0eXBlL0ltYWdlL0hlaWdodCAzNTQvRmlsdGVyL0RDVERlY29kZS9UeXBlL1hPYmplY3QvV2lkdGggMjQ4MC9CaXRzUGVyQ29tcG9uZW50IDgvTGVuZ3RoIDM2ODg5Pj5zdHJlYW0K/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAACgAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAFBAQGRIZJxcXJzImHyYyLiYmJiYuPjU1NTU1PkRBQUFBQUFERERERERERERERERERERERERERERERERERERERAEVGRkgHCAmGBgmNiYgJjZENisrNkREREI1QkRERERERERERERERERERERERERERERERERERERERERERERERERE/8AAEQgBYgmwAwEiAAIRAQMRAf/..."
+  /empresa:
+    get:
+      tags:
+        - Empresa
+      summary: Buscando Lista de Empresa
+      description: Buscando Lista de Empresa na Plataforma
+      operationId: buscandoListaEmpresa
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmpresaApiResponse'
+    post:
+      tags:
+        - Empresa
+      summary: Empresa Uma Loja
+      description: Criando Uma Empresa na Plataforma
+      operationId: criandoEmpresa
+      requestBody:
+        description: Criando nova Empresa
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaApiRequest'
+        required: true
+      responses:
+        '201':
+          description: created successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaApiResponse'
+        '400':
+          description: bad request operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /loja:
     get:
       tags:
@@ -1815,6 +1865,47 @@ components:
           type: string
           example: "2024-05-07 11:48:11"
           description: "Data do cadastro"
+    EmpresaApiRequest:
+      required:
+        - nome
+        - identificacao
+        - status
+      type: object
+      properties:
+        nome:
+          type: string
+          description: "Nome da Emporesa"
+          example: "TIBBI SOLUÇOES"
+        identificacao:
+          type: string
+          description: "Identificação da Empresa"
+          example: "C0001"
+        status:
+          type: boolean
+          description: "Status da Loja"
+          example: true
+    EmpresaApiResponse:
+      properties:
+        guid:
+          type: string
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
+          description: "Identificador guid"
+        nome:
+          type: string
+          example: "TIBBI SOLUCOES"
+          description: "Nome da Empresa"
+        identificacao:
+          type: string
+          example: "C0001"
+          description: "Idenficação da Empresa"
+        status:
+          type: boolean
+          example: true
+          description: "Status da Empresa"
+        dataCadastro:
+          type: string
+          example: "2024-05-07 11:48:11"
+          description: "Data do cadastro"
     PerfilApiRequest:
       required:
         - nome
@@ -1913,6 +2004,8 @@ components:
           description: "Lojas associadas ao Usuario"
           items:
             $ref: '#/components/schemas/LojaApiResponse'
+        empresa:
+          $ref: '#/components/schemas/EmpresaApiResponse'
     UsuarioPerfilApiRequest:
       type: object
       properties:

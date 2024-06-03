@@ -10,6 +10,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -65,5 +66,10 @@ public class UsuarioEntity extends BaseEntity implements Serializable {
             uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "loja_id"})
     )
     private List<LojaEntity> lojas ;
+
+ //   @NotNull
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private EmpresaEntity empresa;
 
 }

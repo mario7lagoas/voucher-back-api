@@ -6,6 +6,8 @@ import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
+import com.rematec.voucher.models.EmpresaApiRequest;
+import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
@@ -48,6 +50,8 @@ public class VoucherBackFacade {
 
     @Autowired
     private VoucherServiceImpl voucherService;
+
+    @Autowired EmpresaServiceImpl empresaService;
 
     //Usuario
     public List<UsuarioApiResponse> buscandoListaUsuario() {
@@ -211,6 +215,15 @@ public class VoucherBackFacade {
     //Report Base64
     public String report(JRBeanCollectionDataSource collectionDataSource, String relatorio) {
         return ReportFactory.report(collectionDataSource, relatorio);
+    }
+
+    //Empresa
+    public List<EmpresaApiResponse> buscandoListaEmpresa() {
+        return this.empresaService.buscandoListaEmpresa();
+    }
+
+    public EmpresaApiResponse criandoEmpresa(EmpresaApiRequest empresaApiRequest) {
+         return this.empresaService.criandoEmpresa(empresaApiRequest);
     }
 
 }

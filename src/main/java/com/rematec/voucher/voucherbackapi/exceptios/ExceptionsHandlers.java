@@ -102,6 +102,12 @@ public class ExceptionsHandlers {
         return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.CNPJ_JA_CADASTRADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
+    @ExceptionHandler(EmpresaCadastradaException.class)
+    public ResponseEntity<ErrorApiResponse> empresaCadastradaExceptionHandler(EmpresaCadastradaException ex) {
+
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.EMPRESA_JA_CADASTRADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     @ExceptionHandler(PerfilCadastradoException.class)
     public ResponseEntity<ErrorApiResponse> perfilExceptionHandler(PerfilCadastradoException ex) {
 

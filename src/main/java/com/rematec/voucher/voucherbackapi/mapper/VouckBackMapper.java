@@ -4,6 +4,7 @@ import com.rematec.voucher.models.BuscandoListaFiltroVoucher200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
+import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
@@ -12,6 +13,7 @@ import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.VoucherApiResponse;
 import com.rematec.voucher.voucherbackapi.constants.VoucherConstants;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
@@ -65,5 +67,9 @@ public interface VouckBackMapper {
 
     @Mapping(source = "voucherEntities.content", target = "transacoes")
     BuscandoListaFiltroVoucher200Response pageVouchersEntityToBuscandoListaFiltroVoucher200Response(PageImpl<VoucherEntity> voucherEntities);
+
+    List<EmpresaApiResponse> listEmpresaEntityToListEmpresaApiResponse(List<EmpresaEntity> all);
+
+    EmpresaApiResponse empresaEntityToEmpresaApiResponse(EmpresaEntity  empresaEntity);
 }
 

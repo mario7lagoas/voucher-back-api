@@ -32,19 +32,15 @@ public class RefreshTokenCookiePreProcessorFilter implements Filter {
             boolean checkCookieAdd = false;
             for (Cookie cookie : req.getCookies()) {
                 if (cookie.getName().equals("RefreshToken") && checkCookieAdd == false) {
-                    System.out.println("cooke nome -> " + cookie.getName() );
                     String refreshToken = cookie.getValue();
-                    System.out.println("Componente -> " + refreshToken);
                     req = new MyServLetRequestWrapper(req, refreshToken);
                     checkCookieAdd = true;
                 }
 
             }
-
         }
 
         chain.doFilter(req, response);
-
     }
 
     static class MyServLetRequestWrapper extends HttpServletRequestWrapper {

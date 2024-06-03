@@ -63,7 +63,6 @@ public class VoucherEntity extends BaseEntity implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fim;
 
-
     private String pdvResgate;
     private String filialCnpjResgate;
     private String cupomResgate;

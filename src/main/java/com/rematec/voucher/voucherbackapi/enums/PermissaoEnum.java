@@ -44,7 +44,13 @@ public enum PermissaoEnum {
     BUSCAR_VOUCHER(22, "Buscar Voucher", "ROLE_BUSCAR_VOUCHER"),
     ALTERAR_VOUCHER(23, "Editar Voucher", "ROLE_ALTERAR_VOUCHER"),
     CADASTRAR_VOUCHER(24, "Cadastrar Voucher", "ROLE_CADASTRAR_VOUCHER"),
-    APAGAR_VOUCHER(25, "Apagar Voucher", "ROLE_APAGAR_VOUCHER");
+    APAGAR_VOUCHER(25, "Apagar Voucher", "ROLE_APAGAR_VOUCHER"),
+
+    //Permissão Empresa
+    BUSCAR_EMPRESA(26, "Buscar Empresa", "ROLE_BUSCAR_EMPRESA"),
+    ALTERAR_EMPRESA(27, "Editar Emporesa", "ROLE_ALTERAR_EMPRESA"),
+    CADASTRAR_EMPRESA(28, "Cadastrar Empresa", "ROLE_CADASTRAR_EMPRESA"),
+    APAGAR_EMPRESA(29, "Apagar Empresa", "ROLE_APAGAR_EMPRESA");
 
 
     private int codigo;
