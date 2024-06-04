@@ -14,40 +14,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-
 @Component
 @Getter
 @ToString
 public class JWTUtil {
 
-    @Value("${security.jwt.secret:signinKey}")
-    private String secret;
-
-    @Value("${security.jwt.expiration:3600000}")
-    private Long expirationToken;
-
-    @Value("${security.jwt.expiration:259200000}")
-    private Long expirationRefreshToken;
-
-    @Value("${security.jwt.uri:/login}")
-    private String uri;
-
-    @Value("${security.jwt.header-refresh-token:refresh_token}")
-    private String refreshToken;
-
-    @Value("${security.jwt.header:Authorization}")
-    private String headerAuthorization;
-
-    @Value("${security.jwt.prefix:Bearer }")
-    private String bearer;
-
-    @Value("${security.jwt.prefix:authorities}")
-    private String authorities;
-
-    @Value("${security.jwt.access-control-exposeHeaders:Access-Control-Expose-Headers}")
-    private String accessControlExposeHeaders;
-
-
+    @Value("${jwt.secret}")
+    private String JWT_KEY ;
 
     public boolean tokenValido(String token) {
         Claims claims = getClaims(token);
@@ -67,7 +40,7 @@ public class JWTUtil {
 
         try {
             return Jwts.parser()
-                    .setSigningKey("signinKey")
+                    .setSigningKey(JWT_KEY)
                     .parseClaimsJws(token)
                     .getBody(); // Recupera os claims de agordo com o token
 
@@ -121,6 +94,5 @@ public class JWTUtil {
 
         return novasRoles;
     }
-
 
 }

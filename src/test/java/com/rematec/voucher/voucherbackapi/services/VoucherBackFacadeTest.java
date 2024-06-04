@@ -5,6 +5,8 @@ import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
+import com.rematec.voucher.models.EmpresaApiRequest;
+import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.rematec.voucher.voucherbackapi.builders.ConsultaVoucherApiRequestBuilder.umaConsultaVoucherApiRequest;
+import static com.rematec.voucher.voucherbackapi.builders.EmpresaApiRequestBuilder.umaEmpresaApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.LojaApiRequestBuilder.umaLojaApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.LojaApiResponseBuilder.umaLojaApiResponse;
 import static com.rematec.voucher.voucherbackapi.builders.LojaUpdateApiRequestBuilder.umaLojaUpdateApiRequest;
@@ -68,6 +71,9 @@ public class VoucherBackFacadeTest {
 
     @Mock
     private VoucherServiceImpl voucherService;
+
+    @Mock
+    private EmpresaServiceImpl empresaService;
 
     @Before("")
     public void setUp() {
@@ -588,7 +594,7 @@ public class VoucherBackFacadeTest {
 
     @Test
     @DisplayName("Should Return A List PromocaoApiResponse Filter Successfully")
-    public void  buscandoListaFiltroPromocao() {
+    public void buscandoListaFiltroPromocao() {
         //having
         String descricao = "Any Promotion";
         String tipo = "PERCENTUAL";
@@ -624,6 +630,38 @@ public class VoucherBackFacadeTest {
         //then
         Assertions.assertNotNull(request);
         Assertions.assertNotNull(responses);
+    }
+
+    @Test
+    @DisplayName("Should Return A List EmpresaApiResponse Successfully")
+    public void buscandoListaEmpresaCase1() {
+
+        //having
+        when(this.empresaService.buscandoListaEmpresa()).thenReturn(new CollisionCheckStack<EmpresaApiResponse>());
+
+        //when
+        List<EmpresaApiResponse> responses = this.voucherBackFacade.buscandoListaEmpresa();
+
+        //then
+        Assertions.assertNotNull(responses);
+    }
+
+
+    @Test
+    @DisplayName("Should Create A Empresa Successfully")
+    public void criandoEmpresaCase1() {
+
+        //having
+        EmpresaApiRequest request = umaEmpresaApiRequest().agora();
+
+        when(this.empresaService.criandoEmpresa(request)).thenReturn(new EmpresaApiResponse());
+
+        //when
+        EmpresaApiResponse response = this.voucherBackFacade.criandoEmpresa(request);
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(response);
     }
 
 }

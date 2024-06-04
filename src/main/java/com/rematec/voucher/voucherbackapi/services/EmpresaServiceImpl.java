@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -31,10 +32,11 @@ class EmpresaServiceImpl implements IEmpresaService{
     public EmpresaApiResponse criandoEmpresa(EmpresaApiRequest empresaApiRequest) {
 
         if(this.iEmpresaRepository.findByIdentificacao(empresaApiRequest.getIdentificacao()).isPresent()){
-            throw new EmpresaCadastradaException("Emporesa já cadastrada.");
+            throw new EmpresaCadastradaException("Empresa já cadastrada.");
         }
 
         EmpresaEntity empresaEntity = EmpresaEntity.builder()
+                .guid(UUID.randomUUID().toString())
                 .nome(empresaApiRequest.getNome())
                 .identificacao(empresaApiRequest.getIdentificacao())
                 .status(empresaApiRequest.getStatus())
