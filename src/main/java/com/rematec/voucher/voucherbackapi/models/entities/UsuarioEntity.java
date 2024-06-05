@@ -45,6 +45,7 @@ public class UsuarioEntity extends BaseEntity implements Serializable {
 
     @Column(unique = true, length = 50)
     private String email;
+
     @NotNull
     @Column(length = 150)
     private String password;
@@ -67,7 +68,7 @@ public class UsuarioEntity extends BaseEntity implements Serializable {
     )
     private List<LojaEntity> lojas ;
 
- //   @NotNull
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private EmpresaEntity empresa;
