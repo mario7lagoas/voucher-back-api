@@ -72,6 +72,7 @@ public class AutenticacaoService {
                 .setIssuer(request.getRequestURL().toString())
                 .signWith(SignatureAlgorithm.HS512, JWT_KEY)
                 .claim("nome", ((UserDetail) authentication.getPrincipal()).getNome())
+                .claim("empresa", ((UserDetail) authentication.getPrincipal()).getEmpresa())
                 .addClaims(claims)
                 .compact();
 

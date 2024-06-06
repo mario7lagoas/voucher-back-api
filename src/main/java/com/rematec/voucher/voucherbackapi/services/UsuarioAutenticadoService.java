@@ -28,11 +28,12 @@ public class UsuarioAutenticadoService implements UserDetailsService {
         UsuarioEntity usuario = iUsuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Email " + email + " não Encontrado!"));
 
-        if (usuario.getStatus().compareTo(false) == 0){
-            throw new UsuarioInativoException("Usuário "+ usuario.getUserName() + " Inativado!");
+        if (usuario.getStatus().compareTo(false) == 0) {
+            throw new UsuarioInativoException("Usuário " + usuario.getUserName() + " Inativado!");
         }
 
-        return new UserDetail(usuario.getUserName(), usuario.getEmail(), usuario.getPassword(), jwtUtil.getPrefilRolesPerfilUsuario(usuario));
+        return new UserDetail(usuario.getUserName(), usuario.getEmail(), usuario.getPassword(), usuario.getEmpresa(),
+                jwtUtil.getPrefilRolesPerfilUsuario(usuario));
     }
 
 }

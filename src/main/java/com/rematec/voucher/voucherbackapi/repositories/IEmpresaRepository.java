@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface IEmpresaRepository extends JpaRepository<EmpresaEntity, Long> {
 
     Optional<EmpresaEntity> findByIdentificacao(String identificacao);
+    Optional<EmpresaEntity> findByGuid(String guid);
 }

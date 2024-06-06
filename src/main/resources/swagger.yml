@@ -658,6 +658,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
+  /empresa/{guid}:
+    get:
+      tags:
+        - Empresa
+      summary: Buscando Empresa Pelo GUID
+      description: Buscando Empresa Pelo GUID na Plataforma
+      operationId: buscandoEmpresaPeloGUID
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /loja:
     get:
       tags:

@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.services;
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaCadastradaException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.rematec.voucher.voucherbackapi.builders.EmpresaApiRequestBuilder.umaEmpresaApiRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -104,5 +106,50 @@ public class EmpresaServiceImplTest {
                 () -> this.empresaService.criandoEmpresa(request));
 
         assertThat(exception.getMessage(), is("Empresa já cadastrada."));
+    }
+
+    @Test
+    @DisplayName("Should Return A EmpresaApiResponse By GUID Successfully")
+    public void buscandoEmpresaPeloGUIDCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        EmpresaEntity empresaEntity = EmpresaEntity.builder()
+                .status(true)
+                .nome("Any Empresa")
+                .identificacao("C0001")
+                .guid("123456")
+                .build();
+
+        when(this.iEmpresaRepository.findByGuid(anyString())).thenReturn(Optional.of(empresaEntity));
+        when(this.mapper.empresaEntityToEmpresaApiResponse(empresaEntity)).thenReturn(new EmpresaApiResponse());
+
+        //when
+        EmpresaApiResponse response = this.empresaService.buscandoEmpresaPeloGUID(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Get EmpresaApiResponse By GUID")
+    public void buscandoEmpresaPeloGUIDCase2() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        when(this.iEmpresaRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+        Exception exception = Assertions.assertThrows(EmpresaNaoEncontradaException.class,
+                () -> this.empresaService.buscandoEmpresaPeloGUID(guid));
+
+        assertThat(exception.getMessage(), is("Empresa não encontrada."));
+
     }
 }

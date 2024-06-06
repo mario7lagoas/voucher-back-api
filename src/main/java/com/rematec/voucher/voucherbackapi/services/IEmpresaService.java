@@ -9,5 +9,6 @@ public interface IEmpresaService {
 
     List<EmpresaApiResponse> buscandoListaEmpresa();
     EmpresaApiResponse criandoEmpresa(EmpresaApiRequest empresaApiRequest);
+    EmpresaApiResponse buscandoEmpresaPeloGUID(String guid);
 
 }

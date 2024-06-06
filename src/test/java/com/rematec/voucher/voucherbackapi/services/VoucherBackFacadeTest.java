@@ -664,4 +664,21 @@ public class VoucherBackFacadeTest {
         Assertions.assertNotNull(response);
     }
 
+    @Test
+    @DisplayName("Should Return A EmpresaApiResponse By GUID Successfully")
+    public void buscandoEmpresaPeloGUIDCase1() {
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        when(this.empresaService.buscandoEmpresaPeloGUID(guid)).thenReturn(new EmpresaApiResponse());
+
+        //when
+        EmpresaApiResponse response = this.voucherBackFacade.buscandoEmpresaPeloGUID(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+
+    }
+
 }

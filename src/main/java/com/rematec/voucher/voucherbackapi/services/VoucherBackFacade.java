@@ -226,4 +226,7 @@ public class VoucherBackFacade {
          return this.empresaService.criandoEmpresa(empresaApiRequest);
     }
 
+    public EmpresaApiResponse buscandoEmpresaPeloGUID(String guid) {
+        return this.empresaService.buscandoEmpresaPeloGUID(guid);
+    }
 }

@@ -24,6 +24,12 @@ public class ExceptionsHandlers {
         return new ResponseEntity<>(getNotfound(ex), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EmpresaNaoEncontradaException.class)
+    public ResponseEntity<ErrorApiResponse> empresaNaoEncontradaExceptionHandler(EmpresaNaoEncontradaException ex) {
+
+        return new ResponseEntity<>(getNotfound(ex), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(VoucherNaoEncontradoException.class)
     public ResponseEntity<ErrorApiResponse> voucherNaoEncontradaExceptionHandler(VoucherNaoEncontradoException ex) {
 

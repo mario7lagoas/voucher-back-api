@@ -3,6 +3,7 @@ package com.rematec.voucher.voucherbackapi.services;
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaCadastradaException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
@@ -44,5 +45,14 @@ class EmpresaServiceImpl implements IEmpresaService{
 
         return this.mapper.empresaEntityToEmpresaApiResponse(this.iEmpresaRepository.save(empresaEntity));
 
+    }
+
+    @Override
+    public EmpresaApiResponse buscandoEmpresaPeloGUID(String guid) {
+
+        EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(guid)
+                .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+
+        return mapper.empresaEntityToEmpresaApiResponse(empresaEntity);
     }
 }
