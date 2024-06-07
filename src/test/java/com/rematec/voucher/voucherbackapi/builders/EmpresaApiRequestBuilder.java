@@ -15,6 +15,11 @@ public class EmpresaApiRequestBuilder {
         return builder;
     }
 
+    public EmpresaApiRequestBuilder nome(String nome){
+        this.empresaApiRequest.setNome(nome);
+        return this;
+    }
+
     public EmpresaApiRequest agora(){
         return empresaApiRequest;
     }

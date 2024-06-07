@@ -23,11 +23,18 @@ public class EmpresaController implements EmpresaApi{
 
     @Override
     public ResponseEntity<EmpresaApiResponse> criandoEmpresa(EmpresaApiRequest empresaApiRequest) {
-        return new ResponseEntity<EmpresaApiResponse>(this.empresaService.criandoEmpresa(empresaApiRequest), HttpStatus.ACCEPTED);
+        return new ResponseEntity<EmpresaApiResponse>(this.empresaService.criandoEmpresa(empresaApiRequest),
+                HttpStatus.ACCEPTED);
     }
 
     @Override
     public ResponseEntity<EmpresaApiResponse> buscandoEmpresaPeloGUID(String guid) {
         return new ResponseEntity<EmpresaApiResponse>(this.empresaService.buscandoEmpresaPeloGUID(guid), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<EmpresaApiResponse> alterandoEmpresa(String guid, EmpresaApiRequest empresaApiRequest) {
+        return new ResponseEntity<EmpresaApiResponse>(this.empresaService.alterandoEmpresa(guid, empresaApiRequest),
+                HttpStatus.ACCEPTED);
     }
 }

@@ -685,6 +685,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
+    put:
+      tags:
+        - Empresa
+      summary: Alterando Uma Empresa
+      description: Alterando Uma Empresa na Plataforma
+      operationId: alterandoEmpresa
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Alterando uma Empresa
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaApiRequest'
+      responses:
+        '202':
+          description: accepted successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmpresaApiResponse'
+        '400':
+          description: bad request operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /loja:
     get:
       tags:

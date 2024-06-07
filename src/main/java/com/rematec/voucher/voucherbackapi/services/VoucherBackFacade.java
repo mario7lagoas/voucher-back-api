@@ -28,7 +28,6 @@ import com.rematec.voucher.models.VoucherPromocaoApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,22 +35,23 @@ import java.util.List;
 @Component
 public class VoucherBackFacade {
 
-    @Autowired
-    private UsuarioServiceImpl usuarioService;
+    private final UsuarioServiceImpl usuarioService;
+    private final PerfilServiceImpl perfilService;
+    private final LojaServiceImpl lojaService;
+    private final PromocaoServiceImpl promocaoService;
+    private final VoucherServiceImpl voucherService;
+    private final EmpresaServiceImpl empresaService;
 
-    @Autowired
-    private PerfilServiceImpl perfilService;
+    public VoucherBackFacade(UsuarioServiceImpl usuarioService, PerfilServiceImpl perfilService, LojaServiceImpl lojaService,
+                             PromocaoServiceImpl promocaoService, VoucherServiceImpl voucherService, EmpresaServiceImpl empresaService) {
 
-    @Autowired
-    private LojaServiceImpl lojaService;
-
-    @Autowired
-    private PromocaoServiceImpl promocaoService;
-
-    @Autowired
-    private VoucherServiceImpl voucherService;
-
-    @Autowired EmpresaServiceImpl empresaService;
+        this.usuarioService = usuarioService;
+        this.perfilService = perfilService;
+        this.lojaService = lojaService;
+        this.promocaoService = promocaoService;
+        this.voucherService = voucherService;
+        this.empresaService = empresaService;
+    }
 
     //Usuario
     public List<UsuarioApiResponse> buscandoListaUsuario() {
@@ -223,10 +223,14 @@ public class VoucherBackFacade {
     }
 
     public EmpresaApiResponse criandoEmpresa(EmpresaApiRequest empresaApiRequest) {
-         return this.empresaService.criandoEmpresa(empresaApiRequest);
+        return this.empresaService.criandoEmpresa(empresaApiRequest);
     }
 
     public EmpresaApiResponse buscandoEmpresaPeloGUID(String guid) {
         return this.empresaService.buscandoEmpresaPeloGUID(guid);
+    }
+
+    public EmpresaApiResponse alterandoEmpresa(String guid, EmpresaApiRequest empresaApiRequest) {
+        return this.empresaService.alterandoEmpresa(guid, empresaApiRequest);
     }
 }

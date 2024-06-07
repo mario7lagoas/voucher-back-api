@@ -7,6 +7,7 @@ import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaExceptio
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,16 @@ import java.util.UUID;
 
 @Service
 @Transactional
-class EmpresaServiceImpl implements IEmpresaService{
+class EmpresaServiceImpl implements IEmpresaService {
 
     @Autowired
     private IEmpresaRepository iEmpresaRepository;
 
     @Autowired
     private VouckBackMapper mapper;
+
+    @Autowired
+    private VoucherUtil voucherUtil;
 
     @Override
     public List<EmpresaApiResponse> buscandoListaEmpresa() {
@@ -32,7 +36,7 @@ class EmpresaServiceImpl implements IEmpresaService{
     @Override
     public EmpresaApiResponse criandoEmpresa(EmpresaApiRequest empresaApiRequest) {
 
-        if(this.iEmpresaRepository.findByIdentificacao(empresaApiRequest.getIdentificacao()).isPresent()){
+        if (this.iEmpresaRepository.findByIdentificacao(empresaApiRequest.getIdentificacao()).isPresent()) {
             throw new EmpresaCadastradaException("Empresa já cadastrada.");
         }
 
@@ -51,8 +55,26 @@ class EmpresaServiceImpl implements IEmpresaService{
     public EmpresaApiResponse buscandoEmpresaPeloGUID(String guid) {
 
         EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(guid)
-                .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+                .orElseThrow(() -> new EmpresaNaoEncontradaException("Empresa não encontrada."));
 
         return mapper.empresaEntityToEmpresaApiResponse(empresaEntity);
+    }
+
+    @Override
+    public EmpresaApiResponse alterandoEmpresa(String guid, EmpresaApiRequest empresaApiRequest) {
+
+        EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(guid)
+                .orElseThrow(() -> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+
+        if (empresaApiRequest.getStatus() != null)
+            empresaEntity.setStatus(empresaApiRequest.getStatus());
+
+        if (this.voucherUtil.checkDataNullAndEmpty(empresaApiRequest.getIdentificacao()))
+            empresaEntity.setIdentificacao(empresaApiRequest.getIdentificacao());
+
+        if (this.voucherUtil.checkDataNullAndEmpty(empresaApiRequest.getNome()))
+            empresaEntity.setNome(empresaApiRequest.getNome());
+
+        return this.mapper.empresaEntityToEmpresaApiResponse(empresaEntity);
     }
 }

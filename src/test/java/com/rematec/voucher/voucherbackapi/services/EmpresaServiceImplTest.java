@@ -7,6 +7,7 @@ import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaExceptio
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
+import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
 import org.junit.jupiter.api.Assertions;
@@ -41,6 +42,9 @@ public class EmpresaServiceImplTest {
 
     @Spy
     private VouckBackMapper mapper;
+
+    @Spy
+    private VoucherUtil voucherUtil;
 
     @Before("")
     public void setUp() {
@@ -130,6 +134,39 @@ public class EmpresaServiceImplTest {
         //then
         Assertions.assertNotNull(guid);
         Assertions.assertNotNull(response);
+    }
+
+
+    @Test
+    @DisplayName("Should Update a Empresa Successfully")
+    public void alterandoEmpresa() {
+        //having
+        EmpresaEntity empresaEntity = EmpresaEntity.builder()
+                .guid("123456")
+                .status(true)
+                .nome("Any Empresa")
+                .identificacao("C0001")
+                .guid("123456")
+                .build();
+        String guid = empresaEntity.getGuid();
+        EmpresaApiRequest request = umaEmpresaApiRequest().nome("Other Name").agora();
+
+        when(this.iEmpresaRepository.save(any(EmpresaEntity.class))).thenReturn(new EmpresaEntity());
+        when(this.iEmpresaRepository.findByGuid(guid)).thenReturn(Optional.of(empresaEntity));
+        when(this.mapper.empresaEntityToEmpresaApiResponse(any(EmpresaEntity.class))).thenReturn(new EmpresaApiResponse());
+
+        //when
+        EmpresaApiResponse response = this.empresaService.alterandoEmpresa(guid, request);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+
+        verify(this.iEmpresaRepository, times(1)).save(
+                argThat(empresaArg -> empresaArg.getNome().equals("Other Name")
+                       // && empresaArg.getGuid().equals(guid)
+                )
+        );
 
     }
 
