@@ -75,6 +75,6 @@ class EmpresaServiceImpl implements IEmpresaService {
         if (this.voucherUtil.checkDataNullAndEmpty(empresaApiRequest.getNome()))
             empresaEntity.setNome(empresaApiRequest.getNome());
 
-        return this.mapper.empresaEntityToEmpresaApiResponse(empresaEntity);
+        return this.mapper.empresaEntityToEmpresaApiResponse(this.iEmpresaRepository.save(empresaEntity));
     }
 }

@@ -678,7 +678,24 @@ public class VoucherBackFacadeTest {
         //then
         Assertions.assertNotNull(guid);
         Assertions.assertNotNull(response);
+    }
 
+    @Test
+    @DisplayName("Should Update a Empresa Successfully")
+    public void alterandoEmpresaCase1() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        EmpresaApiRequest request = umaEmpresaApiRequest().nome("Other Name").agora();
+
+        when(this.empresaService.alterandoEmpresa(guid, request)).thenReturn(new EmpresaApiResponse());
+
+        //when
+        EmpresaApiResponse response = this.voucherBackFacade.alterandoEmpresa(guid, request);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(response);
     }
 
 }

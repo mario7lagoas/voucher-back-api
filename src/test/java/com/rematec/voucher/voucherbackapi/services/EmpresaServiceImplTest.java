@@ -4,6 +4,7 @@ import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
+import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
@@ -139,7 +140,7 @@ public class EmpresaServiceImplTest {
 
     @Test
     @DisplayName("Should Update a Empresa Successfully")
-    public void alterandoEmpresa() {
+    public void alterandoEmpresaCase1() {
         //having
         EmpresaEntity empresaEntity = EmpresaEntity.builder()
                 .guid("123456")
@@ -164,11 +165,31 @@ public class EmpresaServiceImplTest {
 
         verify(this.iEmpresaRepository, times(1)).save(
                 argThat(empresaArg -> empresaArg.getNome().equals("Other Name")
-                       // && empresaArg.getGuid().equals(guid)
+                        && empresaArg.getGuid().equals(guid)
                 )
         );
-
     }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Update Empresa And It Does Not Exist")
+    public void alterandoEmpresaCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        EmpresaApiRequest request = umaEmpresaApiRequest().agora();
+        when(this.iEmpresaRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(EmpresaNaoEncontradaException.class,
+                () -> this.empresaService.alterandoEmpresa(guid, request));
+
+        assertThat(exception.getMessage(), is("Empresa não encontrada."));
+    }
+
 
     @Test
     @DisplayName("Should Thrown An Exception When Try To Get EmpresaApiResponse By GUID")
@@ -189,4 +210,6 @@ public class EmpresaServiceImplTest {
         assertThat(exception.getMessage(), is("Empresa não encontrada."));
 
     }
+
+
 }
