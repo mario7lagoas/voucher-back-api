@@ -5,6 +5,7 @@ import com.rematec.voucher.voucherbackapi.exceptios.UsuarioInativoException;
 import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 
+import com.rematec.voucher.voucherbackapi.security.UserDetail;
 import com.rematec.voucher.voucherbackapi.utils.JWTUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -107,6 +108,8 @@ public class RefreshTokenController {
                                 .setIssuer(request.getRequestURL().toString())
                                 .signWith(SignatureAlgorithm.HS512, JWT_KEY)
                                 .claim("nome", user.getUserName())
+                                .claim("empresa", user.getEmpresa().getNome())
+                                .claim("empresaGuid", user.getEmpresa().getGuid())
                                 .addClaims(claims)
                                 .compact();
 

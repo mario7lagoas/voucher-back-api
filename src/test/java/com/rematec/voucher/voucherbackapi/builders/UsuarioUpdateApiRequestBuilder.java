@@ -30,13 +30,8 @@ public class UsuarioUpdateApiRequestBuilder {
         return this;
     }
 
-    public UsuarioUpdateApiRequestBuilder password(String pwd) {
-        usuarioUpdateApiRequest.setPassword(pwd);
-        return this;
-    }
-
-    public UsuarioUpdateApiRequestBuilder email(String email) {
-        usuarioUpdateApiRequest.setEmail(email);
+    public UsuarioUpdateApiRequestBuilder empresa(String empresa) {
+        usuarioUpdateApiRequest.setEmpresa(empresa);
         return this;
     }
 

@@ -6,10 +6,13 @@ import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.UsuarioUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
@@ -37,8 +40,15 @@ class UsuarioServiceImpl implements IUsuarioService {
     @Autowired
     private VoucherUtil voucherUtil;
 
+    @Autowired
+    private IEmpresaRepository iEmpresaRepository;
+
     @Override
     public List<UsuarioApiResponse> buscandoListaUsuario() {
+        List<UsuarioEntity> list = this.iUsuarioRepository.findAll();
+
+        System.out.println(list.stream().toList());
+
         return this.mapper.listUsuarioEntityTolistUsuarioApiResponse(this.iUsuarioRepository.findAll());
     }
 
@@ -91,6 +101,14 @@ class UsuarioServiceImpl implements IUsuarioService {
                 .password(this.passwordEncoder.encode(usuarioApiRequest.getPassword()))
                 .build();
 
+        if (this.voucherUtil.checkDataNullAndEmpty(usuarioApiRequest.getEmpresa())) {
+
+            EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(usuarioApiRequest.getEmpresa())
+                    .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+
+            usuarioEntity.setEmpresa(empresaEntity);
+        }
+
         return this.mapper.usuarioEntityToUsuarioApiResponse(this.iUsuarioRepository.save(usuarioEntity));
     }
 
@@ -113,6 +131,14 @@ class UsuarioServiceImpl implements IUsuarioService {
                     throw new UsuarioCadastradoException("E-mail já cadastrado.");
             }
             usuario.setEmail(usuarioUpdateApiRequest.getEmail());
+        }
+
+        if (this.voucherUtil.checkDataNullAndEmpty(usuarioUpdateApiRequest.getEmpresa())) {
+
+            EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(usuarioUpdateApiRequest.getEmpresa())
+                    .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+
+            usuario.setEmpresa(empresaEntity);
         }
 
         if (usuarioUpdateApiRequest.getStatus() != null)

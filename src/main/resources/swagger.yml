@@ -2119,6 +2119,10 @@ components:
           description: "Lojas associadas ao Usuario"
           items:
             $ref: '#/components/schemas/GuidApiRequest'
+        empresa:
+          type: string
+          description: "GUID da empresa do Usuario"
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
     UsuarioUpdateApiRequest:
       type: object
       properties:
@@ -2148,3 +2152,7 @@ components:
           description: "Lojas associadas ao Usuario"
           items:
             $ref: '#/components/schemas/GuidApiRequest'
+        empresa:
+          type: string
+          description: "GUID da empresa do Usuario"
+          example: "aaaa-bbbb-cccc-dddd-eeeee"

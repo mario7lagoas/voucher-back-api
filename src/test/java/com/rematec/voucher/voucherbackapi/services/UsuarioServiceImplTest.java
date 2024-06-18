@@ -6,9 +6,11 @@ import com.rematec.voucher.models.UsuarioApiRequest;
 import com.rematec.voucher.models.UsuarioApiResponse;
 import com.rematec.voucher.models.UsuarioUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.UsuarioNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
@@ -54,6 +56,9 @@ public class UsuarioServiceImplTest {
 
     @Mock
     private IUsuarioRepository iUsuarioRepository;
+
+    @Mock
+    private IEmpresaRepository iEmpresaRepository;
 
     @Spy
     private VouckBackMapper mapper;
@@ -376,7 +381,7 @@ public class UsuarioServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Thrown An Exception When Try To Update Usuario And It Does Not Exist")
+    @DisplayName("Should Thrown An Exception When Try To Update Usuario And E-mail Exist")
     public void alterandoUsuarioCase3() {
         //having
         String guid = UUID.randomUUID().toString();
@@ -396,6 +401,30 @@ public class UsuarioServiceImplTest {
                 () -> this.usuarioService.alterandoUsuario(guid, request));
 
         assertThat(exception.getMessage(), is("E-mail já cadastrado."));
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Update Usuario And Empresa Does Not Exist")
+    public void alterandoUsuarioCase4() {
+        //having
+        UsuarioEntity usuario = umUsuarioEntity().agora();
+        String guid = usuario.getGuid();
+
+        UsuarioUpdateApiRequest request = umUsuarioUpdateApiRequest().empresa(UUID.randomUUID().toString()).agora();
+
+        when(this.iUsuarioRepository.findByGuid(guid)).thenReturn(Optional.of(usuario));
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(EmpresaNaoEncontradaException.class,
+                () -> this.usuarioService.alterandoUsuario(guid, request));
+
+        assertThat(exception.getMessage(), is("Empresa não encontrada."));
     }
 
     @Test
