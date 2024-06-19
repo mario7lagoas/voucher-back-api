@@ -11,4 +11,5 @@ public interface IEmpresaService {
     EmpresaApiResponse criandoEmpresa(EmpresaApiRequest empresaApiRequest);
     EmpresaApiResponse buscandoEmpresaPeloGUID(String guid);
     EmpresaApiResponse alterandoEmpresa(String guid, EmpresaApiRequest empresaApiRequest);
+    void apagandoEmpresa(String guid);
 }

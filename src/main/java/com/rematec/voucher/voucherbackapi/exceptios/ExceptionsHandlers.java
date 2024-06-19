@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
@@ -126,6 +127,12 @@ public class ExceptionsHandlers {
         return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.USUARIO_JA_CADASTRADO.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
+    @ExceptionHandler(NaoPermitidoExcluirEmpresaException.class)
+    public ResponseEntity<ErrorApiResponse> naoPermitidoExcluirEmpresaExceptionHandler(NaoPermitidoExcluirEmpresaException ex) {
+
+        return new ResponseEntity<>(getUnProcessable(ex, ErrosEnum.NAO_PERMITIDO_EXCLUIR.toString()), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorApiResponse> noResourceFoundHandle(NoResourceFoundException ex) {
 
@@ -166,6 +173,21 @@ public class ExceptionsHandlers {
                 ).build();
 
         return new ResponseEntity<>(erroResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorApiResponse> httpRequestMethosNotSupportefExceptionHandle(
+            HttpRequestMethodNotSupportedException ex) {
+
+        ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
+                .status(HttpStatus.METHOD_NOT_ALLOWED.toString())
+                .erros(Collections.singletonList(ErroResponseBuilder.builder()
+                        .codigo(ErrosEnum.METODO_NAO_SUPORTADO.toString())
+                        .mensagem(ex.getMessage())
+                        .build())
+                ).build();
+
+        return new ResponseEntity<>(erroResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     private ErrorApiResponse getNotfound(Exception ex) {

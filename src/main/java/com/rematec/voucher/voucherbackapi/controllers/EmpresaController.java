@@ -37,4 +37,10 @@ public class EmpresaController implements EmpresaApi{
         return new ResponseEntity<EmpresaApiResponse>(this.empresaService.alterandoEmpresa(guid, empresaApiRequest),
                 HttpStatus.ACCEPTED);
     }
+
+    @Override
+    public ResponseEntity<Void> apagandoEmpresa(String guid) {
+        this.empresaService.apagandoEmpresa(guid);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

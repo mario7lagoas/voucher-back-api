@@ -729,6 +729,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
+    delete:
+      tags:
+        - Empresa
+      parameters:
+        - name: guid
+          in: path
+          description: Informe o GUID
+          required: true
+          schema:
+            type: string
+      summary: Apagando uma Empresa
+      description: Apagando uma Empresa na Plataforma
+      operationId: apagandoEmpresa
+      responses:
+        '204':
+          description: No Content successful operation
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
+        '422':
+          description: unprocessable operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /loja:
     get:
       tags:
@@ -1873,6 +1901,7 @@ components:
         - identificacao
         - cnpj
         - status
+        - empresa
       type: object
       properties:
         nome:
@@ -1891,6 +1920,10 @@ components:
           type: boolean
           description: "Status da Loja"
           example: true
+        empresa:
+          type: string
+          description: "GUID da empresa associada."
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
     LojaUpdateApiRequest:
       type: object
       properties:
@@ -2154,5 +2187,5 @@ components:
             $ref: '#/components/schemas/GuidApiRequest'
         empresa:
           type: string
-          description: "GUID da empresa do Usuario"
+          description: "GUID da empresa associada."
           example: "aaaa-bbbb-cccc-dddd-eeeee"

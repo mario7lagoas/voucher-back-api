@@ -5,9 +5,12 @@ import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
+import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirEmpresaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
+import com.rematec.voucher.voucherbackapi.models.entities.UsuarioEntity;
 import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
+import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import org.aspectj.lang.annotation.Before;
 import org.glassfish.jaxb.runtime.v2.util.CollisionCheckStack;
@@ -26,6 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.rematec.voucher.voucherbackapi.builders.EmpresaApiRequestBuilder.umaEmpresaApiRequest;
+import static com.rematec.voucher.voucherbackapi.builders.UsuarioEntityBuilder.umUsuarioEntity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,6 +44,9 @@ public class EmpresaServiceImplTest {
 
     @Mock
     private IEmpresaRepository iEmpresaRepository;
+
+    @Mock
+    private IUsuarioRepository iUsuarioRepository;
 
     @Spy
     private VouckBackMapper mapper;
@@ -211,5 +218,71 @@ public class EmpresaServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("Should Delete A Empresa Successfully")
+    public void apagandoEmpresaCase1() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        EmpresaEntity empresaEntity = EmpresaEntity.builder()
+                .id(1l)
+                .guid(guid)
+                .nome("Empresa Delete")
+                .status(true)
+                .build();
+
+        when(this.iEmpresaRepository.findByGuid(guid)).thenReturn(Optional.of(empresaEntity));
+
+        //when
+        this.empresaService.apagandoEmpresa(guid);
+
+        verify(this.iEmpresaRepository, times(1)).delete(
+                argThat(empresaArg -> empresaArg.getNome().equals("Empresa Delete")
+                        && empresaArg.getGuid().equals(guid)
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Delete Empresa And It Does Not Exist")
+    public void apagandoEmpresaCase2() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        when(this.iEmpresaRepository.findByGuid(guid)).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(guid);
+
+        Exception exception = Assertions.assertThrows(EmpresaNaoEncontradaException.class,
+                () -> this.empresaService.apagandoEmpresa(guid));
+
+        assertThat(exception.getMessage(), is("Empresa não encontrada."));
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Delete Empresa And It Does In use")
+    public void apagandoEmpresaCase3() {
+
+        //having
+        List<Optional<UsuarioEntity>> optionals = List.of(Optional.of(umUsuarioEntity().agora()));
+        String guid = UUID.randomUUID().toString();
+        EmpresaEntity empresaEntity = EmpresaEntity.builder()
+                .id(1l)
+                .guid(guid)
+                .build();
+
+        when(this.iEmpresaRepository.findByGuid(guid)).thenReturn(Optional.of(empresaEntity));
+        when(this.iUsuarioRepository.findByEmpresaGuid(guid)).thenReturn(optionals);
+
+        //when
+
+        //then
+        Exception exception = Assertions.assertThrows(NaoPermitidoExcluirEmpresaException.class,
+                () -> this.empresaService.apagandoEmpresa(guid));
+
+        assertThat(exception.getMessage(), is("Empresa não pode ser Excluida."));
+    }
 
 }

@@ -6,10 +6,13 @@ import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirLojaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
@@ -36,6 +39,9 @@ class LojaServiceImpl implements ILojaService {
 
     @Autowired
     private VoucherUtil voucherUtil;
+
+    @Autowired
+    private IEmpresaRepository iEmpresaRepository;
 
     @Override
     public List<LojaApiResponse> buscandoListaLoja() {
@@ -74,6 +80,10 @@ class LojaServiceImpl implements ILojaService {
             throw new BadRequestException("CNPJ da loja obrigatório.");
         }
 
+        if (iLojaReposity.findByCnpj(lojaApiRequest.getCnpj()).isPresent()) {
+            throw new LojaCadastradaException("CNPJ Já cadastrado.");
+        }
+
         if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getNome())) {
             throw new BadRequestException("Nome da loja obrigatório.");
         }
@@ -82,9 +92,13 @@ class LojaServiceImpl implements ILojaService {
             throw new BadRequestException("Identificação da loja obrigatório.");
         }
 
-        if (iLojaReposity.findByCnpj(lojaApiRequest.getCnpj()).isPresent()) {
-            throw new LojaCadastradaException("CNPJ Já cadastrado.");
+        if (!this.voucherUtil.checkDataNullAndEmpty(lojaApiRequest.getEmpresa())) {
+            throw new BadRequestException("Identificacão da Empresa é Obrigatorio.");
         }
+
+        EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(lojaApiRequest.getEmpresa())
+                .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+
 
         LojaEntity lojaEntity = LojaEntity.builder()
                 .guid(UUID.randomUUID().toString())
@@ -92,6 +106,7 @@ class LojaServiceImpl implements ILojaService {
                 .status(lojaApiRequest.getStatus())
                 .cnpj(this.voucherUtil.apenasNumerosNaString(lojaApiRequest.getCnpj()))
                 .identificacao(lojaApiRequest.getIdentificacao())
+                .empresa(empresaEntity)
                 .build();
 
         return mapper.lojaEntityToLojaApiResponse(this.iLojaReposity.save(lojaEntity));
@@ -149,4 +164,5 @@ class LojaServiceImpl implements ILojaService {
 
         this.iLojaReposity.save(lojaEntity);
     }
+
 }

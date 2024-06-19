@@ -50,7 +50,8 @@ import static com.rematec.voucher.voucherbackapi.builders.PromocaoUpdateApiReque
 import static com.rematec.voucher.voucherbackapi.builders.UpdateStatusApiRequestBuilder.umUpdateStatusApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioApiRequestBuilder.umUsuarioApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioUpdateApiRequestBuilder.umUsuarioUpdateApiRequest;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class VoucherBackFacadeTest {
@@ -696,6 +697,19 @@ public class VoucherBackFacadeTest {
         Assertions.assertNotNull(guid);
         Assertions.assertNotNull(request);
         Assertions.assertNotNull(response);
+    }
+
+    @Test
+    @DisplayName("Should Delete A Empresa Successfully")
+    public void apagandoEmpresaCase1() {
+        //having
+        String guid = UUID.randomUUID().toString();
+
+        //when
+        this.voucherBackFacade.apagandoEmpresa(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
     }
 
 }

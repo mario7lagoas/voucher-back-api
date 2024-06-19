@@ -233,4 +233,8 @@ public class VoucherBackFacade {
     public EmpresaApiResponse alterandoEmpresa(String guid, EmpresaApiRequest empresaApiRequest) {
         return this.empresaService.alterandoEmpresa(guid, empresaApiRequest);
     }
+
+    public void apagandoEmpresa(String guid) {
+        this.empresaService.apagandoEmpresa(guid);
+    }
 }

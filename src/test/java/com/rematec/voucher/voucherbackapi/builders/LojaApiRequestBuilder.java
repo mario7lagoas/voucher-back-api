@@ -23,6 +23,11 @@ public class LojaApiRequestBuilder {
         return this;
     }
 
+    public LojaApiRequestBuilder empresa(String empresa){
+        lojaApiRequest.setEmpresa(empresa);
+        return this;
+    }
+
     public LojaApiRequestBuilder identificacao(String identificacao){
         lojaApiRequest.setIdentificacao(identificacao);
         return this;

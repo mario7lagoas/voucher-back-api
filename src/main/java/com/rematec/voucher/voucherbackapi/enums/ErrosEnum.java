@@ -17,8 +17,9 @@ public enum ErrosEnum {
     UTILIZADO("Já utilizado."),
     NAO_PERMITIDO("Não permitido."),
     ENDPOINT_NAO_ENCONTRADO("Endpoint não encontrado."),
-    PAYLOAD_INVALIDO("Payload Invalido"),
-    CAMPO_OBRIGATORIO("Campo obrigatorio");
+    PAYLOAD_INVALIDO("Payload Invalido."),
+    CAMPO_OBRIGATORIO("Campo obrigatorio."),
+    METODO_NAO_SUPORTADO("Método não suportado.");
 
     private String nome;
 

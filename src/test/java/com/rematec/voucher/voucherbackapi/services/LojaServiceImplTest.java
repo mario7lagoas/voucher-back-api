@@ -6,10 +6,13 @@ import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirLojaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.ILojaRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.LojaEntity;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
@@ -52,6 +55,9 @@ public class LojaServiceImplTest {
 
     @Mock
     private ILojaRepository iLojaReposity;
+
+    @Mock
+    private IEmpresaRepository iEmpresaRepository;
 
     @Spy
     private VouckBackMapper mapper;
@@ -180,9 +186,10 @@ public class LojaServiceImplTest {
     public void criandoLojaCase1() {
 
         //having
-        LojaApiRequest request = umaLojaApiRequest().agora();
+        LojaApiRequest request = umaLojaApiRequest().empresa("123456").agora();
 
         when(this.iLojaReposity.save(any(LojaEntity.class))).thenReturn(new LojaEntity());
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.of(new EmpresaEntity()));
         when(this.mapper.lojaEntityToLojaApiResponse(any(LojaEntity.class))).thenReturn(new LojaApiResponse());
 
         //when
@@ -321,6 +328,42 @@ public class LojaServiceImplTest {
     }
 
     @Test
+    @DisplayName("Should Thrown An Exception When Try To Empresa Is Empty")
+    public void criandoLojaCase9() {
+
+        //having
+        LojaApiRequest request = umaLojaApiRequest().agora();
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.lojaService.criandoLoja(request));
+
+        assertThat(exception.getMessage(), is("Identificacão da Empresa é Obrigatorio."));
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To And Empresa Does Not Exist")
+    public void criandoLojaCase10() {
+
+        //having
+        LojaApiRequest request = umaLojaApiRequest().empresa("123456").agora();
+
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(EmpresaNaoEncontradaException.class,
+                () -> this.lojaService.criandoLoja(request));
+
+        assertThat(exception.getMessage(), is("Empresa não encontrada."));
+    }
+
+    @Test
     @DisplayName("Should Update a Loja Successfully")
     public void alterandoLojaCase1() {
         //having
@@ -422,6 +465,8 @@ public class LojaServiceImplTest {
         //when
 
         //then
+        Assertions.assertNotNull(guid);
+
         Exception exception = Assertions.assertThrows(LojaNaoEncontradaException.class,
                 () -> this.lojaService.apagandoLoja(guid));
 
@@ -432,7 +477,7 @@ public class LojaServiceImplTest {
     @DisplayName("Should Thrown An Exception When Try To Delete Loja And It Does In use")
     public void apagandoLojaCase3() {
         //having
-        List<Optional<LojaEntity>> optionals = Arrays.asList(Optional.of(umaLojaEntity().agora()));
+        List<Optional<LojaEntity>> optionals = List.of(Optional.of(umaLojaEntity().agora()));
         String guid = UUID.randomUUID().toString();
 
         LojaEntity lojaEntity = umaLojaEntity().guid(guid).nome("Loja em uso").agora();

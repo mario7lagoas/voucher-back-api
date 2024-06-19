@@ -4,9 +4,11 @@ import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
+import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirEmpresaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
 import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
+import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ class EmpresaServiceImpl implements IEmpresaService {
 
     @Autowired
     private IEmpresaRepository iEmpresaRepository;
+
+    @Autowired
+    private IUsuarioRepository iUsuarioRepository;
 
     @Autowired
     private VouckBackMapper mapper;
@@ -57,7 +62,7 @@ class EmpresaServiceImpl implements IEmpresaService {
         EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(guid)
                 .orElseThrow(() -> new EmpresaNaoEncontradaException("Empresa não encontrada."));
 
-        return mapper.empresaEntityToEmpresaApiResponse(empresaEntity);
+        return this.mapper.empresaEntityToEmpresaApiResponse(empresaEntity);
     }
 
     @Override
@@ -76,5 +81,17 @@ class EmpresaServiceImpl implements IEmpresaService {
             empresaEntity.setNome(empresaApiRequest.getNome());
 
         return this.mapper.empresaEntityToEmpresaApiResponse(this.iEmpresaRepository.save(empresaEntity));
+    }
+
+    @Override
+    public void apagandoEmpresa(String guid) {
+        EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(guid)
+                .orElseThrow(() -> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+
+        if (!this.iUsuarioRepository.findByEmpresaGuid(guid).isEmpty()) {
+            throw new NaoPermitidoExcluirEmpresaException("Empresa não pode ser Excluida.");
+        }
+
+        this.iEmpresaRepository.delete(empresaEntity);
     }
 }

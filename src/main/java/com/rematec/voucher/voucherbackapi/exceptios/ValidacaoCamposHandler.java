@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
 @ControllerAdvice
 public class ValidacaoCamposHandler {
@@ -26,7 +27,8 @@ public class ValidacaoCamposHandler {
                 .stream()
                 .map(erro -> ErroResponseBuilder.builder()
                         .codigo(obterNomePropriedade(erro))
-                        .mensagem(erro.getDefaultMessage())
+                        .mensagem(obterNomePropriedade(erro).concat(" ")
+                                .concat(Objects.requireNonNull(erro.getDefaultMessage())))
                         .build()).toList();
 
         ErrorApiResponse erroResponse = ErrorApiResponseBuilder.builder()
