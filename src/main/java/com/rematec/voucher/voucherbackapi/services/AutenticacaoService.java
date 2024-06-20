@@ -40,20 +40,22 @@ public class AutenticacaoService {
     private static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
     private static final String REFRESH_TOKEN = "RefreshToken";
 
-    private static String JWT_KEY ;
+    private static String JWT_KEY;
     private static int EXPIRATION_TOKEN;
     private static int EXPIRATION_REFRESH_TOKEN;
+
     @Value("${jwt.secret}")
-    private void setKey(String key){
+    private void setKey(String key) {
         JWT_KEY = key;
     }
+
     @Value("${jwt.expiration}")
-    private void setExpiration(int expiration){
+    private void setExpiration(int expiration) {
         EXPIRATION_TOKEN = expiration;
     }
 
     @Value("${jwt.refreshToken}")
-    private void setRefresh(int refresh){
+    private void setRefresh(int refresh) {
         EXPIRATION_REFRESH_TOKEN = refresh;
     }
 
@@ -66,14 +68,17 @@ public class AutenticacaoService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
 
+        claims.put("nome",((UserDetail) authentication.getPrincipal()).getNome() );
+
         String jwtToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TOKEN))
                 .setIssuer(request.getRequestURL().toString())
                 .signWith(SignatureAlgorithm.HS512, JWT_KEY)
-                .claim("nome", ((UserDetail) authentication.getPrincipal()).getNome())
-                .claim("empresa", ((UserDetail) authentication.getPrincipal()).getEmpresa().getNome())
-                .claim("empresaGuid", ((UserDetail) authentication.getPrincipal()).getEmpresa().getGuid())
+                .claim("empresa", ((UserDetail) authentication.getPrincipal()).getEmpresa() != null ?
+                        ((UserDetail) authentication.getPrincipal()).getEmpresa().getNome() : "VOUCHER")
+                .claim("empresaGuid", ((UserDetail) authentication.getPrincipal()).getEmpresa() != null ?
+                        ((UserDetail) authentication.getPrincipal()).getEmpresa().getGuid() : "")
                 .addClaims(claims)
                 .compact();
 
@@ -102,53 +107,53 @@ public class AutenticacaoService {
 
         String token = request.getHeader(HEAD_AUTHORIZATION);
 
-            if (token != null) {
-                Claims user = null;
-               try {
-                   user = Jwts.parser()
-                           .setSigningKey(JWT_KEY)
-                           .parseClaimsJws(token.replace(BEARER, ""))
-                           .getBody();
+        if (token != null) {
+            Claims user = null;
+            try {
+                user = Jwts.parser()
+                        .setSigningKey(JWT_KEY)
+                        .parseClaimsJws(token.replace(BEARER, ""))
+                        .getBody();
 
-               }catch (ExpiredJwtException e){
-                   try {
-                       response.setHeader("error", e.getMessage());
-                       response.setStatus(FORBIDDEN.value());
-                       Map<String, String> error = new HashMap<>();
-                       error.put("codigo", "JWT_ERRO");
-                       error.put("mensagem", "Token Expirado.");
-                       response.setContentType(APPLICATION_JSON_VALUE);
-                       new ObjectMapper().writeValue(response.getOutputStream(), error);
+            } catch (ExpiredJwtException e) {
+                try {
+                    response.setHeader("error", e.getMessage());
+                    response.setStatus(FORBIDDEN.value());
+                    Map<String, String> error = new HashMap<>();
+                    error.put("codigo", "JWT_ERRO");
+                    error.put("mensagem", "Token Expirado.");
+                    response.setContentType(APPLICATION_JSON_VALUE);
+                    new ObjectMapper().writeValue(response.getOutputStream(), error);
 
-                   } catch (IOException ex) {
-                       throw new RuntimeException(ex);
-                   }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
 
-               }
+            }
 
-                if (user != null && user.get(AUTHORITIES) != null) {
+            if (user != null && user.get(AUTHORITIES) != null) {
 
-                    List<SimpleGrantedAuthority> permissoes = ((ArrayList<String>) user.get(AUTHORITIES))
-                            .stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .toList();
-                    return new UsernamePasswordAuthenticationToken(user, null, permissoes);
-                } else {
+                List<SimpleGrantedAuthority> permissoes = ((ArrayList<String>) user.get(AUTHORITIES))
+                        .stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+                return new UsernamePasswordAuthenticationToken(user, null, permissoes);
+            } else {
 
-                    try {
-                        response.setHeader("error", "Autenticação falhou.");
-                        response.setStatus(FORBIDDEN.value());
-                        Map<String, String> error = new HashMap<>();
-                        error.put("codigo", "JWT_ERRO");
-                        error.put("mensagem", "Autenticação falhou.");
-                        response.setContentType(APPLICATION_JSON_VALUE);
-                        new ObjectMapper().writeValue(response.getOutputStream(), error);
+                try {
+                    response.setHeader("error", "Autenticação falhou.");
+                    response.setStatus(FORBIDDEN.value());
+                    Map<String, String> error = new HashMap<>();
+                    error.put("codigo", "JWT_ERRO");
+                    error.put("mensagem", "Autenticação falhou.");
+                    response.setContentType(APPLICATION_JSON_VALUE);
+                    new ObjectMapper().writeValue(response.getOutputStream(), error);
 
-                    } catch (IOException e) {
-                        throw new RuntimeException("Autenticação falhou. " + e.getMessage());
-                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("Autenticação falhou. " + e.getMessage());
                 }
             }
+        }
 
         return null;
     }

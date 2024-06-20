@@ -18,6 +18,7 @@ CREATE TABLE loja (
 	identificacao VARCHAR(255),
 	nome VARCHAR(255),
 	status BIT,
+	empresa_id BIGINT,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB;
 
@@ -159,6 +160,8 @@ CREATE INDEX IDX_CPF_VOUCHER ON voucher (cliente_cpf);
 CREATE INDEX IDX_PROMO_GUID_VOUCHER ON voucher (promocao_guid);
 
 ALTER TABLE loja ADD CONSTRAINT UK_LojaCnpj UNIQUE (cnpj);
+
+ALTER TABLE loja ADD CONSTRAINT FK_LojaAnyEmpresaId FOREIGN KEY (empresa_id) REFERENCES empresa (id);
 
 ALTER TABLE usuario  ADD CONSTRAINT UK_UsuarioEmail UNIQUE (email);
 

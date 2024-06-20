@@ -101,15 +101,15 @@ public class RefreshTokenController {
                         Map<String, Object> claims = new HashMap<>();
 
                         claims.put(AUTHORITIES, jwtUtil.getPrefilRolesPerfilUsuario(user));
+                        claims.put("nome", user.getUserName());
 
                         String jwtToken = Jwts.builder()
                                 .setSubject(user.getEmail())
                                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TOKEN))
                                 .setIssuer(request.getRequestURL().toString())
                                 .signWith(SignatureAlgorithm.HS512, JWT_KEY)
-                                .claim("nome", user.getUserName())
-                                .claim("empresa", user.getEmpresa().getNome())
-                                .claim("empresaGuid", user.getEmpresa().getGuid())
+                                .claim("empresa", user.getEmpresa() != null? user.getEmpresa().getNome() : "VOUCHER")
+                                .claim("empresaGuid", user.getEmpresa() != null ? user.getEmpresa().getGuid() : "")
                                 .addClaims(claims)
                                 .compact();
 
