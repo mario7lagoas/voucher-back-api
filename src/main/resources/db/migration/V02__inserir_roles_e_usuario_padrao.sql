@@ -1,3 +1,6 @@
+INSERT INTO empresa
+VALUES (1,now(), now(), '4b1079ae-87ed-4d62-a8fd-34de66bf7ffe', 'C0001', 'TIBBI IT SOLUTIONS LTDA', 1);
+
 INSERT INTO role
 VALUES  (1, 'MENU_LOJA'),(2, 'MENU_USUARIO'), (3, 'MENU_PROMOCAO'), (4, 'MENU_PERFIL'), (5, 'MENU_VOUCHER'),
 (6, 'BUSCAR_LOJA'), (7, 'ALTERAR_LOJA'), (8, 'CADASTRAR_LOJA'), (9, 'APAGAR_LOJA'),
@@ -7,13 +10,13 @@ VALUES  (1, 'MENU_LOJA'),(2, 'MENU_USUARIO'), (3, 'MENU_PROMOCAO'), (4, 'MENU_PE
 (22, 'BUSCAR_VOUCHER'),  (23, 'ALTERAR_VOUCHER'), (24, 'CADASTRAR_VOUCHER'),   (25, 'APAGAR_VOUCHER'),
 (26, 'BUSCAR_EMPRESA'),  (27, 'ALTERAR_EMPRESA'), (28, 'CADASTRAR_EMPRESA'),   (29, 'APAGAR_EMPRESA');
 
-INSERT INTO perfil VALUES ('1', now(), now(), '5f3b0d4f-d8ef-4be7-a83b-8580a27d7288', 'Moderator');
+INSERT INTO perfil VALUES ('1', now(), now(), '5f3b0d4f-d8ef-4be7-a83b-8580a27d7288', 'Moderator', 1);
 
 INSERT perfil_roles VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),
 (1,15),(1,16),(1,17),(1,18),(1,19),(1,20),(1,21),(1,22),(1,23),(1,24),(1,25),(1,26),(1,27),(1,28),(1,29);
 
 INSERT INTO usuario VALUES (1, now(), now(),'1a3bc269-e268-477c-9de8-8f225a0b9c89', 'mario7lagoas@gmail.com',
-'$2a$10$2jLw.pBVFdxWsRVq/ECKhuL5JiqrpaIOkXuNGG/En37yHYv/nxbKW',true, 'Mario Sergio', null);
+'$2a$10$2jLw.pBVFdxWsRVq/ECKhuL5JiqrpaIOkXuNGG/En37yHYv/nxbKW',true, 'Mario Sergio', 1);
 
 INSERT INTO  usuario_perfil VALUES (1,1);
 

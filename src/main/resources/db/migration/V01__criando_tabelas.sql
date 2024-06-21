@@ -28,6 +28,7 @@ CREATE TABLE perfil (
 	data_cadastro DATETIME(6),
 	guid VARCHAR(255),
 	nome VARCHAR(255),
+	empresa_id BIGINT,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB;
 
@@ -170,6 +171,8 @@ ALTER TABLE promocoes_lojas ADD CONSTRAINT UKiqrxcawavvo1rybihlapphm28 UNIQUE (p
 ALTER TABLE perfil_roles ADD CONSTRAINT UKmvyn5fhyitlav9mbkxp4pauqu UNIQUE (perfil_id, role_id);
 
 ALTER TABLE usuario_loja ADD CONSTRAINT UK52bbm870o4b1n3aiqvw5p1fcv unique (usuario_id, loja_id);
+
+ALTER TABLE perfil ADD CONSTRAINT FK_PerfilAnyEmpresaId FOREIGN KEY (empresa_id) REFERENCES empresa (id);
 
 ALTER TABLE perfil_roles  ADD CONSTRAINT FK_PerilRolesAndRoleId FOREIGN KEY (role_id) REFERENCES role (id);
 

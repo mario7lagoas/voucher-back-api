@@ -1969,6 +1969,8 @@ components:
           type: string
           example: "2024-05-07 11:48:11"
           description: "Data do cadastro"
+        empresa:
+          $ref: '#/components/schemas/EmpresaResumidoApiResponse'
     EmpresaApiRequest:
       required:
         - nome
@@ -2010,6 +2012,20 @@ components:
           type: string
           example: "2024-05-07 11:48:11"
           description: "Data do cadastro"
+    EmpresaResumidoApiResponse:
+      properties:
+        guid:
+          type: string
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
+          description: "Identificador guid"
+        nome:
+          type: string
+          example: "TIBBI SOLUCOES"
+          description: "Nome da Empresa"
+        identificacao:
+          type: string
+          example: "C0001"
+          description: "Idenficação da Empresa"
     PerfilApiRequest:
       required:
         - nome
@@ -2020,6 +2036,10 @@ components:
           type: string
           description: "Nome do Perfil"
           example: Moderator
+        empresa:
+          type: string
+          description: "GUID da Empresa associada."
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
         roles:
           type: array
           description: "Permissões do Perfil"
@@ -2064,6 +2084,8 @@ components:
           description: "Permissões do Perfil"
           items:
             $ref: '#/components/schemas/RoleApiResponse'
+        empresa:
+          $ref: '#/components/schemas/EmpresaResumidoApiResponse'
     RoleApiResponse:
       type: object
       properties:
@@ -2109,7 +2131,7 @@ components:
           items:
             $ref: '#/components/schemas/LojaApiResponse'
         empresa:
-          $ref: '#/components/schemas/EmpresaApiResponse'
+          $ref: '#/components/schemas/EmpresaResumidoApiResponse'
     UsuarioPerfilApiRequest:
       type: object
       properties:
@@ -2154,7 +2176,7 @@ components:
             $ref: '#/components/schemas/GuidApiRequest'
         empresa:
           type: string
-          description: "GUID da empresa do Usuario"
+          description: "GUID da Empresa associada."
           example: "aaaa-bbbb-cccc-dddd-eeeee"
     UsuarioUpdateApiRequest:
       type: object
@@ -2187,5 +2209,5 @@ components:
             $ref: '#/components/schemas/GuidApiRequest'
         empresa:
           type: string
-          description: "GUID da empresa associada."
+          description: "GUID da Empresa associada."
           example: "aaaa-bbbb-cccc-dddd-eeeee"

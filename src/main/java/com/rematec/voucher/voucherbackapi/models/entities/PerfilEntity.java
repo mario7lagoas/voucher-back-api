@@ -9,6 +9,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.Serializable;
 import java.util.List;
@@ -44,5 +46,10 @@ public class PerfilEntity extends BaseEntity implements Serializable {
             uniqueConstraints = @UniqueConstraint(columnNames = {"perfil_id", "role_id"})
     )
     private List<RoleEntity> roles;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private EmpresaEntity empresa;
 
 }

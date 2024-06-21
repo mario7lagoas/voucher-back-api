@@ -82,8 +82,8 @@ public class SecurityConfiguration {
                             .hasAnyAuthority( PermissaoEnum.BUSCAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.GET, "/voucher")
                             .hasAnyAuthority( PermissaoEnum.BUSCAR_VOUCHER.getRole())
-                            .requestMatchers(HttpMethod.GET, "/empresa")
-                            .hasAnyAuthority( PermissaoEnum.BUSCAR_EMPRESA.getRole())
+                            .requestMatchers(HttpMethod.GET, "/empresa").permitAll()
+                            //.hasAnyAuthority( PermissaoEnum.BUSCAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.PUT, "/loja")
                             .hasAnyAuthority( PermissaoEnum.ALTERAR_LOJA.getRole())
