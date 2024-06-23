@@ -7,6 +7,7 @@ import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
+import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
@@ -50,7 +51,6 @@ import static com.rematec.voucher.voucherbackapi.builders.PromocaoUpdateApiReque
 import static com.rematec.voucher.voucherbackapi.builders.UpdateStatusApiRequestBuilder.umUpdateStatusApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioApiRequestBuilder.umUsuarioApiRequest;
 import static com.rematec.voucher.voucherbackapi.builders.UsuarioUpdateApiRequestBuilder.umUsuarioUpdateApiRequest;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -710,6 +710,20 @@ public class VoucherBackFacadeTest {
 
         //then
         Assertions.assertNotNull(guid);
+    }
+
+    @Test
+    @DisplayName("Should Return A List EmpresaResumidoApiResponse Successfully")
+    public void buscandoListaEmpresaResumidoCase1() {
+
+        //having
+        when(this.empresaService.buscandoListaEmpresaResumido()).thenReturn(new CollisionCheckStack<EmpresaResumidoApiResponse>());
+
+        //when
+        List<EmpresaResumidoApiResponse> responses = this.voucherBackFacade.buscandoListaEmpresaResumido();
+
+        //then
+        Assertions.assertNotNull(responses);
     }
 
 }

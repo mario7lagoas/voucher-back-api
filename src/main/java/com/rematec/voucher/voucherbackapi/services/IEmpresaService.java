@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
+import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface IEmpresaService {
     EmpresaApiResponse buscandoEmpresaPeloGUID(String guid);
     EmpresaApiResponse alterandoEmpresa(String guid, EmpresaApiRequest empresaApiRequest);
     void apagandoEmpresa(String guid);
+    List<EmpresaResumidoApiResponse> buscandoListaEmpresaResumido();
 }

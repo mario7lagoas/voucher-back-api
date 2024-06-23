@@ -2,9 +2,9 @@ package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
+import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
-import com.rematec.voucher.voucherbackapi.exceptios.LojaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirEmpresaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
 import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
@@ -283,6 +283,19 @@ public class EmpresaServiceImplTest {
                 () -> this.empresaService.apagandoEmpresa(guid));
 
         assertThat(exception.getMessage(), is("Empresa não pode ser Excluida."));
+    }
+
+    @Test
+    @DisplayName("Should Return A List EmpresaResumidoApiResponse Successfully")
+    public void buscandoListaEmpresaResumidoCase1() {
+        //having
+        when(this.iEmpresaRepository.findAll()).thenReturn(new CollisionCheckStack<EmpresaEntity>());
+
+        //when
+        List<EmpresaResumidoApiResponse> responses = this.empresaService.buscandoListaEmpresaResumido();
+
+        //then
+        Assertions.assertNotNull(responses);
     }
 
 }

@@ -5,6 +5,7 @@ import com.rematec.voucher.models.BuscandoListaPaginadaLoja200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.BuscandoListaPaginadaUsuario200Response;
 import com.rematec.voucher.models.EmpresaApiResponse;
+import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
@@ -71,5 +72,9 @@ public interface VouckBackMapper {
     List<EmpresaApiResponse> listEmpresaEntityToListEmpresaApiResponse(List<EmpresaEntity> all);
 
     EmpresaApiResponse empresaEntityToEmpresaApiResponse(EmpresaEntity  empresaEntity);
+
+    List<EmpresaResumidoApiResponse> listEmpresaEntityToListEmpresaResumidoApiResponse(List<EmpresaEntity> all);
+
+    EmpresaResumidoApiResponse EmpresaEntityToEmpresaResumidoApiResponse(EmpresaEntity entity);
 }
 

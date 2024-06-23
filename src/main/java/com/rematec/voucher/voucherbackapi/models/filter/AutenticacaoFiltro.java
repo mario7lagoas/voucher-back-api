@@ -35,7 +35,8 @@ public class AutenticacaoFiltro extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (!"/voucher-back/v1/login/refresh".equals(request.getRequestURI())
+
+        if (!request.getContextPath().concat("/login/refresh").equals(request.getRequestURI())
                 && !"refresh_token".equals(request.getParameter("grant_type"))) {
 
                 Authentication authentication = AutenticacaoService.obterAutenticacao(request, response);

@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.services;
 
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
+import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaCadastradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirEmpresaException;
@@ -93,5 +94,10 @@ class EmpresaServiceImpl implements IEmpresaService {
         }
 
         this.iEmpresaRepository.delete(empresaEntity);
+    }
+
+    @Override
+    public List<EmpresaResumidoApiResponse> buscandoListaEmpresaResumido() {
+        return this.mapper.listEmpresaEntityToListEmpresaResumidoApiResponse(this.iEmpresaRepository.findAll());
     }
 }

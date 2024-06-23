@@ -2,6 +2,7 @@ package com.rematec.voucher.voucherbackapi.controllers;
 
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
+import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,5 +43,11 @@ public class EmpresaController implements EmpresaApi{
     public ResponseEntity<Void> apagandoEmpresa(String guid) {
         this.empresaService.apagandoEmpresa(guid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<List<EmpresaResumidoApiResponse>> buscandoListaEmpresaResumido() {
+        return new ResponseEntity<List<EmpresaResumidoApiResponse>>(this.empresaService.buscandoListaEmpresaResumido(),
+                HttpStatus.OK);
     }
 }

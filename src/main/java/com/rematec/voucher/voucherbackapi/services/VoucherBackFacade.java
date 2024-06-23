@@ -8,6 +8,7 @@ import com.rematec.voucher.models.ConsultaVoucherApiRequest;
 import com.rematec.voucher.models.ConsultaVoucherApiResponse;
 import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
+import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 import com.rematec.voucher.models.LojaApiRequest;
 import com.rematec.voucher.models.LojaApiResponse;
 import com.rematec.voucher.models.LojaUpdateApiRequest;
@@ -236,5 +237,9 @@ public class VoucherBackFacade {
 
     public void apagandoEmpresa(String guid) {
         this.empresaService.apagandoEmpresa(guid);
+    }
+
+    public List<EmpresaResumidoApiResponse> buscandoListaEmpresaResumido() {
+        return this.empresaService.buscandoListaEmpresaResumido();
     }
 }
