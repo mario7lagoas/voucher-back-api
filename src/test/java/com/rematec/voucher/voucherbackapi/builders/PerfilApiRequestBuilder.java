@@ -27,6 +27,11 @@ public class PerfilApiRequestBuilder {
         return this;
     }
 
+    public PerfilApiRequestBuilder empresa(String empresa){
+        perfilApiRequest.setEmpresa(empresa);
+        return this;
+    }
+
     public PerfilApiRequestBuilder comRoles(){
         perfilApiRequest.setRoles(Arrays.asList(umRoleApiResponse().agora()));
         return this;

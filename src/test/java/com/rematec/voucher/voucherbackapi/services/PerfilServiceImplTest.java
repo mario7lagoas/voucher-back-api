@@ -5,10 +5,13 @@ import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.models.PerfilUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IPerfilRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
@@ -53,8 +56,12 @@ public class PerfilServiceImplTest {
     @Mock
     private IUsuarioRepository iUsuarioRepository;
 
+    @Mock
+    private IEmpresaRepository iEmpresaRepository;
+
     @Spy
     private VouckBackMapper mapper;
+
     @Spy
     private VoucherUtil voucherUtil;
 
@@ -94,11 +101,12 @@ public class PerfilServiceImplTest {
     public void criandoPerfilCase1() {
 
         //having
-        PerfilApiRequest request = umPerfilApiRequest().comRoles().agora();
+        PerfilApiRequest request = umPerfilApiRequest().empresa("123456").comRoles().agora();
 
         when(this.iPerfilRepository.save(any(PerfilEntity.class))).thenReturn(new PerfilEntity());
         when(this.voucherUtil.listRoleApiResponseToListRoleEntity(anyList()))
                 .thenReturn(new CollisionCheckStack<RoleEntity>());
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.of(new EmpresaEntity()));
         when(mapper.perfilEntityToPerfilApiResponse(any(PerfilEntity.class))).thenReturn(new PerfilApiResponse());
 
 
@@ -106,7 +114,7 @@ public class PerfilServiceImplTest {
         PerfilApiResponse perfilResponse = this.perfilService.criandoPerfil(request);
 
         //then
-
+        Assertions.assertNotNull(request);
         Assertions.assertNotNull(perfilResponse);
 
         verify(this.iPerfilRepository, times(1)).save(
@@ -198,6 +206,44 @@ public class PerfilServiceImplTest {
 
         assertThat(exception.getMessage(), is("Permissão do Perfil é Obrigatório."));
 
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To Empresa Is Empty")
+    public void criandoPerfilCase7() {
+
+        //having
+        PerfilApiRequest request = umPerfilApiRequest().comRoles().agora();
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.perfilService.criandoPerfil(request));
+
+        assertThat(exception.getMessage(), is("Identificacão da Empresa é Obrigatorio."));
+
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Try To And Empresa Does Not Exist")
+    public void criandoPerfilCase8() {
+
+        //having
+        PerfilApiRequest request = umPerfilApiRequest().empresa("123456").comRoles().agora();
+
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+
+        Exception exception = Assertions.assertThrows(EmpresaNaoEncontradaException.class,
+                () -> this.perfilService.criandoPerfil(request));
+
+        assertThat(exception.getMessage(), is("Empresa não encontrada."));
     }
 
     @Test

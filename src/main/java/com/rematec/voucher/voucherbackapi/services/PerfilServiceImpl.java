@@ -4,11 +4,14 @@ import com.rematec.voucher.models.PerfilApiRequest;
 import com.rematec.voucher.models.PerfilApiResponse;
 import com.rematec.voucher.models.PerfilResumidoApiResponse;
 import com.rematec.voucher.models.PerfilUpdateApiRequest;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoExcluirPerfilException;
 import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilCadastradoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PerfilNaoEncontradoException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IPerfilRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
@@ -35,6 +38,9 @@ class PerfilServiceImpl implements IPerfilService {
 
     @Autowired
     private IUsuarioRepository iUsuarioRepository;
+
+    @Autowired
+    private IEmpresaRepository iEmpresaRepository;
 
     @Override
     public List<PerfilApiResponse> buscandoListaPerfil() {
@@ -80,10 +86,18 @@ class PerfilServiceImpl implements IPerfilService {
             throw new PerfilCadastradoException("Já existe um Perfil com este nome.");
         }
 
+        if (!this.voucherUtil.checkDataNullAndEmpty(perfilApiRequest.getEmpresa())) {
+            throw new BadRequestException("Identificacão da Empresa é Obrigatorio.");
+        }
+
+        EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(perfilApiRequest.getEmpresa())
+                .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+
         PerfilEntity perfilEntity = PerfilEntity.builder()
                 .guid(UUID.randomUUID().toString())
                 .nome(perfilApiRequest.getNome())
                 .roles(this.voucherUtil.listRoleApiResponseToListRoleEntity(perfilApiRequest.getRoles()))
+                .empresa(empresaEntity)
                 .build();
         return this.mapper.perfilEntityToPerfilApiResponse(this.iPerfilRepository.save(perfilEntity));
 
