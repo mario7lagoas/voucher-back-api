@@ -35,9 +35,8 @@ public class PromocaoApiRequestBuilder {
         builder.promocaoApiRequest.setAutorAlteracao("Any athor");
         return builder;
     }
-
-    public PromocaoApiRequestBuilder descricao(String nome) {
-        promocaoApiRequest.setDescricao(nome);
+    public PromocaoApiRequestBuilder empresa(String empresa) {
+        promocaoApiRequest.setEmpresa(empresa);
         return this;
     }
 
@@ -48,41 +47,6 @@ public class PromocaoApiRequestBuilder {
 
     public PromocaoApiRequestBuilder fim(String fim) {
         promocaoApiRequest.setFim(fim);
-        return this;
-    }
-
-    public PromocaoApiRequestBuilder tipoDesconto(String tipodesconto) {
-        promocaoApiRequest.setTipoDesconto(tipodesconto);
-        return this;
-    }
-
-    public PromocaoApiRequestBuilder promocaoStatus(String promocaoStatus) {
-        promocaoApiRequest.setPromocaoStatus(promocaoStatus);
-        return this;
-    }
-
-    public PromocaoApiRequestBuilder descontoValor(BigDecimal decimal) {
-        promocaoApiRequest.setDescontoValor(decimal);
-        return this;
-    }
-
-    public PromocaoApiRequestBuilder descontoPercentual(BigDecimal decimal) {
-        promocaoApiRequest.setDescontoPercentual(decimal);
-        return this;
-    }
-
-    public PromocaoApiRequestBuilder valorMaximoDesconto(BigDecimal decimal) {
-        promocaoApiRequest.setValorMaximoDesconto(decimal);
-        return this;
-    }
-
-    public PromocaoApiRequestBuilder valorMinimoParaDisparo(BigDecimal decimal) {
-        promocaoApiRequest.setValorMinimoParaDisparo(decimal);
-        return this;
-    }
-
-    public PromocaoApiRequestBuilder comLoja() {
-        promocaoApiRequest.setLojas(Arrays.asList(umGuidApiRequest().agora()));
         return this;
     }
 

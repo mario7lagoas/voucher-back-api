@@ -4,10 +4,14 @@ import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.PromocaoUpdateApiRequest;
+import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.enums.PromocaoStatusEnum;
@@ -53,6 +57,9 @@ public class PromocaoServiceImplTest {
 
     @Mock
     private IPromocaoRepository iPromocaoRepository;
+
+    @Mock
+    private IEmpresaRepository iEmpresaRepository;
 
     @Spy
     private VouckBackMapper mapper;
@@ -106,9 +113,10 @@ public class PromocaoServiceImplTest {
     @DisplayName("Should Create a Promoção Successfully")
     public void criandoPromocaoCase1() {
         //having
-        PromocaoApiRequest request = umaPromocaoApiRequest().agora();
+        PromocaoApiRequest request = umaPromocaoApiRequest().empresa("123456").agora();
 
         when(this.iPromocaoRepository.save(any(PromocaoEntity.class))).thenReturn(new PromocaoEntity());
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.of(new EmpresaEntity()));
         when(this.mapper.promocaoEntityToPromocaoApiResponse(any(PromocaoEntity.class))).thenReturn(new PromocaoApiResponse());
 
         //when
@@ -130,9 +138,12 @@ public class PromocaoServiceImplTest {
     public void criandoPromocaoCase2() {
         //having
         PromocaoApiRequest request = umaPromocaoApiRequest()
+                .empresa("123456")
                 .inicio(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
                 .fim(LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
                 .agora();
+
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.of(new EmpresaEntity()));
         //when
 
         //then
@@ -148,10 +159,12 @@ public class PromocaoServiceImplTest {
     public void criandoPromocaoCase3() {
         //having
         PromocaoApiRequest request = umaPromocaoApiRequest()
+                .empresa("123456")
                 .inicio(LocalDateTime.now().plusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
                 .fim(LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString())
                 .agora();
 
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.of(new EmpresaEntity()));
         //when
 
         //then
@@ -160,6 +173,43 @@ public class PromocaoServiceImplTest {
                 () -> this.promocaoService.criandoPromocao(request));
 
         assertThat(exception.getMessage(), is("Data inicial maior que data final."));
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Trying to Create A Promoção And Empresa Does Not Exist")
+    public void criandoPromocaoCase4() {
+
+        //having
+        PromocaoApiRequest request = umaPromocaoApiRequest().empresa("123456").agora();
+
+        when(this.iEmpresaRepository.findByGuid(request.getEmpresa())).thenReturn(Optional.empty());
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+
+        Exception exception = Assertions.assertThrows(EmpresaNaoEncontradaException.class,
+                () -> this.promocaoService.criandoPromocao(request));
+
+        assertThat(exception.getMessage(), is("Empresa não encontrada."));
+    }
+
+    @Test
+    @DisplayName("Should Thrown An Exception When Trying to Create A Promoção And Empresa Is Empty")
+    public void criandoPerfilCase5() {
+
+        //having
+        PromocaoApiRequest request = umaPromocaoApiRequest().agora();
+
+        //when
+
+        //then
+        Assertions.assertNotNull(request);
+        Exception exception = Assertions.assertThrows(BadRequestException.class,
+                () -> this.promocaoService.criandoPromocao(request));
+
+        assertThat(exception.getMessage(), is("Identificacão da Empresa é Obrigatorio."));
     }
 
     @Test
@@ -435,7 +485,7 @@ public class PromocaoServiceImplTest {
 
         doReturn(List.of(1L)).when(this.voucherUtil).getListLojaIdForUsuarioEmail(email);
         when(this.iPromocaoRepository.filtrar(any(PromocaoFiltro.class), any(PageRequest.class)))
-                .thenReturn(new BuscandoListaPaginadaPromocao200Response() );
+                .thenReturn(new BuscandoListaPaginadaPromocao200Response());
 
         //when
         BuscandoListaPaginadaPromocao200Response responses = this.promocaoService.buscandoListaFiltroPromocao(

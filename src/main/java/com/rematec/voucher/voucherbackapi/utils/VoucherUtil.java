@@ -195,14 +195,15 @@ public class VoucherUtil {
             return LocalDateTime.parse(dateTime, formatter);
         }
         return null;
-
     }
 
     public List<Long> getListLojaIdForUsuarioEmail(String email) {
 
         List<LojaEntity> lojaEntities = this.iLojaRepository.findByUsuariosEmail(email);
 
-        return  lojaEntities != null && !lojaEntities.isEmpty() ?
-                lojaEntities.stream().map(LojaEntity::getId).toList() : List.of(0L);
+        if (!lojaEntities.isEmpty()){
+            return lojaEntities.stream().map(LojaEntity::getId).toList();
+        }
+        return null;
     }
 }

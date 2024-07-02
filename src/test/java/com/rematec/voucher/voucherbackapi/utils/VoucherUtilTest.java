@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.rematec.voucher.voucherbackapi.builders.LojaEntityBuilder.umaLojaEntity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -52,7 +53,6 @@ public class VoucherUtilTest {
         //then
         Assertions.assertNull(lojaEntities);
     }
-
 
     @Test
     @DisplayName("Should Return A  List LojaEntity Successfully")
@@ -197,5 +197,36 @@ public class VoucherUtilTest {
 
     }
 
+    @Test
+    @DisplayName("Should Return A List To Long Successfully")
+    public void getListLojaIdForUsuarioEmailCase1() {
+
+        //having
+        when(this.iLojaReposity.findByUsuariosEmail(anyString())).thenReturn(Collections.singletonList(umaLojaEntity().agora()));
+
+        //when
+
+        List<Long> ids  = this.voucherUtil.getListLojaIdForUsuarioEmail(anyString());
+
+        //then
+        Assertions.assertNotNull(ids);
+
+    }
+
+    @Test
+    @DisplayName("Should Return A List null Successfully")
+    public void getListLojaIdForUsuarioEmailCase2() {
+
+        //having
+        when(this.iLojaReposity.findByUsuariosEmail(anyString())).thenReturn(List.of());
+
+        //when
+
+        List<Long> ids  = this.voucherUtil.getListLojaIdForUsuarioEmail(anyString());
+
+        //then
+        Assertions.assertNull(ids);
+
+    }
 
 }

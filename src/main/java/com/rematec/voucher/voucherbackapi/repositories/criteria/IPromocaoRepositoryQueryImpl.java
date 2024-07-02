@@ -87,13 +87,15 @@ public class IPromocaoRepositoryQueryImpl implements IPromocaoRepositoryQuery {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        Join<PromocaoEntity, LojaEntity> promocaoEntityLojaEntityJoin = root.join("lojas");
+        if (promocaoFiltro.getIdLojas() != null) {
+            Join<PromocaoEntity, LojaEntity> promocaoEntityLojaEntityJoin = root.join("lojas");
 
-        Path<Long> promocaoEntityId = promocaoEntityLojaEntityJoin.get("id");
+            Path<Long> promocaoEntityId = promocaoEntityLojaEntityJoin.get("id");
 
-        predicates.add(
-                builder.isTrue(promocaoEntityId.in(promocaoFiltro.getIdLojas()))
-        );
+            predicates.add(
+                    builder.isTrue(promocaoEntityId.in(promocaoFiltro.getIdLojas()))
+            );
+        }
 
         if (!StringUtils.isEmpty(promocaoFiltro.getDescricao())) {
             predicates.add(builder.like(

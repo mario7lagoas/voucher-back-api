@@ -5,10 +5,14 @@ import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.PromocaoUpdateApiRequest;
 import com.rematec.voucher.voucherbackapi.builders.PromocaoRequestBuilder;
+import com.rematec.voucher.voucherbackapi.exceptios.BadRequestException;
+import com.rematec.voucher.voucherbackapi.exceptios.EmpresaNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoAlterarStatusException;
 import com.rematec.voucher.voucherbackapi.exceptios.NaoPermitidoException;
 import com.rematec.voucher.voucherbackapi.exceptios.PromocaoNaoEncontradaException;
 import com.rematec.voucher.voucherbackapi.mapper.VouckBackMapper;
+import com.rematec.voucher.voucherbackapi.models.entities.EmpresaEntity;
+import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IPromocaoRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PromocaoEntity;
 import com.rematec.voucher.voucherbackapi.enums.PromocaoStatusEnum;
@@ -37,6 +41,9 @@ class PromocaoServiceImpl implements IPromocaoService {
     @Autowired
     private VoucherUtil voucherUtil;
 
+    @Autowired
+    private IEmpresaRepository iEmpresaRepository;
+
     @Override
     public List<PromocaoApiResponse> buscandoListaPromocao() {
         return this.mapper.listPromocaoEntityToListPromocaoApiResponse(this.iPromocaoRepository.findAll());
@@ -44,6 +51,13 @@ class PromocaoServiceImpl implements IPromocaoService {
 
     @Override
     public PromocaoApiResponse criandoPromocao(PromocaoApiRequest promocaoApiRequest) {
+
+        if (!this.voucherUtil.checkDataNullAndEmpty(promocaoApiRequest.getEmpresa())) {
+            throw new BadRequestException("Identificacão da Empresa é Obrigatorio.");
+        }
+
+        EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(promocaoApiRequest.getEmpresa())
+                .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
 
         LocalDateTime fim = this.voucherUtil.stringToLocalDateTime(promocaoApiRequest.getFim());
 
@@ -63,6 +77,7 @@ class PromocaoServiceImpl implements IPromocaoService {
                 .promocaoStatus(PromocaoStatusEnum.PROGRESSO)
                 .inicio(inicio)
                 .fim(fim)
+                .empresa(empresaEntity)
                 .autorAlteracao(promocaoApiRequest.getAutorAlteracao())
                 .valorMinimoParaDisparo(promocaoApiRequest.getValorMinimoParaDisparo())
                 .descontoPercentual(promocaoApiRequest.getDescontoPercentual() != null ?
@@ -202,6 +217,8 @@ class PromocaoServiceImpl implements IPromocaoService {
     public BuscandoListaPaginadaPromocao200Response buscandoListaFiltroPromocao(String descricao, String tipo,
                                                                                 String status, String inicio, String fim,
                                                                                 Integer page, Integer size, String email) {
+        List<Long> ids = this.voucherUtil.getListLojaIdForUsuarioEmail(email);
+
         PromocaoFiltro filtro = PromocaoFiltro.builder()
                 .descricao(descricao)
                 .tipoDesconto(tipo)

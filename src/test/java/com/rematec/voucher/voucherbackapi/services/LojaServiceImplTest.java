@@ -95,7 +95,7 @@ public class LojaServiceImplTest {
         Integer size = 10;
 
         Pageable pageable = PageRequest.of(page, size);
-        List<LojaEntity> lojaEntities = Arrays.asList(umaLojaEntity().agora());
+        List<LojaEntity> lojaEntities = Collections.singletonList(umaLojaEntity().agora());
         Page<LojaEntity> lojaEntityPage = new PageImpl<>(lojaEntities, pageable, 1L);
 
         when(this.iLojaReposity.findByCnpjContaining(cnpj, PageRequest.of(page, size))).thenReturn(lojaEntityPage);

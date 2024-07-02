@@ -53,6 +53,7 @@ CREATE TABLE promocao (
 	tipo_desconto ENUM ('VALOR','PERCENTUAL'),
 	valor_maximo_desconto DECIMAL(38,2),
 	valor_minimo_para_disparo DECIMAL(38,2),
+	empresa_id BIGINT,
 	PRIMARY KEY (id)
 )ENGINE=InnoDB;
 
@@ -164,7 +165,9 @@ CREATE INDEX IDX_PROMO_GUID_VOUCHER ON voucher (promocao_guid);
 
 ALTER TABLE loja ADD CONSTRAINT UK_LojaCnpj UNIQUE (cnpj);
 
-ALTER TABLE loja ADD CONSTRAINT FK_LojaAnyEmpresaId FOREIGN KEY (empresa_id) REFERENCES empresa (id);
+ALTER TABLE promocao ADD CONSTRAINT FK_PromocaoAndEmpresaId FOREIGN KEY (empresa_id) REFERENCES empresa (id);
+
+ALTER TABLE loja ADD CONSTRAINT FK_LojaAndEmpresaId FOREIGN KEY (empresa_id) REFERENCES empresa (id);
 
 ALTER TABLE usuario  ADD CONSTRAINT UK_UsuarioEmail UNIQUE (email);
 
@@ -174,7 +177,7 @@ ALTER TABLE perfil_roles ADD CONSTRAINT UKmvyn5fhyitlav9mbkxp4pauqu UNIQUE (perf
 
 ALTER TABLE usuario_loja ADD CONSTRAINT UK52bbm870o4b1n3aiqvw5p1fcv unique (usuario_id, loja_id);
 
-ALTER TABLE perfil ADD CONSTRAINT FK_PerfilAnyEmpresaId FOREIGN KEY (empresa_id) REFERENCES empresa (id);
+ALTER TABLE perfil ADD CONSTRAINT FK_PerfilAndEmpresaId FOREIGN KEY (empresa_id) REFERENCES empresa (id);
 
 ALTER TABLE perfil_roles  ADD CONSTRAINT FK_PerilRolesAndRoleId FOREIGN KEY (role_id) REFERENCES role (id);
 

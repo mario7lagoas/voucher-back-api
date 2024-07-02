@@ -209,7 +209,7 @@ public class PerfilServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Thrown An Exception When Try To Empresa Is Empty")
+    @DisplayName("Should Thrown An Exception When Trying to Create A Perfil And Empresa Is Empty")
     public void criandoPerfilCase7() {
 
         //having
@@ -227,7 +227,7 @@ public class PerfilServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should Thrown An Exception When Try To And Empresa Does Not Exist")
+    @DisplayName("Should Thrown An Exception When Trying to Create A Perfil And Empresa Does Not Exist")
     public void criandoPerfilCase8() {
 
         //having

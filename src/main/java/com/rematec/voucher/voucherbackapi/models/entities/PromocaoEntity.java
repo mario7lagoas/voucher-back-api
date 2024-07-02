@@ -14,6 +14,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -68,5 +70,8 @@ public class PromocaoEntity extends BaseEntity implements Serializable {
     )
     private List<LojaEntity> lojas;
 
-
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private EmpresaEntity empresa;
 }

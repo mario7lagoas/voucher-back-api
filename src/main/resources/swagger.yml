@@ -1850,6 +1850,10 @@ components:
           type: string
           example: "Mario Sergio"
           description: "Responsávelpela ultima alteração"
+        empresa:
+          type: string
+          description: "GUID da Empresa associada."
+          example: "aaaa-bbbb-cccc-dddd-eeeee"
         lojas:
           type: array
           description: "Lojas associadas a promoção"
@@ -1906,6 +1910,8 @@ components:
           type: string
           example: "Mario Sergio"
           description: "Responsávelpela ultima alteração"
+        empresa:
+          $ref: '#/components/schemas/EmpresaResumidoApiResponse'
         lojas:
           type: array
           description: "Lojas associadas a promoção"
