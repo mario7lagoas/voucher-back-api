@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -214,7 +215,7 @@ public class VoucherUtilTest {
     }
 
     @Test
-    @DisplayName("Should Return A List null Successfully")
+    @DisplayName("Should Return A List Null Successfully")
     public void getListLojaIdForUsuarioEmailCase2() {
 
         //having
@@ -226,6 +227,41 @@ public class VoucherUtilTest {
 
         //then
         Assertions.assertNull(ids);
+
+    }
+
+    @Test
+    @DisplayName("Should Return A LocalDateTime Successfully")
+    public void stringToLocalDateTimeCase1() {
+
+        //having
+
+        String dateTime = "2024-04-01 09:17:16";
+
+        //when
+
+        LocalDateTime localDateTime = this.voucherUtil.stringToLocalDateTime(dateTime);
+
+        //then
+        Assertions.assertNotNull(dateTime);
+        Assertions.assertNotNull(localDateTime);
+
+    }
+
+    @Test
+    @DisplayName("Should Return A Null")
+    public void stringToLocalDateTimeCase2() {
+
+        //having
+
+        String dateTime = null;
+
+        //when
+
+        LocalDateTime localDateTime = this.voucherUtil.stringToLocalDateTime(dateTime);
+
+        //then
+        Assertions.assertNull(localDateTime);
 
     }
 

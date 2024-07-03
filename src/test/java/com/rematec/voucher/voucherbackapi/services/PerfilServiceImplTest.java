@@ -84,6 +84,21 @@ public class PerfilServiceImplTest {
     }
 
     @Test
+    @DisplayName("Should Return A List PerfilApiResponse By Empresa Guid Successfully")
+    public void buscandoListaPerfilPelaEmpresa() {
+        //having
+        String guid = UUID.randomUUID().toString();
+        when(this.iPerfilRepository.findByEmpresaGuid(guid)).thenReturn(new CollisionCheckStack<PerfilEntity>());
+
+        //when
+        List<PerfilApiResponse> response = this.perfilService.buscandoListaPerfilPelaEmpresa(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
     @DisplayName("Should Return A List PerfilResumidoApiResponse Successfully")
     public void buscandoListaResumidoPerfilCase1() {
         //having

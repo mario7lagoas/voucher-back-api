@@ -18,5 +18,6 @@ public interface IPerfilService {
     PerfilApiResponse criandoPerfil(PerfilApiRequest perfilApiRequest);
     PerfilApiResponse alterandoPerfil(String guid, PerfilUpdateApiRequest perfilApiRequest);
     void apagandoPerfil(String guid);
+    List<PerfilApiResponse> buscandoListaPerfilPelaEmpresa(String guid);
 
 }

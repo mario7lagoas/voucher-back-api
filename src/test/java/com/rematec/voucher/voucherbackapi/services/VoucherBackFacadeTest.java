@@ -227,6 +227,22 @@ public class VoucherBackFacadeTest {
     }
 
     @Test
+    @DisplayName("Should Return A List PerfilApiResponse By Empresa Guid Successfully")
+    public void buscandoListaPerfilPelaEmpresa() {
+
+        //having
+        String guid = UUID.randomUUID().toString();
+        when(this.perfilService.buscandoListaPerfilPelaEmpresa(guid)).thenReturn(new CollisionCheckStack<PerfilApiResponse>());
+
+        //when
+        List<PerfilApiResponse> responses = this.voucherBackFacade.buscandoListaPerfilPelaEmpresa(guid);
+
+        //then
+        Assertions.assertNotNull(guid);
+        Assertions.assertNotNull(responses);
+    }
+
+    @Test
     @DisplayName("Should Return A List PerfilResumidoApiResponse Successfully")
     public void buscandoListaResumidoPerfilCase1() {
 

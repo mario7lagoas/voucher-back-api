@@ -92,6 +92,9 @@ public class VoucherBackFacade {
         return this.perfilService.buscandoListaResumidoPerfil();
     }
 
+    public List<PerfilApiResponse> buscandoListaPerfilPelaEmpresa(String guid) {
+        return this.perfilService.buscandoListaPerfilPelaEmpresa(guid);
+    }
     public PerfilApiResponse buscandoPerfilPeloGUID(String guid) {
         return this.perfilService.buscandoPerfilPeloGUID(guid);
     }
@@ -242,4 +245,6 @@ public class VoucherBackFacade {
     public List<EmpresaResumidoApiResponse> buscandoListaEmpresaResumido() {
         return this.empresaService.buscandoListaEmpresaResumido();
     }
+
+
 }

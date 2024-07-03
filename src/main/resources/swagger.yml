@@ -1177,12 +1177,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorApiResponse'
+  /perfil/{guid}/empresa:
+    get:
+      tags:
+        - Perfil
+      summary: Buscando Lista Perfil Pelo GUID da Empresa
+      description: Buscando Lista Perfil Pelo GUID da Empresa na Plataforma
+      operationId: buscandoListaPerfilPelaEmpresa
+      parameters:
+        - name: guid
+          in: path
+          description: GUID da Empresa
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PerfilApiResponse'
+        '404':
+          description: not found operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiResponse'
   /perfil/{nome}/nome:
     get:
       tags:
         - Perfil
-      summary: Buscando Perfil Pelo Perfil Nome
-      description: Buscando Perfil Pelo Perfil Nome na Plataforma
+      summary: Buscando Perfil Pelo Nome
+      description: Buscando Perfil Pelo Nome na Plataforma
       operationId: buscandoPerfilPeloNome
       parameters:
         - name: nome

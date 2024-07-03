@@ -48,6 +48,11 @@ class PerfilServiceImpl implements IPerfilService {
     }
 
     @Override
+    public List<PerfilApiResponse> buscandoListaPerfilPelaEmpresa(String guid) {
+        return this.mapper.listPerfilEntityToListPerfilApiResponse(this.iPerfilRepository.findByEmpresaGuid(guid));
+    }
+
+    @Override
     public List<PerfilResumidoApiResponse> buscandoListaResumidoPerfil() {
         return this.mapper.listPerfilEntityToListPerfilResumidoApiResponse(this.iPerfilRepository.findAll());
     }

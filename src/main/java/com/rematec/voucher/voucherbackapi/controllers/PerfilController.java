@@ -25,6 +25,12 @@ public class PerfilController implements PerfilApi {
     }
 
     @Override
+    public ResponseEntity<List<PerfilApiResponse>> buscandoListaPerfilPelaEmpresa(String guid) {
+        return new ResponseEntity<List<PerfilApiResponse>>(
+                this.perfilService.buscandoListaPerfilPelaEmpresa(guid), HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<List<PerfilResumidoApiResponse>> buscandoListaResumidoPerfil() {
         return new ResponseEntity<List<PerfilResumidoApiResponse>>(
                 this.perfilService.buscandoListaResumidoPerfil(), HttpStatus.OK);
