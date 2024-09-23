@@ -4,7 +4,6 @@ import com.rematec.voucher.models.EmpresaApiRequest;
 import com.rematec.voucher.models.EmpresaApiResponse;
 import com.rematec.voucher.models.EmpresaResumidoApiResponse;
 import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,10 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class EmpresaController implements EmpresaApi{
+public class EmpresaController implements EmpresaApi {
 
-    @Autowired
-    private VoucherBackFacade empresaService;
+    private final VoucherBackFacade empresaService;
+
+    public EmpresaController(final VoucherBackFacade empresaService) {
+        this.empresaService = empresaService;
+    }
 
     @Override
     public ResponseEntity<List<EmpresaApiResponse>> buscandoListaEmpresa() {

@@ -5,10 +5,8 @@ import com.rematec.voucher.models.BuscandoListaPaginadaPromocao200Response;
 import com.rematec.voucher.models.PromocaoApiRequest;
 import com.rematec.voucher.models.PromocaoApiResponse;
 import com.rematec.voucher.models.PromocaoUpdateApiRequest;
-import com.rematec.voucher.voucherbackapi.factories.ReportFactory;
 import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,10 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class PromocaoController implements PromocaoApi{
+public class PromocaoController implements PromocaoApi {
 
-    @Autowired
-    private VoucherBackFacade promocaoService;
+    private final VoucherBackFacade promocaoService;
+
+    public PromocaoController(final VoucherBackFacade promocaoService) {
+        this.promocaoService = promocaoService;
+    }
 
     @Override
     public ResponseEntity<List<PromocaoApiResponse>> buscandoListaPromocao() {

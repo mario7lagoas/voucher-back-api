@@ -9,9 +9,7 @@ import com.rematec.voucher.models.VoucherFinalizeApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiRequest;
 import com.rematec.voucher.models.VoucherPromocaoApiResponse;
 import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
-import jakarta.validation.Valid;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,8 +19,11 @@ import java.util.List;
 @RestController
 public class VoucherController implements VoucherApi {
 
-    @Autowired
-    private VoucherBackFacade voucherService;
+    private final VoucherBackFacade voucherService;
+
+    public VoucherController(final VoucherBackFacade voucherService) {
+        this.voucherService = voucherService;
+    }
 
     @Override
     public ResponseEntity<ConsultaVoucherApiResponse> consultandoPromocoes(ConsultaVoucherApiRequest consultaVoucherApiRequest) {

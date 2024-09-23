@@ -17,7 +17,6 @@ import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.models.entities.PerfilEntity;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,20 +26,22 @@ import java.util.UUID;
 @Transactional
 class PerfilServiceImpl implements IPerfilService {
 
-    @Autowired
-    private IPerfilRepository iPerfilRepository;
+    private final IPerfilRepository iPerfilRepository;
+    private final VouckBackMapper mapper;
+    private final VoucherUtil voucherUtil;
+    private final IUsuarioRepository iUsuarioRepository;
+    private final IEmpresaRepository iEmpresaRepository;
 
-    @Autowired
-    private VouckBackMapper mapper;
+    public PerfilServiceImpl(final IPerfilRepository iPerfilRepository, final VouckBackMapper mapper,
+                             final VoucherUtil voucherUtil, final IUsuarioRepository iUsuarioRepository,
+                             final IEmpresaRepository iEmpresaRepository){
 
-    @Autowired
-    private VoucherUtil voucherUtil;
-
-    @Autowired
-    private IUsuarioRepository iUsuarioRepository;
-
-    @Autowired
-    private IEmpresaRepository iEmpresaRepository;
+        this.iPerfilRepository = iPerfilRepository;
+        this.mapper = mapper;
+        this.voucherUtil = voucherUtil;
+        this.iUsuarioRepository = iUsuarioRepository;
+        this.iEmpresaRepository = iEmpresaRepository;
+    }
 
     @Override
     public List<PerfilApiResponse> buscandoListaPerfil() {

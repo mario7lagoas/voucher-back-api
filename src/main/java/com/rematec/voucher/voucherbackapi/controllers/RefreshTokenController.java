@@ -11,7 +11,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,11 +33,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/login")
 public class RefreshTokenController {
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
 
-    @Autowired
-    private IUsuarioRepository iUsuarioRepository;
+    private final IUsuarioRepository iUsuarioRepository;
+
+    public RefreshTokenController(final JWTUtil jwtUtil, final IUsuarioRepository iUsuarioRepository) {
+        this.jwtUtil = jwtUtil;
+        this.iUsuarioRepository = iUsuarioRepository;
+    }
+
 
     private static final String REFRESH_TOKEN = "RefreshToken";
     private static final String AUTHORITIES = "authorities";
@@ -46,23 +49,24 @@ public class RefreshTokenController {
     private static final String BEARER = "Bearer ";
     private static final String ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
-    private static String JWT_KEY ;
+    private static String JWT_KEY;
     private static int EXPIRATION_TOKEN;
     private static int EXPIRATION_REFRESH_TOKEN;
+
     @Value("${jwt.secret}")
-    private void setKey(String key){
+    private void setKey(String key) {
         JWT_KEY = key;
     }
+
     @Value("${jwt.expiration}")
-    private void setExpiration(int expiration){
+    private void setExpiration(int expiration) {
         EXPIRATION_TOKEN = expiration;
     }
 
     @Value("${jwt.refreshToken}")
-    private void setRefresh(int refresh){
+    private void setRefresh(int refresh) {
         EXPIRATION_REFRESH_TOKEN = refresh;
     }
-
 
 
     @PostMapping("/refresh")
@@ -93,8 +97,8 @@ public class RefreshTokenController {
                         UsuarioEntity user = iUsuarioRepository.findByEmail(email)
                                 .orElseThrow(() -> new UsernameNotFoundException("Email " + email + " não Encontrado!"));
 
-                        if (user.getStatus().compareTo(false) == 0){
-                            throw new UsuarioInativoException("Usuário "+ user.getUserName() + " Inativado!");
+                        if (user.getStatus().compareTo(false) == 0) {
+                            throw new UsuarioInativoException("Usuário " + user.getUserName() + " Inativado!");
                         }
 
                         Map<String, Object> claims = new HashMap<>();
@@ -107,7 +111,7 @@ public class RefreshTokenController {
                                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TOKEN))
                                 .setIssuer(request.getRequestURL().toString())
                                 .signWith(SignatureAlgorithm.HS512, JWT_KEY)
-                                .claim("empresa", user.getEmpresa() != null? user.getEmpresa().getNome() : "VOUCHER")
+                                .claim("empresa", user.getEmpresa() != null ? user.getEmpresa().getNome() : "VOUCHER")
                                 .claim("empresaGuid", user.getEmpresa() != null ? user.getEmpresa().getGuid() : "")
                                 .addClaims(claims)
                                 .compact();

@@ -12,7 +12,6 @@ import com.rematec.voucher.voucherbackapi.repositories.IEmpresaRepository;
 import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,17 +21,18 @@ import java.util.UUID;
 @Transactional
 class EmpresaServiceImpl implements IEmpresaService {
 
-    @Autowired
-    private IEmpresaRepository iEmpresaRepository;
+    private final IEmpresaRepository iEmpresaRepository;
+    private final IUsuarioRepository iUsuarioRepository;
+    private final VouckBackMapper mapper;
+    private final VoucherUtil voucherUtil;
 
-    @Autowired
-    private IUsuarioRepository iUsuarioRepository;
-
-    @Autowired
-    private VouckBackMapper mapper;
-
-    @Autowired
-    private VoucherUtil voucherUtil;
+    public EmpresaServiceImpl(final IEmpresaRepository iEmpresaRepository, final IUsuarioRepository iUsuarioRepository,
+                              final VouckBackMapper mapper, final VoucherUtil voucherUtil) {
+        this.iEmpresaRepository = iEmpresaRepository;
+        this.iUsuarioRepository = iUsuarioRepository;
+        this.mapper = mapper;
+        this.voucherUtil = voucherUtil;
+    }
 
     @Override
     public List<EmpresaApiResponse> buscandoListaEmpresa() {

@@ -6,7 +6,6 @@ import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.security.UserDetail;
 import com.rematec.voucher.voucherbackapi.utils.JWTUtil;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,11 +15,14 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class UsuarioAutenticadoService implements UserDetailsService {
 
-    @Autowired
-    private IUsuarioRepository iUsuarioRepository;
+    private final IUsuarioRepository iUsuarioRepository;
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
+
+    public UsuarioAutenticadoService(final IUsuarioRepository iUsuarioRepository, final JWTUtil jwtUtil) {
+        this.iUsuarioRepository = iUsuarioRepository;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

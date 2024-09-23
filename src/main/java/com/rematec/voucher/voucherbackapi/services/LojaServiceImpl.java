@@ -19,7 +19,6 @@ import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -31,17 +30,18 @@ import java.util.UUID;
 @Slf4j
 class LojaServiceImpl implements ILojaService {
 
-    @Autowired
-    private ILojaRepository iLojaReposity;
+    private final ILojaRepository iLojaReposity;
+    private final VouckBackMapper mapper;
+    private final VoucherUtil voucherUtil;
+    private final IEmpresaRepository iEmpresaRepository;
 
-    @Autowired
-    private VouckBackMapper mapper;
-
-    @Autowired
-    private VoucherUtil voucherUtil;
-
-    @Autowired
-    private IEmpresaRepository iEmpresaRepository;
+    public LojaServiceImpl(final ILojaRepository iLojaReposity, final VouckBackMapper mapper, final VoucherUtil voucherUtil,
+                           final IEmpresaRepository iEmpresaRepository) {
+        this.iLojaReposity = iLojaReposity;
+        this.mapper = mapper;
+        this.voucherUtil = voucherUtil;
+        this.iEmpresaRepository = iEmpresaRepository;
+    }
 
     @Override
     public List<LojaApiResponse> buscandoListaLoja() {
@@ -97,7 +97,7 @@ class LojaServiceImpl implements ILojaService {
         }
 
         EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(lojaApiRequest.getEmpresa())
-                .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+                .orElseThrow(() -> new EmpresaNaoEncontradaException("Empresa não encontrada."));
 
 
         LojaEntity lojaEntity = LojaEntity.builder()

@@ -28,20 +28,21 @@ import java.util.UUID;
 @Transactional
 class UsuarioServiceImpl implements IUsuarioService {
 
-    @Autowired
-    private IUsuarioRepository iUsuarioRepository;
+    private final IUsuarioRepository iUsuarioRepository;
+    private final VouckBackMapper mapper;
+    private final PasswordEncoder passwordEncoder;
+    private final VoucherUtil voucherUtil;
+    private final IEmpresaRepository iEmpresaRepository;
 
-    @Autowired
-    private VouckBackMapper mapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private VoucherUtil voucherUtil;
-
-    @Autowired
-    private IEmpresaRepository iEmpresaRepository;
+    public UsuarioServiceImpl(final IUsuarioRepository iUsuarioRepository, final VouckBackMapper mapper,
+                              final PasswordEncoder passwordEncoder, final VoucherUtil voucherUtil,
+                              final IEmpresaRepository iEmpresaRepository) {
+        this.iUsuarioRepository = iUsuarioRepository;
+        this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
+        this.voucherUtil = voucherUtil;
+        this.iEmpresaRepository = iEmpresaRepository;
+    }
 
     @Override
     public List<UsuarioApiResponse> buscandoListaUsuario() {

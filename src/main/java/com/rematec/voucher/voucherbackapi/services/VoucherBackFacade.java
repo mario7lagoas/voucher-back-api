@@ -36,15 +36,16 @@ import java.util.List;
 @Component
 public class VoucherBackFacade {
 
-    private final UsuarioServiceImpl usuarioService;
-    private final PerfilServiceImpl perfilService;
-    private final LojaServiceImpl lojaService;
-    private final PromocaoServiceImpl promocaoService;
-    private final VoucherServiceImpl voucherService;
-    private final EmpresaServiceImpl empresaService;
+    private final IUsuarioService usuarioService;
+    private final IPerfilService perfilService;
+    private final ILojaService lojaService;
+    private final IPromocaoService promocaoService;
+    private final IVoucherService voucherService;
+    private final IEmpresaService empresaService;
 
-    public VoucherBackFacade(UsuarioServiceImpl usuarioService, PerfilServiceImpl perfilService, LojaServiceImpl lojaService,
-                             PromocaoServiceImpl promocaoService, VoucherServiceImpl voucherService, EmpresaServiceImpl empresaService) {
+    public VoucherBackFacade(final UsuarioServiceImpl usuarioService, final PerfilServiceImpl perfilService,
+                             final LojaServiceImpl lojaService, final PromocaoServiceImpl promocaoService,
+                             final VoucherServiceImpl voucherService, final EmpresaServiceImpl empresaService) {
 
         this.usuarioService = usuarioService;
         this.perfilService = perfilService;
@@ -95,6 +96,7 @@ public class VoucherBackFacade {
     public List<PerfilApiResponse> buscandoListaPerfilPelaEmpresa(String guid) {
         return this.perfilService.buscandoListaPerfilPelaEmpresa(guid);
     }
+
     public PerfilApiResponse buscandoPerfilPeloGUID(String guid) {
         return this.perfilService.buscandoPerfilPeloGUID(guid);
     }

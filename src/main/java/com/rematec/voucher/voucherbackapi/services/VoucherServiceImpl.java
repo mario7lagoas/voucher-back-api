@@ -24,7 +24,6 @@ import com.rematec.voucher.voucherbackapi.models.filter.VoucherFiltro;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -42,18 +41,18 @@ import java.util.UUID;
 @Slf4j
 class VoucherServiceImpl implements IVoucherService {
 
-    @Autowired
-    private IVoucherRepository iVoucherRepository;
+    private final IVoucherRepository iVoucherRepository;
+    private final IPromocaoRepository iPromocaoRepository;
+    private final VoucherUtil voucherUtil;
+    private final VouckBackMapper mapper;
 
-    @Autowired
-    private IPromocaoRepository iPromocaoRepository;
-
-    @Autowired
-    private VoucherUtil voucherUtil;
-
-    @Autowired
-    private VouckBackMapper mapper;
-
+    public VoucherServiceImpl(final IVoucherRepository iVoucherRepository, final IPromocaoRepository iPromocaoRepository,
+                              final VoucherUtil voucherUtil, final VouckBackMapper mapper) {
+        this.iVoucherRepository = iVoucherRepository;
+        this.iPromocaoRepository = iPromocaoRepository;
+        this.voucherUtil = voucherUtil;
+        this.mapper = mapper;
+    }
 
     @Override
     public ConsultaVoucherApiResponse consultandoPromocoes(ConsultaVoucherApiRequest consulta) {

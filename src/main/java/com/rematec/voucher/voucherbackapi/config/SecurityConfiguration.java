@@ -7,7 +7,6 @@ import com.rematec.voucher.voucherbackapi.repositories.IUsuarioRepository;
 import com.rematec.voucher.voucherbackapi.enums.PermissaoEnum;
 import com.rematec.voucher.voucherbackapi.services.UsuarioAutenticadoService;
 import com.rematec.voucher.voucherbackapi.utils.JWTUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,17 +26,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Autowired
-    private UsuarioAutenticadoService usuarioAutenticadoService;
+    private final UsuarioAutenticadoService usuarioAutenticadoService;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
+    private final IUsuarioRepository iUsuarioRepository;
 
-    @Autowired
-    private AuthenticationConfiguration authenticationConfiguration;
+    public SecurityConfiguration(final UsuarioAutenticadoService usuarioAutenticadoService, final JWTUtil jwtUtil,
+                                 final AuthenticationConfiguration authenticationConfiguration, final IUsuarioRepository iUsuarioRepository) {
+        this.usuarioAutenticadoService = usuarioAutenticadoService;
+        this.jwtUtil = jwtUtil;
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.iUsuarioRepository = iUsuarioRepository;
 
-    @Autowired
-    private JWTUtil jwtUtil;
-
-    @Autowired
-    private IUsuarioRepository iUsuarioRepository;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -74,63 +75,63 @@ public class SecurityConfiguration {
                     auth
                             .requestMatchers(PUBLIC_MATCHERS).permitAll()
                             .requestMatchers(HttpMethod.GET, "/loja")
-                            .hasAnyAuthority( PermissaoEnum.BUSCAR_LOJA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.BUSCAR_LOJA.getRole())
                             .requestMatchers(HttpMethod.GET, "/usuario")
-                            .hasAnyAuthority( PermissaoEnum.BUSCAR_USUARIO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.BUSCAR_USUARIO.getRole())
                             .requestMatchers(HttpMethod.GET, "/promocao")
-                            .hasAnyAuthority( PermissaoEnum.BUSCAR_PROMOCAO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.BUSCAR_PROMOCAO.getRole())
                             .requestMatchers(HttpMethod.GET, "/perfil")
-                            .hasAnyAuthority( PermissaoEnum.BUSCAR_PERFIL.getRole())
+                            .hasAnyAuthority(PermissaoEnum.BUSCAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.GET, "/voucher")
-                            .hasAnyAuthority( PermissaoEnum.BUSCAR_VOUCHER.getRole())
+                            .hasAnyAuthority(PermissaoEnum.BUSCAR_VOUCHER.getRole())
                             .requestMatchers(HttpMethod.GET, "/empresa")
-                            .hasAnyAuthority( PermissaoEnum.BUSCAR_EMPRESA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.BUSCAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.PUT, "/loja")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_LOJA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_LOJA.getRole())
                             .requestMatchers(HttpMethod.PUT, "/usuario")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_USUARIO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_USUARIO.getRole())
                             .requestMatchers(HttpMethod.PUT, "/promocao")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_PROMOCAO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_PROMOCAO.getRole())
                             .requestMatchers(HttpMethod.PUT, "/perfil")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_PERFIL.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.PUT, "/voucher")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_VOUCHER.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_VOUCHER.getRole())
                             .requestMatchers(HttpMethod.PUT, "/empresa")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_EMPRESA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.POST, "/loja")
-                            .hasAnyAuthority( PermissaoEnum.CADASTRAR_LOJA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.CADASTRAR_LOJA.getRole())
                             .requestMatchers(HttpMethod.POST, "/usuario")
-                            .hasAnyAuthority( PermissaoEnum.CADASTRAR_USUARIO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.CADASTRAR_USUARIO.getRole())
                             .requestMatchers(HttpMethod.POST, "/promocao")
-                            .hasAnyAuthority( PermissaoEnum.CADASTRAR_PROMOCAO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.CADASTRAR_PROMOCAO.getRole())
                             .requestMatchers(HttpMethod.POST, "/perfil")
-                            .hasAnyAuthority( PermissaoEnum.CADASTRAR_PERFIL.getRole())
+                            .hasAnyAuthority(PermissaoEnum.CADASTRAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.POST, "/voucher")
-                            .hasAnyAuthority( PermissaoEnum.CADASTRAR_VOUCHER.getRole())
+                            .hasAnyAuthority(PermissaoEnum.CADASTRAR_VOUCHER.getRole())
                             .requestMatchers(HttpMethod.POST, "/empresa")
-                            .hasAnyAuthority( PermissaoEnum.CADASTRAR_EMPRESA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.CADASTRAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.DELETE, "/loja")
-                            .hasAnyAuthority( PermissaoEnum.APAGAR_LOJA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.APAGAR_LOJA.getRole())
                             .requestMatchers(HttpMethod.DELETE, "/usuario")
-                            .hasAnyAuthority( PermissaoEnum.APAGAR_USUARIO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.APAGAR_USUARIO.getRole())
                             .requestMatchers(HttpMethod.DELETE, "/promocao")
-                            .hasAnyAuthority( PermissaoEnum.APAGAR_PROMOCAO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.APAGAR_PROMOCAO.getRole())
                             .requestMatchers(HttpMethod.DELETE, "/perfil")
-                            .hasAnyAuthority( PermissaoEnum.APAGAR_PERFIL.getRole())
+                            .hasAnyAuthority(PermissaoEnum.APAGAR_PERFIL.getRole())
                             .requestMatchers(HttpMethod.DELETE, "/voucher")
-                            .hasAnyAuthority( PermissaoEnum.APAGAR_VOUCHER.getRole())
+                            .hasAnyAuthority(PermissaoEnum.APAGAR_VOUCHER.getRole())
                             .requestMatchers(HttpMethod.DELETE, "/empresa")
-                            .hasAnyAuthority( PermissaoEnum.APAGAR_EMPRESA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.APAGAR_EMPRESA.getRole())
 
                             .requestMatchers(HttpMethod.PATCH, "/loja")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_LOJA.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_LOJA.getRole())
                             .requestMatchers(HttpMethod.PATCH, "/usuario")
-                            .hasAnyAuthority( PermissaoEnum.ALTERAR_USUARIO.getRole())
+                            .hasAnyAuthority(PermissaoEnum.ALTERAR_USUARIO.getRole())
 
-                           .anyRequest().authenticated();
+                            .anyRequest().authenticated();
 
                 });
 

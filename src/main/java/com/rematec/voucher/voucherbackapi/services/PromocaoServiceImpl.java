@@ -19,7 +19,6 @@ import com.rematec.voucher.voucherbackapi.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -32,17 +31,18 @@ import java.util.UUID;
 @Service
 class PromocaoServiceImpl implements IPromocaoService {
 
-    @Autowired
-    private IPromocaoRepository iPromocaoRepository;
+    private final IPromocaoRepository iPromocaoRepository;
+    private final VouckBackMapper mapper;
+    private final VoucherUtil voucherUtil;
+    private final IEmpresaRepository iEmpresaRepository;
 
-    @Autowired
-    private VouckBackMapper mapper;
-
-    @Autowired
-    private VoucherUtil voucherUtil;
-
-    @Autowired
-    private IEmpresaRepository iEmpresaRepository;
+    public PromocaoServiceImpl(final IPromocaoRepository iPromocaoRepository, final VouckBackMapper mapper,
+                               final VoucherUtil voucherUtil, final IEmpresaRepository iEmpresaRepository) {
+        this.iPromocaoRepository = iPromocaoRepository;
+        this.mapper = mapper;
+        this.voucherUtil = voucherUtil;
+        this.iEmpresaRepository = iEmpresaRepository;
+    }
 
     @Override
     public List<PromocaoApiResponse> buscandoListaPromocao() {
@@ -57,7 +57,7 @@ class PromocaoServiceImpl implements IPromocaoService {
         }
 
         EmpresaEntity empresaEntity = this.iEmpresaRepository.findByGuid(promocaoApiRequest.getEmpresa())
-                .orElseThrow(()-> new EmpresaNaoEncontradaException("Empresa não encontrada."));
+                .orElseThrow(() -> new EmpresaNaoEncontradaException("Empresa não encontrada."));
 
         LocalDateTime fim = this.voucherUtil.stringToLocalDateTime(promocaoApiRequest.getFim());
 

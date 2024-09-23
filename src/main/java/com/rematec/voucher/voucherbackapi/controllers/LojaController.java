@@ -7,7 +7,6 @@ import com.rematec.voucher.models.LojaUpdateApiRequest;
 import com.rematec.voucher.models.UpdateStatusApiRequest;
 import com.rematec.voucher.voucherbackapi.services.VoucherBackFacade;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +16,11 @@ import java.util.List;
 @RestController
 public class LojaController implements LojaApi {
 
-    @Autowired
-    private VoucherBackFacade lojaService;
+    private final VoucherBackFacade lojaService;
+
+    public LojaController(final VoucherBackFacade lojaService) {
+        this.lojaService = lojaService;
+    }
 
     @Override
     public ResponseEntity<List<LojaApiResponse>> buscandoListaLoja() {
