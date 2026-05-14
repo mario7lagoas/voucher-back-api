@@ -33,6 +33,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -54,10 +55,16 @@ public class VoucherUtil {
     private IVoucherRepository iVoucherRepository;
 
     public List<LojaEntity> getListGuidApiRequestToListLojasEntity(List<GuidApiRequest> guidList) {
+        if (guidList == null || guidList.isEmpty()) {
+            return null;
+        }
 
-        return guidList != null ? guidList.stream()
-                .map(loja -> this.iLojaRepository.findByGuid(loja.getGuid()).get())
-                .toList() : null;
+        // ✅ Otimizado: Busca em lote evita N+1
+        List<String> guids = guidList.stream()
+                .map(GuidApiRequest::getGuid)
+                .toList();
+
+        return this.iLojaRepository.findByGuids(guids);
     }
 
     public boolean checkDataNullAndEmpty(String data) {
@@ -69,19 +76,31 @@ public class VoucherUtil {
     }
 
     public Set<PerfilEntity> listUsuarioPerfilApiRequestToListPerfilEntity(List<UsuarioPerfilApiRequest> perfis) {
-        Set<PerfilEntity> listPerfils = perfis
-                .stream()
-                .map(p -> this.iPerfilRepository.findByNome(p.getNome()).get())
-                .collect(Collectors.toSet());
-        return listPerfils;
+        if (perfis == null || perfis.isEmpty()) {
+            return Set.of();
+        }
+
+        // ✅ Otimizado: Busca em lote evita N+1
+        List<String> nomes = perfis.stream()
+                .map(UsuarioPerfilApiRequest::getNome)
+                .toList();
+
+        List<PerfilEntity> perfilEntities = this.iPerfilRepository.findByNomes(nomes);
+
+        return new java.util.HashSet<>(perfilEntities);
     }
 
     public List<RoleEntity> listRoleApiResponseToListRoleEntity(List<RoleApiResponse> roles) {
-        return roles
-                .stream()
-                .map(roleRequest -> this.iRoleRepository.findByNome(PermissaoEnum.valueOf(roleRequest.getNome())))
-                .collect(Collectors.toList());
+        if (roles == null || roles.isEmpty()) {
+            return List.of();
+        }
 
+        // ✅ Otimizado: Busca em lote evita N+1
+        List<PermissaoEnum> nomes = roles.stream()
+                .map(roleRequest -> PermissaoEnum.valueOf(roleRequest.getNome()))
+                .toList();
+
+        return this.iRoleRepository.findByNomes(nomes);
     }
 
     @Async("threadPollverificarPromocoesVencidasExecutor")
@@ -126,22 +145,42 @@ public class VoucherUtil {
 
     }
     public void cancelOrConfirmVoucherApi(List<VoucherApiRequest> voucherRequests, VoucherStatusEnum statusEnum) {
-        voucherRequests.forEach(voucherRequest -> {
-            VoucherEntity voucherEntity =
-                    this.iVoucherRepository.findByCodigoEqualsAndClienteCpfEqualsAndFilialCnpjEqualsAndVoucherStatus(
-                            voucherRequest.getCodigo(), this.apenasNumerosNaString(voucherRequest.getClienteCpf()),
-                            this.apenasNumerosNaString(voucherRequest.getFilialCnpj()),
-                            VoucherStatusEnum.DISPONIBILIZADO
-                    ).orElseThrow(
-                            () -> new VoucherNaoEncontradoException("Voucher codigo [" + voucherRequest.getCodigo()
-                                    + "] não encontrado")
-                    );
+        if (voucherRequests == null || voucherRequests.isEmpty()) {
+            return;
+        }
+
+        // ✅ Otimizado: Busca em lote evita N+1
+        List<String> codigos = voucherRequests.stream()
+                .map(VoucherApiRequest::getCodigo)
+                .toList();
+        List<String> cpfs = voucherRequests.stream()
+                .map(v -> this.apenasNumerosNaString(v.getClienteCpf()))
+                .toList();
+        List<String> cnpjs = voucherRequests.stream()
+                .map(v -> this.apenasNumerosNaString(v.getFilialCnpj()))
+                .toList();
+
+        List<VoucherEntity> voucherEntities = this.iVoucherRepository.findVouchersByCodigosCpfsCnpjsAndStatus(
+                codigos, cpfs, cnpjs, VoucherStatusEnum.DISPONIBILIZADO);
+
+        // Criar mapa para associar rapidamente
+        Map<String, VoucherEntity> voucherMap = voucherEntities.stream()
+                .collect(Collectors.toMap(VoucherEntity::getCodigo, v -> v));
+
+        // Processar cada request
+        for (VoucherApiRequest voucherRequest : voucherRequests) {
+            VoucherEntity voucherEntity = voucherMap.get(voucherRequest.getCodigo());
+            if (voucherEntity == null) {
+                throw new VoucherNaoEncontradoException("Voucher codigo [" + voucherRequest.getCodigo()
+                        + "] não encontrado");
+            }
+
             voucherEntity.setVoucherStatus(statusEnum);
             if (VoucherStatusEnum.CANCELADO.equals(statusEnum)) {
                 voucherEntity.setPromocaoStatus(VoucherPromocaoStatusEnum.CANCELADO);
             }
             this.iVoucherRepository.save(voucherEntity);
-        });
+        }
     }
 
     public String apenasNumerosNaString(String input) {

@@ -61,7 +61,7 @@ class VoucherServiceImpl implements IVoucherService {
                 .totalVoucher(0).build();
 
         List<PromocaoEntity> promocaoEntities = iPromocaoRepository
-                .findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
+                .findPromocoesAtivasComLojas(
                         LocalDateTime.now(), LocalDateTime.now(), consulta.getValorCompra(), PromocaoStatusEnum.ATIVA,
                         this.voucherUtil.apenasNumerosNaString(consulta.getFilialCnpj())
                 );
@@ -73,9 +73,11 @@ class VoucherServiceImpl implements IVoucherService {
 
             List<VoucherApiResponse> voucherResponses = new ArrayList<>();
             promocaoEntities.forEach(promocaoEntity -> {
-                if (!this.iVoucherRepository.findTop1ByClienteCpfEqualsAndPromocaoGuidAndVoucherStatusNot(
-                        this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()), promocaoEntity.getGuid(),
-                        VoucherStatusEnum.CANCELADO).isPresent()) {
+                // ✅ Otimizado: Verificação em lote evita N+1
+                if (!this.iVoucherRepository.existsVoucherAtivoParaClienteEPromocao(
+                        this.voucherUtil.apenasNumerosNaString(consulta.getClienteCpf()),
+                        promocaoEntity.getGuid(),
+                        VoucherStatusEnum.CANCELADO)) {
 
                     VoucherEntity voucherEntity = VoucherEntity.builder()
                             .guid(UUID.randomUUID().toString())
@@ -114,13 +116,13 @@ class VoucherServiceImpl implements IVoucherService {
         return consultaVoucherResponse;
     }
 
-    @Async("threadPollConfirmandoVoucherExecutor")
+    @Async("voucherExecutor")
     @Override
     public void confirmandoVoucher(List<VoucherApiRequest> voucherApiRequest) {
         this.voucherUtil.cancelOrConfirmVoucherApi(voucherApiRequest, VoucherStatusEnum.CONFIRMADO);
     }
 
-    @Async("threadPollCancelandoVoucherExecutor")
+    @Async("voucherExecutor")
     @Override
     public void cancelandoVoucher(List<VoucherApiRequest> voucherApiRequest) {
         this.voucherUtil.cancelOrConfirmVoucherApi(voucherApiRequest, VoucherStatusEnum.CANCELADO);

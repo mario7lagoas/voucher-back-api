@@ -6,6 +6,8 @@ import com.rematec.voucher.voucherbackapi.enums.PromocaoStatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -27,4 +29,18 @@ public interface IPromocaoRepository extends JpaRepository<PromocaoEntity, Long>
 
     Optional<PromocaoEntity> findByGuidAndLojasCnpjAndLojasStatusTrue(String guid, String cnpjFilial);
 
+    @Query("SELECT DISTINCT p FROM promocao p " +
+           "LEFT JOIN FETCH p.lojas l " +
+           "WHERE p.inicio <= :inicio " +
+           "AND p.fim > :fim " +
+           "AND p.valorMinimoParaDisparo <= :valorCompra " +
+           "AND p.promocaoStatus = :status " +
+           "AND l.cnpj = :cnpj " +
+           "AND l.status = true")
+    List<PromocaoEntity> findPromocoesAtivasComLojas(
+            @Param("inicio") LocalDateTime inicio,
+            @Param("fim") LocalDateTime fim,
+            @Param("valorCompra") BigDecimal valorCompra,
+            @Param("status") PromocaoStatusEnum status,
+            @Param("cnpj") String cnpj);
 }

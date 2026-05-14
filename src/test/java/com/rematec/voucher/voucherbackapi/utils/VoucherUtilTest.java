@@ -25,6 +25,7 @@ import java.util.Optional;
 import static com.rematec.voucher.voucherbackapi.builders.LojaEntityBuilder.umaLojaEntity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -63,8 +64,8 @@ public class VoucherUtilTest {
         List<GuidApiRequest> guidList = Collections.singletonList(new GuidApiRequest().guid("123456"));
 
         LojaEntity lojaEntity = LojaEntity.builder()
-                .id(1L).cnpj("123456").guid("1234").cnpj("123456").identificacao("Lj 01").build();
-        when(this.iLojaReposity.findByGuid(anyString())).thenReturn(Optional.of(lojaEntity));
+                .id(1L).cnpj("123456").guid("123456").identificacao("Lj 01").build();
+        when(this.iLojaReposity.findByGuids(any())).thenReturn(Collections.singletonList(lojaEntity));
 
         //when
         List<LojaEntity> lojaEntitiesReturn = this.voucherUtil.getListGuidApiRequestToListLojasEntity(guidList);

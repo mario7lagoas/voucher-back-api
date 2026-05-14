@@ -58,8 +58,9 @@ public class VoucherServiceImplTest {
         //having
         ConsultaVoucherApiRequest request = umaConsultaVoucherApiRequest().agora();
 
-        when(this.iPromocaoRepository.findByInicioLessThanEqualAndFimGreaterThanEqualAndValorMinimoParaDisparoLessThanEqualAndPromocaoStatusAndLojasCnpjAndLojasStatusTrue(
+        when(this.iPromocaoRepository.findPromocoesAtivasComLojas(
                 any(), any(), any(), any(), any())).thenReturn(Collections.singletonList(umaPromocaoEntity().comLoja().agora()));
+        when(this.iVoucherRepository.existsVoucherAtivoParaClienteEPromocao(any(), any(), any())).thenReturn(false);
 
         //when
         ConsultaVoucherApiResponse response = this.voucherService.consultandoPromocoes(request);

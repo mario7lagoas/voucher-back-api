@@ -18,6 +18,8 @@ servers:
 
 
 tags:
+  - name: Autenticação
+    description: Operações de Autenticação e Autorização
   - name: Voucher
     description: Operações sobre Voucher
   - name: Promoção
@@ -30,7 +32,76 @@ tags:
     description: Operações sobre Perfil de Usuario
   - name: Usuario
     description: Operações sobre Usuario
+
 paths:
+  /login:
+    post:
+      tags:
+        - Autenticação
+      summary: Autenticar Usuário
+      description: Realiza login do usuário com email e senha, retornando um token de acesso JWT e configurando um cookie com o refresh token.
+      operationId: loginUsuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioAutenticado'
+            example:
+              email: "mario7lagoas@gmail.com"
+              password: "1234"
+      responses:
+        '200':
+          description: Login realizado com sucesso. Retorna o token de acesso e configura o refresh token no cookie.
+          headers:
+            Set-Cookie:
+              description: Cookie HTTP-only contendo o refresh token.
+              schema:
+                type: string
+                example: "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict"
+        '401':
+          description: Credenciais inválidas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: "Credenciais inválidas"
+                status: 401
+        '400':
+          description: Requisição malformada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: "Dados de login inválidos"
+                status: 400
+  /login/refresh:
+    post:
+      tags:
+        - Autenticação
+      summary: Renovar Token de Acesso
+      description: Utiliza o refresh token do cookie para gerar um novo token de acesso JWT.
+      operationId: refreshToken
+      responses:
+        '200':
+          description: Token renovado com sucesso.
+          headers:
+            Set-Cookie:
+              description: Novo cookie HTTP-only com refresh token atualizado.
+              schema:
+                type: string
+                example: "refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict"
+        '401':
+          description: Refresh token inválido ou expirado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: "Refresh token inválido"
+                status: 401
   /voucher/filter:
     get:
       tags:
@@ -1457,6 +1528,36 @@ paths:
                 example: "data:application/pdf;base64,JVBERi0xLjUKJeLjz9MKMyAwIG9iago8PC9Db2xvclNwYWNlL0RldmljZVJHQi9TdWJ0eXBlL0ltYWdlL0hlaWdodCAzNTQvRmlsdGVyL0RDVERlY29kZS9UeXBlL1hPYmplY3QvV2lkdGggMjQ4MC9CaXRzUGVyQ29tcG9uZW50IDgvTGVuZ3RoIDM2ODg5Pj5zdHJlYW0K/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAACgAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAFBAQGRIZJxcXJzImHyYyLiYmJiYuPjU1NTU1PkRBQUFBQUFERERERERERERERERERERERERERERERERERERERAEVGRkgHCAmGBgmNiYgJjZENisrNkREREI1QkRERERERERERERERERERERERERERERERERERERERERERERERERE/8AAEQgBYgmwAwEiAAIRAQMRAf/..."
 components:
   schemas:
+    UsuarioAutenticado:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email do usuário para login.
+          example: "mario7lagoas@gmail.com"
+        password:
+          type: string
+          format: password
+          description: Senha do usuário.
+          example: "1234"
+      required:
+        - email
+        - password
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Mensagem de erro.
+          example: "Credenciais inválidas"
+        status:
+          type: integer
+          description: Código de status HTTP.
+          example: 401
+      required:
+        - message
+        - status
     PaginacaoApiResponse:
       type: object
       properties:

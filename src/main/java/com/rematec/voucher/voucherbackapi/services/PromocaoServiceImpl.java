@@ -19,6 +19,7 @@ import com.rematec.voucher.voucherbackapi.enums.PromocaoStatusEnum;
 import com.rematec.voucher.voucherbackapi.enums.TipoDescontoEnum;
 import com.rematec.voucher.voucherbackapi.models.filter.PromocaoFiltro;
 import com.rematec.voucher.voucherbackapi.utils.VoucherUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -208,8 +209,9 @@ class PromocaoServiceImpl implements IPromocaoService {
     @Override
     public BuscandoListaPaginadaPromocao200Response buscandoListaPaginadaPromocao(String descricao, Integer page,
                                                                                   Integer size) {
-        return this.mapper.pagePromocoesEntityToPromocoesApiPaginadaResponse(
-                this.iPromocaoRepository.findByDescricaoContaining(descricao, PageRequest.of(page, size)));
+
+        Page<PromocaoEntity> promocaoEntityPage = this.iPromocaoRepository.findByDescricaoContaining(descricao, PageRequest.of(page, size));
+        return this.mapper.pagePromocoesEntityToPromocoesApiPaginadaResponse(promocaoEntityPage );
 
     }
 
