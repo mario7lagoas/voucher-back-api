@@ -387,7 +387,7 @@ class MeuTesteTest {
 
 ## 📄 Licença
 
-Proprietary - Rematec Solutions
+Proprietary - mario7lagoas@gmail.com
 
 ---
 
